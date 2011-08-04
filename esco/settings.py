@@ -19,6 +19,7 @@ import os
 # EMAIL_PORT
 # DEFAULT_FROM_EMAIL
 # MEDIA_ROOT
+# ABSTRACTS_PATH
 # ADMINS
 #
 # See Django documentation for possible values.
@@ -85,6 +86,3 @@ AUTH_PROFILE_MODULE = 'site.UserProfile'
 AUTHENTICATION_BACKENDS = (
     'esco.contrib.emailauth.EmailBackend',
 )
-
-ABSTRACTS_PATH = '/var/db/esco-2012/abstracts/'
-
