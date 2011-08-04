@@ -1,38 +1,6 @@
 {% extends "base.html" %}
 
-{% block content %}
-    <h2>Travel Information</h2>
-
-    <p>
-        Conference registration will take place in the lobby of the hotel Angelo Pilsen on Sunday
-        June 24, 2012. Dinner will be provided.
-    </p>
-
-    <h4>Using a train from Prague</h4>
-
-    <p>
-        This is a recommended way of transportation as the Angelo Hotel is located approx. 400 m from the
-        Pilsen Railway Station. The trains leave from the Prague Main Railway Station
-        (Praha Hlavni Nadrazi) often and the trip takes less than 2 hours. When coming through the Prague
-        Airport, use the <a href="http://czech-transport.com/index.php?id=357">Airport Express</a> shuttle
-        service which takes you there directly. When coming from other parts of the city, the Main Railway
-        Station is a stop of the red line "C" of Prague subway. Train tickets can be purchased in the lobby
-        of the railway station, or directly in the train (higher fees apply).
-    </p>
-
-    <h2>Accomodation</h2>
-
-    <p>
-        A limited number of rooms has been reserved in the <a href="http://www.angelo-pilsen.cz/">Angelo Pilsen</a>
-        hotel across the street from the conference venue, at a special conference price of 65 EUR single room
-        and 50 EUR two bed room (including breakfast). Please mention that you belong to the ESCO 2012 conference while
-        making a reservation. Alternatively, accommodation is possible in the
-        <a href="http://www.marriott.com/hotels/travel/prgpz-courtyard-pilsen/">Marriott Courtyard Pilsen</a>
-        and many other hotels in Pilsen.
-    </p>
-
-    <h2>Map</h2>
-
+{% block scripts %}
     <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
 
     <script type="text/javascript">
@@ -85,6 +53,20 @@
             }));
         });
     </script>
+{% endblock %}
+
+{% block content %}
+    <h2>Accomodation</h2>
+
+    <p>
+        A limited number of rooms has been reserved in the <a href="http://www.angelo-pilsen.cz/">Angelo Pilsen</a>
+        hotel across the street from the Pilsner Urquell Brewery, at a special conference price of 49 EUR single room
+        and 58 EUR two bed room (including breakfast). Please mention that you belong to the ESCO 2012 conference while
+        making a reservation. Alternatively, accommodation is possible in the
+        <a href="http://www.marriott.com/hotels/travel/prgpz-courtyard-pilsen/">Marriott Courtyard Pilsen</a>
+        and many other hotels in Pilsen.
+    </p>
 
     <div id="map"></div>
 {% endblock %}
+

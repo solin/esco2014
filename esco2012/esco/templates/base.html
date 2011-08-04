@@ -2,7 +2,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
-        <title>ESCO 2012 - 2nd European Seminar on Coupled Problems</title>
+        <title>ESCO 2012 - 3rd European Seminar on Coupled Problems and Higher-Order Methods</title>
         <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
 
         <link type="text/css" href="{{ MEDIA_URL }}css/style.css" rel="stylesheet" />
@@ -30,9 +30,11 @@
                         <span class="bar">|</span>
                         <a href="/account/logout/">logout</a>
                     {% else %}
-                        <a href="/account/login/">login</a>
-                        <span class="bar color">|</span>
-                        <a href="/account/create/">create account</a>
+			{% if false %}
+                        	<a href="/account/login/">login</a>
+                        	<span class="bar color">|</span>
+                        	<a href="/account/create/">create account</a>
+			{% endif %}
                     {% endif %}
                 </div>
                 <div id="banner"></div>
@@ -40,22 +42,23 @@
                     <div class="title">Main Menu</div>
                     <ul class="menu">
                         <li><a href="/">Home Page</a></li>
-                        <li><a href="/topics/">Conference Topics</a></li>
                         <li><a href="/keynote/">Keynote Speakers</a></li>
                         <li><a href="/committees/">Committees</a></li>
-                        <li><a href="/payment/">Payment Information</a></li>
+                        <!--<li><a href="/participants/">Participants</a></li>-->
                         <li><a href="/venue/">Conference Venue</a></li>
-                        <li><a href="/accommodation/">Accommodation</a></li>
-                        <li><a href="/travel/">Travel Information</a></li>
+                        <li><a href="/travel/">Travel & Accommodation</a></li>
                         <li><a href="/postconf/">Post Conference Program</a></li>
+                        <li><a href="/payment/">Payment Information</a></li>
                         <li><a href="/contact/">Contact</a></li>
                     </ul>
                 </div>
                 <div class="box right">
                     <div class="title">Important Dates</div>
                     <ul class="list">
-                        <li class="head">December 15, 2009</li>
+                        <li class="head">December 15, 2011</li>
                         <li class="tail">Abstract submission deadline.</li>
+                        <li class="head">December 15, 2011</li>
+                        <li class="tail">Minisymposium proposal deadline.</li>
                         <li class="head">January 15, 2012</li>
                         <li class="tail">Notification of acceptance.</li>
                         <li class="head">March 15, 2012</li>
@@ -67,38 +70,35 @@
                 <div class="box right">
                     <div class="title">Latest News</div>
                     <ul class="list">
-                        <li class="head">September 12, 2009</li>
+                        <li class="head">July 22, 2011</li>
                         <li class="tail">ESCO 2012 website launched.</li>
                     </ul>
                 </div>
-                <div class="box right">
+<!--                <div class="box right">
                     <div class="title">ESCO 2012 Color Flyer</div>
                     <ul class="list">
                         <li class="tail">The flyer for ESCO 2012 in PDF can be found
-                        <a href="{{ MEDIA_URL }}img/flyer.pdf">here</a>.</li>
+                        <a href="{{ MEDIA_URL }}img/flyer-esco-2012.pdf">here</a>.</li>
                     </ul>
                 </div>
+ -->
                 {% if user.is_authenticated %}
                 <div class="box left">
                     <div class="title">User Menu</div>
                     <ul class="menu">
                         <li><a href="/account/">User Home</a></li>
                         <li><a href="/account/profile/">Edit Profile</a></li>
-                        {% if user.get_profile.speaker %}
                         <li><a href="/account/abstracts/">Submit Abstract</a></li>
-                        {% endif %}
                         <li><a href="/account/password/change/">Change Password</a></li>
                         <li><a href="/account/delete/">Delete Account</a></li>
                     </ul>
                 </div>
                 {% endif %}
                 <div class="box right">
-                    <div class="title">Previous ESCO 2008</div>
+                    <div class="title">Previous Conferences</div>
                     <ul class="list">
-                        <li class="tail">Previous ESCO 2008 took place in the national
-                        park Czech Switzerland in northern Czech Republic. Visit its
-                        <a href="http://hpfem.org/events/esco-2008/">web page</a>
-                        for more information.</li>
+                        <li><a href="http://hpfem.org/events/esco-2010/">ESCO 2010</a>,
+                            <a href="http://hpfem.org/events/esco-2008/">ESCO 2008</a></li>
                     </ul>
                 </div>
                 <div id="content">
@@ -114,34 +114,43 @@
                             ESCO 2012
                         </h1>
                         <h3>
-                            2nd European Seminar on Coupled Problems
-                            <br/>
-                            June 28 &mdash; July 2, 2012, Pilsen, Czech Republic
+                            3rd European Seminar on Coupled Problems<br>
+                            and Higher-Order Methods
+                            <br/><br>
+                            Pilsen, Czech Republic, June 25 - 29, 2012
                         </h3>
+                        <hr>
                         <p>
-                            <b>ESCO 2012</b> is an international workshop co&ndash;sponsored by the
-                            <a href="http://www.unr.edu/">University of Nevada</a> (Reno),
-                            <a href="http://www.it.cas.cz/en">Institute of Thermomechanics</a> (Prague),
-                            <a href="http://www.zcu.cz/">University of West Bohemia</a> (Pilsen),
-                            <a href="http://ntc.zcu.cz/en/index.html">New Technologies Research Centre</a> (Pilsen),
-                            and <a href="http://www.imacs-online.org/">IMACS</a>.
-                            The objective of the meeting is to advance the frontiers of computer modeling in
-                            various areas of engineering and science. Main topic areas include
+<!--
+                            <b>ESCO 2012</b> is an international workshop organized by FEMhub Inc. in
+                            partnership with
+                            <a href="http://www.unr.edu">University of Nevada</a> (Reno),
+                            <a href="http://www.sandia.gov">Sandia National Laboratories</a> (Albuquerque),
+                            <a href="http://www.it.cas.cz">Institute of Thermomechanics</a> (Prague),
+                            <a href="http://www.zcu.cz">University of West Bohemia</a> (Pilsen), and
+                            <a href="http://www.cvut.cz">Czech Technical University</a> (Prague).
+-->
+
+                            The objective of ESCO 2012 is to advance the frontiers of computer modeling in
+                            engineering and sciences. Main topic areas include
                             <ul>
-                            <li> Multiphysics models and methods
-                            </li>
-                            <li> Track on <a href="http://www.python.org">Python</a> in scientific computing
-                            </li>
+                                <li>Multiphysics coupled problems</li>
+                                <li>Higher-order computational methods</li>
+                                <li><a href="http://www.python.org">Python</a> in scientific computing</li>
+                                <li>GPU programming and computing</li>
+                                <li>Cloud computing</li>
                             </ul>
-                            More details can be found in the
-                            <a href="http://esco2012.femhub.com/topics/">Conference Topics</a> section.
+                        </p>
+                        <h3>Minisymposia</h3>
+                        <p>
+                        Proposals for minisymposia consisting of at least four lectures related to
+                        the same topic are accepted until December 15. If you are interested
+                        in organizing a minisymposium, please contact the organizing committee.
                         </p>
                         <h3>Proceedings</h3>
                         <p>
-                            Proceedings of ESCO 2012 will appear as special issues of
-                            <a href="http://www.global-sci.com/">Communications in Computational Physics</a>
-                            (2008 SCI impact factor 2.33) and <a href="http://ees.elsevier.com/matcom/">MATCOM</a>
-                            (2008 SCI impact factor 0.93).
+                        Proceedings of ESCO 2012 will appear as special issue of <a href="http://www.elsevier.com/wps/find/journaldescription.cws_home/522482/description">Applied Mathematics and
+                        Computation</a> (AMC), an Elsevier journal with impact factor 1.534.
                         </p>
                         <h3>Abstract Submission</h3>
                         <p>
@@ -153,10 +162,8 @@
             </div>
             <div id="clearer"></div>
             <div id="footer">
-                Copyright &copy; 2009 <a href="http://hpfem.org">hp-FEM group</a>,
-                <a href="http://www.unr.edu">University of Nevada, Reno</a>
+                Copyright &copy; 2011 FEMhub Inc. All Rights Reserved.
             </div>
         </div>
     </body>
 </html>
-
