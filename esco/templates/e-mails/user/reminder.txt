@@ -8,10 +8,10 @@ auto-generated one. Your new password is:
 
 The above password was E-mailed to you in clear text, so
 it is suggested to log in using this new password to ESCO
-2010 conference website and change it.
+2012 conference website and change it.
 
 As a shortcut you can proceed with this link:
 
-http://hpfem.org/events/esco-2010/account/password/change/
+http://hpfem.org/events/esco-2012/account/password/change/
 {% endblock %}
 

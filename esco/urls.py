@@ -4,8 +4,8 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    (r'^events/esco-2010/', include('esco.site.views')),
-    (r'^events/esco-2010/admin/(.*)', admin.site.root),
+    (r'^events/esco-2012/', include('esco.site.views')),
+    (r'^events/esco-2012/admin/(.*)', admin.site.root),
 )
 
 handler404 = 'esco.site.views.handler404'

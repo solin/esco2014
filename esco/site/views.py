@@ -84,7 +84,7 @@ def index_view(request, **args):
     return _render_to_response('base.html', request, args)
 
 def account_login_view(request, **args):
-    next = request.REQUEST.get('next', '/events/esco-2010/account/')
+    next = request.REQUEST.get('next', '/events/esco-2012/account/')
 
     if request.method == 'POST':
         if request.session.test_cookie_worked():
@@ -113,7 +113,7 @@ def account_login_view(request, **args):
 def account_logout_view(request, **args):
     logout(request)
 
-    return HttpResponsePermanentRedirect('/events/esco-2010/')
+    return HttpResponsePermanentRedirect('/events/esco-2012/')
 
 @login_required
 def account_delete_view(request, **args):
@@ -122,7 +122,7 @@ def account_delete_view(request, **args):
         logout(request)
         user.delete()
 
-        return HttpResponsePermanentRedirect('/events/esco-2010/account/delete/success/')
+        return HttpResponsePermanentRedirect('/events/esco-2012/account/delete/success/')
     else:
         return _render_to_response('account/delete.html', request, args)
 
@@ -144,14 +144,14 @@ def account_create_view(request, **args):
             template = loader.get_template('e-mails/user/create.txt')
             body = template.render(Context({'user': user}))
 
-            user.email_user("[ESCO 2010] Account Creation Notification", body)
+            user.email_user("[ESCO 2012] Account Creation Notification", body)
 
             template = loader.get_template('e-mails/admin/create.txt')
             body = template.render(Context({'user': user}))
 
-            mail_admins("[ESCO 2010][ADMIN] New Account", body)
+            mail_admins("[ESCO 2012][ADMIN] New Account", body)
 
-            return HttpResponsePermanentRedirect('/events/esco-2010/account/create/success/')
+            return HttpResponsePermanentRedirect('/events/esco-2012/account/create/success/')
     else:
         form = RegistrationForm()
 
@@ -191,9 +191,9 @@ def account_password_remind_view(request, **args):
             template = loader.get_template('e-mails/user/reminder.txt')
             body = template.render(Context({'user': user, 'password': password}))
 
-            user.email_user("[ESCO 2010] Password Reminder Notification", body)
+            user.email_user("[ESCO 2012] Password Reminder Notification", body)
 
-            return HttpResponsePermanentRedirect('/events/esco-2010/account/password/remind/success/')
+            return HttpResponsePermanentRedirect('/events/esco-2012/account/password/remind/success/')
     else:
         form = ReminderForm()
 
@@ -234,12 +234,12 @@ def account_profile_view(request, **args):
             template = loader.get_template('e-mails/user/profile.txt')
             body = template.render(Context({'user': request.user, 'profile': profile}))
 
-            request.user.email_user("[ESCO 2010] User Profile Confirmation", body)
+            request.user.email_user("[ESCO 2012] User Profile Confirmation", body)
 
             message = 'Your profile was updated successfully.'
 
             if profile.speaker:
-                message += '<br />Click <a href="/events/esco-2010/account/abstracts/">here</a> to submit your abstract(s).'
+                message += '<br />Click <a href="/events/esco-2012/account/abstracts/">here</a> to submit your abstract(s).'
 
             return _render_to_response('account/profile.html', request, {'form': form, 'message': message})
     else:
@@ -337,14 +337,14 @@ def abstracts_submit_view(request, **args):
             template = loader.get_template('e-mails/user/abstract.txt')
             body = template.render(Context({'user': request.user, 'abstract': abstract}))
 
-            request.user.email_user("[ESCO 2010] Abstract Submission Notification", body)
+            request.user.email_user("[ESCO 2012] Abstract Submission Notification", body)
 
             template = loader.get_template('e-mails/admin/abstract.txt')
             body = template.render(Context({'user': request.user, 'abstract': abstract}))
 
-            mail_admins("[ESCO 2010][ADMIN] New Abstract", body)
+            mail_admins("[ESCO 2012][ADMIN] New Abstract", body)
 
-            return HttpResponsePermanentRedirect('/events/esco-2010/account/abstracts/')
+            return HttpResponsePermanentRedirect('/events/esco-2012/account/abstracts/')
     else:
         form = SubmitAbstractForm()
 
@@ -421,7 +421,7 @@ def abstracts_modify_view(request, abstract_id, **args):
                 return _render_to_response('abstracts/submit.html', request,
                     {'form': form, 'error': 'TeX and PDF files do not differ.' })
 
-            return HttpResponsePermanentRedirect('/events/esco-2010/account/abstracts/')
+            return HttpResponsePermanentRedirect('/events/esco-2012/account/abstracts/')
     else:
         form = ModifyAbstractForm(initial={'title': abstract.title})
 
@@ -434,7 +434,7 @@ def abstracts_delete_view(request, abstract_id, **args):
     except UserAbstract.DoesNotExist:
         pass # don't care about missing abstract
 
-    return HttpResponsePermanentRedirect('/events/esco-2010/account/abstracts/')
+    return HttpResponsePermanentRedirect('/events/esco-2012/account/abstracts/')
 
 @login_required
 def abstracts_tex_view(request, abstract_id, **args):

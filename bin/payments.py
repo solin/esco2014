@@ -78,12 +78,12 @@ template = r'''
 \noindent
 %(data)s
 \noindent
-\hbox{} \hfill May 10, 2010\\
+\hbox{} \hfill May 10, 2012\\
 \hbox{} \hfill Reno, NV, USA\\
 Dear Mr. %(name)s,\\
 \noindent
 The Department of Mathematics and Statistics, University of Nevada, Reno
-acknowledges the receipt of your registration fee for the ESCO 2010
+acknowledges the receipt of your registration fee for the ESCO 2012
 conference in the amount of USD %(paid)s. \\
 \begin{figure}[!ht]
 \includegraphics[width=3.5cm]{../signature.pdf}
@@ -96,7 +96,7 @@ University of Nevada, Reno\\
 1664 N Virginia Street\\
 Reno, NV 89557\\
 Phone: (775) 848-7892\\
-E-mail: esco2010@unr.edu
+E-mail: esco2012@unr.edu
 '''
 
 postfix = r'''

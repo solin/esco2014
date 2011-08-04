@@ -23,7 +23,7 @@ from os import path
 # See Django documentation for possible values.
 #
 
-with open('/etc/esco-2010.conf', 'r') as conf:
+with open('/etc/esco-2012.conf', 'r') as conf:
     exec conf.read()
 
 TEMPLATE_DEBUG = DEBUG
@@ -59,8 +59,8 @@ TEMPLATE_DIRS = (
 )
 
 MEDIA_ROOT = path.join(path.dirname(__file__), 'media')
-MEDIA_URL  = '/events/esco-2010/media/'
-LOGIN_URL  = '/events/esco-2010/account/login/'
+MEDIA_URL  = '/events/esco-2012/media/'
+LOGIN_URL  = '/events/esco-2012/account/login/'
 
 ADMIN_MEDIA_PREFIX = MEDIA_URL + 'admin/'
 
@@ -81,5 +81,5 @@ AUTHENTICATION_BACKENDS = (
     'esco.contrib.emailauth.EmailBackend',
 )
 
-ABSTRACTS_PATH = '/var/db/esco-2010/abstracts/'
+ABSTRACTS_PATH = '/var/db/esco-2012/abstracts/'
 

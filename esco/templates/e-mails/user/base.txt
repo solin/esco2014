@@ -4,13 +4,13 @@ Dear {{ user.get_full_name }},
 With best regards,
 
 -- 
-ESCO 2010 Organizing Committee 
+ESCO 2012 Organizing Committee 
  
 Department of Mathematics and Statistics 
 University of Nevada, Reno 
 NV 89557-0084, USA 
  
-E-mail: esco2010-at-unr-dot-edu 
+E-mail: esco2012-at-unr-dot-edu 
 Phone: 1-775-784-6773 
 Fax: 1-775-784-6378 
  
