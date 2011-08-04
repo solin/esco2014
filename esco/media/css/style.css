@@ -63,7 +63,7 @@ a:hover {
 /* LAYOUT */
 
 #background {
-    background: #ffffff url('/events/esco-2012/media/img/background.gif') repeat-y scroll center top;
+    background: #ffffff url('/media/img/background.gif') repeat-y scroll center top;
     position: relative;
     min-height: 100%;
     margin: 0 auto;
@@ -78,7 +78,7 @@ a:hover {
 }
 
 #header {
-    background-image: url('/events/esco-2012/media/img/header.png');
+    background-image: url('/media/img/header.png');
     background-color: #ffffff;
     text-align: right;
     padding: 4px 8px;
@@ -91,7 +91,7 @@ a:hover {
 }
 
 #banner {
-    background-image: url('/events/esco-2012/media/img/banner2.png');
+    background-image: url('/media/img/banner2.png');
     width: 970px;
     height: 82px;
 }

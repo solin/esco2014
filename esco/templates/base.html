@@ -25,30 +25,30 @@
                             {{ user.get_full_name }}
                         </span>
                         {% if user.is_staff and user.is_superuser %}
-                            (<a href="/events/esco-2012/admin/">admin</a>)
+                            (<a href="/admin/">admin</a>)
                         {% endif %}
                         <span class="bar">|</span>
-                        <a href="/events/esco-2012/account/logout/">logout</a>
+                        <a href="/account/logout/">logout</a>
                     {% else %}
-                        <a href="/events/esco-2012/account/login/">login</a>
+                        <a href="/account/login/">login</a>
                         <span class="bar color">|</span>
-                        <a href="/events/esco-2012/account/create/">create account</a>
+                        <a href="/account/create/">create account</a>
                     {% endif %}
                 </div>
                 <div id="banner"></div>
                 <div class="box left">
                     <div class="title">Main Menu</div>
                     <ul class="menu">
-                        <li><a href="/events/esco-2012/">Home Page</a></li>
-                        <li><a href="/events/esco-2012/topics/">Conference Topics</a></li>
-                        <li><a href="/events/esco-2012/keynote/">Keynote Speakers</a></li>
-                        <li><a href="/events/esco-2012/committees/">Committees</a></li>
-                        <li><a href="/events/esco-2012/payment/">Payment Information</a></li>
-                        <li><a href="/events/esco-2012/venue/">Conference Venue</a></li>
-                        <li><a href="/events/esco-2012/accommodation/">Accommodation</a></li>
-                        <li><a href="/events/esco-2012/travel/">Travel Information</a></li>
-                        <li><a href="/events/esco-2012/postconf/">Post Conference Program</a></li>
-                        <li><a href="/events/esco-2012/contact/">Contact</a></li>
+                        <li><a href="/">Home Page</a></li>
+                        <li><a href="/topics/">Conference Topics</a></li>
+                        <li><a href="/keynote/">Keynote Speakers</a></li>
+                        <li><a href="/committees/">Committees</a></li>
+                        <li><a href="/payment/">Payment Information</a></li>
+                        <li><a href="/venue/">Conference Venue</a></li>
+                        <li><a href="/accommodation/">Accommodation</a></li>
+                        <li><a href="/travel/">Travel Information</a></li>
+                        <li><a href="/postconf/">Post Conference Program</a></li>
+                        <li><a href="/contact/">Contact</a></li>
                     </ul>
                 </div>
                 <div class="box right">
@@ -82,13 +82,13 @@
                 <div class="box left">
                     <div class="title">User Menu</div>
                     <ul class="menu">
-                        <li><a href="/events/esco-2012/account/">User Home</a></li>
-                        <li><a href="/events/esco-2012/account/profile/">Edit Profile</a></li>
+                        <li><a href="/account/">User Home</a></li>
+                        <li><a href="/account/profile/">Edit Profile</a></li>
                         {% if user.get_profile.speaker %}
-                        <li><a href="/events/esco-2012/account/abstracts/">Submit Abstract</a></li>
+                        <li><a href="/account/abstracts/">Submit Abstract</a></li>
                         {% endif %}
-                        <li><a href="/events/esco-2012/account/password/change/">Change Password</a></li>
-                        <li><a href="/events/esco-2012/account/delete/">Delete Account</a></li>
+                        <li><a href="/account/password/change/">Change Password</a></li>
+                        <li><a href="/account/delete/">Delete Account</a></li>
                     </ul>
                 </div>
                 {% endif %}
@@ -134,7 +134,7 @@
                             </li>
                             </ul>
                             More details can be found in the
-                            <a href="http://hpfem.org/events/esco-2012/topics/">Conference Topics</a> section.
+                            <a href="http://esco2012.femhub.com/topics/">Conference Topics</a> section.
                         </p>
                         <h3>Proceedings</h3>
                         <p>

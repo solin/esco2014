@@ -31,6 +31,6 @@ by changing its title or submitting updated TeX and PDF files.
 
 You can now proceed to:
 
-http://hpfem.org/events/esco-2012/account/abstracts/
+http://esco2012.femhub.com/account/abstracts/
 {% endblock %}
 

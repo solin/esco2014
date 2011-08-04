@@ -53,10 +53,10 @@
                         <tr>
                             <th></th>
                             <td>
-                                <button class="button" onclick="window.location='/events/esco-2012/account/abstracts/modify/{{ abstract.id }}/'">Modify</button>
-                                <button class="button" onclick="window.location='/events/esco-2012/account/abstracts/delete/{{ abstract.id }}/'">Delete</button>
-                                <button class="button" onclick="window.location='/events/esco-2012/account/abstracts/tex/{{ abstract.id }}/'">Get TeX</button>
-                                <button class="button" onclick="window.location='/events/esco-2012/account/abstracts/pdf/{{ abstract.id }}/'">Get PDF</button>
+                                <button class="button" onclick="window.location='/account/abstracts/modify/{{ abstract.id }}/'">Modify</button>
+                                <button class="button" onclick="window.location='/account/abstracts/delete/{{ abstract.id }}/'">Delete</button>
+                                <button class="button" onclick="window.location='/account/abstracts/tex/{{ abstract.id }}/'">Get TeX</button>
+                                <button class="button" onclick="window.location='/account/abstracts/pdf/{{ abstract.id }}/'">Get PDF</button>
                             </td>
                         </tr>
                         {% if not forloop.last %}
@@ -68,6 +68,6 @@
         </div>
     {% endif %}
 
-    <button class="button" onclick="window.location='/events/esco-2012/account/abstracts/submit/'">Submit Abstract</button>
+    <button class="button" onclick="window.location='/account/abstracts/submit/'">Submit Abstract</button>
 {% endblock %}
 

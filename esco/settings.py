@@ -1,5 +1,5 @@
 from __future__ import with_statement
-from os import path
+import os
 
 #
 # Configuration file must contain:
@@ -18,13 +18,19 @@ from os import path
 # EMAIL_HOST
 # EMAIL_PORT
 # DEFAULT_FROM_EMAIL
+# MEDIA_ROOT
 # ADMINS
 #
 # See Django documentation for possible values.
 #
 
-with open('/etc/esco-2012.conf', 'r') as conf:
-    exec conf.read()
+path = os.path.expanduser('~/esco-2012.conf')
+
+if os.path.exists(path):
+    with open(path) as conf:
+        exec conf.read()
+else:
+    raise RuntimeError('configuration not found at %s' % path)
 
 TEMPLATE_DEBUG = DEBUG
 MANAGERS = ADMINS
@@ -55,12 +61,11 @@ INSTALLED_APPS = (
 ROOT_URLCONF = 'esco.urls'
 
 TEMPLATE_DIRS = (
-    path.join(path.dirname(__file__), 'templates'),
+    os.path.join(os.path.dirname(__file__), 'templates'),
 )
 
-MEDIA_ROOT = path.join(path.dirname(__file__), 'media')
-MEDIA_URL  = '/events/esco-2012/media/'
-LOGIN_URL  = '/events/esco-2012/account/login/'
+MEDIA_URL  = '/media/'
+LOGIN_URL  = '/account/login/'
 
 ADMIN_MEDIA_PREFIX = MEDIA_URL + 'admin/'
 

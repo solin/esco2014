@@ -12,6 +12,6 @@ it is suggested to log in using this new password to ESCO
 
 As a shortcut you can proceed with this link:
 
-http://hpfem.org/events/esco-2012/account/password/change/
+http://esco2012.femhub.com/account/password/change/
 {% endblock %}
 

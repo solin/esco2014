@@ -24,11 +24,11 @@ Interested in post-conference program? {% if profile.postconf %}Yes{% else %}No{
 T-shirt size: {{ profile.tshirt }}
 
 If there are any mistakes in the above information, you can go back
-to http://hpfem.org/events/esco-2012/account/profile/ and improve
+to http://esco2012.femhub.com/account/profile/ and improve
 your profile any time (you will get another confirmation E-mail).
 {% if profile.speaker %}
 You have professed to present a paper at ESCO 2012 conference.
-Please visit http://hpfem.org/events/esco-2012/account/abstracts/ to
+Please visit http://esco2012.femhub.com/account/abstracts/ to
 submit your abstract.
 {% endif %}{% endblock %}
 

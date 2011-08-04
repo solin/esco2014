@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 from django.conf.urls.defaults import patterns
 
 from django.http import HttpResponse, HttpResponsePermanentRedirect
@@ -84,7 +86,7 @@ def index_view(request, **args):
     return _render_to_response('base.html', request, args)
 
 def account_login_view(request, **args):
-    next = request.REQUEST.get('next', '/events/esco-2012/account/')
+    next = request.REQUEST.get('next', '/account/')
 
     if request.method == 'POST':
         if request.session.test_cookie_worked():
@@ -113,7 +115,7 @@ def account_login_view(request, **args):
 def account_logout_view(request, **args):
     logout(request)
 
-    return HttpResponsePermanentRedirect('/events/esco-2012/')
+    return HttpResponsePermanentRedirect('/')
 
 @login_required
 def account_delete_view(request, **args):
@@ -122,7 +124,7 @@ def account_delete_view(request, **args):
         logout(request)
         user.delete()
 
-        return HttpResponsePermanentRedirect('/events/esco-2012/account/delete/success/')
+        return HttpResponsePermanentRedirect('/account/delete/success/')
     else:
         return _render_to_response('account/delete.html', request, args)
 
@@ -151,7 +153,7 @@ def account_create_view(request, **args):
 
             mail_admins("[ESCO 2012][ADMIN] New Account", body)
 
-            return HttpResponsePermanentRedirect('/events/esco-2012/account/create/success/')
+            return HttpResponsePermanentRedirect('/account/create/success/')
     else:
         form = RegistrationForm()
 
@@ -193,7 +195,7 @@ def account_password_remind_view(request, **args):
 
             user.email_user("[ESCO 2012] Password Reminder Notification", body)
 
-            return HttpResponsePermanentRedirect('/events/esco-2012/account/password/remind/success/')
+            return HttpResponsePermanentRedirect('/account/password/remind/success/')
     else:
         form = ReminderForm()
 
@@ -239,7 +241,7 @@ def account_profile_view(request, **args):
             message = 'Your profile was updated successfully.'
 
             if profile.speaker:
-                message += '<br />Click <a href="/events/esco-2012/account/abstracts/">here</a> to submit your abstract(s).'
+                message += '<br />Click <a href="/account/abstracts/">here</a> to submit your abstract(s).'
 
             return _render_to_response('account/profile.html', request, {'form': form, 'message': message})
     else:
@@ -344,7 +346,7 @@ def abstracts_submit_view(request, **args):
 
             mail_admins("[ESCO 2012][ADMIN] New Abstract", body)
 
-            return HttpResponsePermanentRedirect('/events/esco-2012/account/abstracts/')
+            return HttpResponsePermanentRedirect('/account/abstracts/')
     else:
         form = SubmitAbstractForm()
 
@@ -421,7 +423,7 @@ def abstracts_modify_view(request, abstract_id, **args):
                 return _render_to_response('abstracts/submit.html', request,
                     {'form': form, 'error': 'TeX and PDF files do not differ.' })
 
-            return HttpResponsePermanentRedirect('/events/esco-2012/account/abstracts/')
+            return HttpResponsePermanentRedirect('/account/abstracts/')
     else:
         form = ModifyAbstractForm(initial={'title': abstract.title})
 
@@ -434,7 +436,7 @@ def abstracts_delete_view(request, abstract_id, **args):
     except UserAbstract.DoesNotExist:
         pass # don't care about missing abstract
 
-    return HttpResponsePermanentRedirect('/events/esco-2012/account/abstracts/')
+    return HttpResponsePermanentRedirect('/account/abstracts/')
 
 @login_required
 def abstracts_tex_view(request, abstract_id, **args):
