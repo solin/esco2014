@@ -2,7 +2,7 @@ from __future__ import with_statement
 
 from django.conf.urls.defaults import patterns
 
-from django.http import HttpResponse, HttpResponsePermanentRedirect
+from django.http import HttpResponse, HttpResponsePermanentRedirect, Http404
 from django.template import RequestContext, Context, loader
 
 from django.shortcuts import render_to_response, get_object_or_404
@@ -18,6 +18,7 @@ from esco.site.models import UserProfile, UserAbstract
 from esco.site.forms import LoginForm, ReminderForm, RegistrationForm, ChangePasswordForm
 from esco.site.forms import UserProfileForm, SubmitAbstractForm, ModifyAbstractForm
 
+from django.conf import settings
 from esco.settings import MIN_PASSWORD_LEN, ABSTRACTS_PATH
 
 import os
@@ -268,7 +269,20 @@ def account_profile_view(request, **args):
 
     return _render_to_response('account/profile.html', request, {'form': form})
 
+def conditional(name):
+    doit = getattr(settings, name, False)
+
+    def wrapper(func):
+        if doit:
+            return func
+        else:
+            def func(*args, **kwargs):
+                raise Http404
+
+    return wrapper
+
 @login_required
+@conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_view(request, **args):
     return _render_to_response('abstracts/abstracts.html', request,
         {'abstracts': UserAbstract.objects.filter(user=request.user)})
@@ -302,6 +316,7 @@ def _write_file(request, digest, ext):
     return os.path.getsize(path)
 
 @login_required
+@conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_submit_view(request, **args):
     if request.method == 'POST':
         form = SubmitAbstractForm(request.POST, request.FILES)
@@ -356,6 +371,7 @@ class AbstractFilesDoNotDiffer(Exception):
     pass
 
 @login_required
+@conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_modify_view(request, abstract_id, **args):
     abstract = get_object_or_404(UserAbstract, pk=abstract_id, user=request.user)
 
@@ -430,6 +446,7 @@ def abstracts_modify_view(request, abstract_id, **args):
     return _render_to_response('abstracts/modify.html', request, {'form': form})
 
 @login_required
+@conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_delete_view(request, abstract_id, **args):
     try:
         get_object_or_404(UserAbstract, pk=abstract_id, user=request.user).delete()
@@ -439,6 +456,7 @@ def abstracts_delete_view(request, abstract_id, **args):
     return HttpResponsePermanentRedirect('/account/abstracts/')
 
 @login_required
+@conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_tex_view(request, abstract_id, **args):
     if not (request.user.is_staff and request.user.is_superuser):
         abstract = get_object_or_404(UserAbstract, pk=abstract_id, user=request.user)
@@ -452,6 +470,7 @@ def abstracts_tex_view(request, abstract_id, **args):
     return response
 
 @login_required
+@conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_pdf_view(request, abstract_id, **args):
     if not (request.user.is_staff and request.user.is_superuser):
         abstract = get_object_or_404(UserAbstract, pk=abstract_id, user=request.user)

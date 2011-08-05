@@ -88,7 +88,9 @@
                     <ul class="menu">
                         <li><a href="/account/">User Home</a></li>
                         <li><a href="/account/profile/">Edit Profile</a></li>
+                        {% if ENABLE_ABSTRACT_SUBMISSION %}
                         <li><a href="/account/abstracts/">Submit Abstract</a></li>
+                        {% endif %}
                         <li><a href="/account/password/change/">Change Password</a></li>
                         <li><a href="/account/delete/">Delete Account</a></li>
                     </ul>

@@ -20,6 +20,7 @@ import os
 # DEFAULT_FROM_EMAIL
 # MEDIA_ROOT
 # ABSTRACTS_PATH
+# ENABLE_ABSTRACT_SUBMISSION
 # ADMINS
 #
 # See Django documentation for possible values.
@@ -82,6 +83,12 @@ CAPTCHA = {
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 AUTH_PROFILE_MODULE = 'site.UserProfile'
+
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
+
+TEMPLATE_CONTEXT_PROCESSORS += (
+    'esco.contrib.context_processors.enable_abstract_submission',
+)
 
 AUTHENTICATION_BACKENDS = (
     'esco.contrib.emailauth.EmailBackend',
