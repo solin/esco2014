@@ -25,6 +25,8 @@ import os
 import hashlib
 import datetime
 
+from functools import wraps
+
 urlpatterns = patterns('esco.site.views',
     (r'^$',      'index_view'),
     (r'^home/$', 'index_view'),
@@ -277,8 +279,11 @@ def conditional(name):
         if doit:
             return func
         else:
-            def func(*args, **kwargs):
+            @wraps(func)
+            def _func(*args, **kwargs):
                 raise Http404
+
+            return _func
 
     return wrapper
 
