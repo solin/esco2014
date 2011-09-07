@@ -36,67 +36,71 @@
                     {% endif %}
                 </div>
                 <div id="banner"></div>
-                <div class="box left">
-                    <div class="title">Main Menu</div>
-                    <ul class="menu">
-                        <li><a href="/">Home Page</a></li>
-                        <li><a href="/travel/">Conference Venue</a></li>
-                        <li><a href="/committees/">Speakers & Committees</a></li>
-                        <li><a href="/postconf/">Post Conference Program</a></li>
-                        <li><a href="/payment/">Payment Information</a></li>
-                        <li><a href="/contact/">Contact</a></li>
-                    </ul>
+                <div class="column left">
+                    <div class="box">
+                        <div class="title">Main Menu</div>
+                        <ul class="menu">
+                            <li><a href="/">Home Page</a></li>
+                            <li><a href="/travel/">Conference Venue</a></li>
+                            <li><a href="/committees/">Speakers & Committees</a></li>
+                            <li><a href="/postconf/">Post Conference Program</a></li>
+                            <li><a href="/payment/">Payment Information</a></li>
+                            <li><a href="/contact/">Contact</a></li>
+                        </ul>
+                    </div>
+                    {% if user.is_authenticated %}
+                    <div class="box">
+                        <div class="title">User Menu</div>
+                        <ul class="menu">
+                            <li><a href="/account/">User Home</a></li>
+                            <li><a href="/account/profile/">Edit Profile</a></li>
+                            {% if ENABLE_ABSTRACT_SUBMISSION %}
+                            <li><a href="/account/abstracts/">Submit Abstract</a></li>
+                            {% endif %}
+                            <li><a href="/account/password/change/">Change Password</a></li>
+                            <li><a href="/account/delete/">Delete Account</a></li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                    <div class="box">
+                        <img src="{{ MEDIA_URL }}img/pilsen/pilsen-7-small.png" />
+                        <img src="{{ MEDIA_URL }}img/pilsen/pilsen-11-small.png" />
+                        <img src="{{ MEDIA_URL }}img/pilsen/pilsen-1-small.jpg" />
+                        <img src="{{ MEDIA_URL }}img/pilsen/pilsen-3-small.jpg" />
+                        <img src="{{ MEDIA_URL }}img/pilsen/pilsen-4-small.jpg" />
+                        <img src="{{ MEDIA_URL }}img/pilsen/pilsen-17-small.png" />
+                    </div>
                 </div>
-                {% if user.is_authenticated %}
-                <div class="box left">
-                    <div class="title">User Menu</div>
-                    <ul class="menu">
-                        <li><a href="/account/">User Home</a></li>
-                        <li><a href="/account/profile/">Edit Profile</a></li>
-                        {% if ENABLE_ABSTRACT_SUBMISSION %}
-                        <li><a href="/account/abstracts/">Submit Abstract</a></li>
-                        {% endif %}
-                        <li><a href="/account/password/change/">Change Password</a></li>
-                        <li><a href="/account/delete/">Delete Account</a></li>
-                    </ul>
-                </div>
-                {% endif %}
-                <div class="box left">
-                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-7-small.png" />
-                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-11-small.png" />
-                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-1-small.jpg" />
-                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-3-small.jpg" />
-                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-4-small.jpg" />
-                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-17-small.png" />
-                </div>
-                <div class="box right">
-                    <div class="title">Important Dates</div>
-                    <ul class="list">
-                        <li class="head">December 15, 2011</li>
-                        <li class="tail">Abstract submission deadline.</li>
-                        <li class="head">December 15, 2011</li>
-                        <li class="tail">Minisymposia proposals.</li>
-                        <li class="head">January 15, 2012</li>
-                        <li class="tail">Notification of acceptance.</li>
-                        <li class="head">March 15, 2012</li>
-                        <li class="tail">Early registration fee payment.</li>
-                        <li class="head">September 30, 2012</li>
-                        <li class="tail">Paper submission.</li>
-                    </ul>
-                </div>
-                <div class="box right">
-                    <div class="title">Previous Conferences</div>
-                    <ul class="menu">
-                        <li><a href="http://hpfem.org/events/esco-2010/">ESCO 2010</a></li>
-                        <li><a href="http://hpfem.org/events/esco-2008/">ESCO 2008</a></li>
-                    </ul>
-                </div>
-                <div class="box right">
-                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-15-small.png" />
-                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-20-small.png" />
-                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-16-small.png" />
-                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-2-small.jpg" />
-                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-5-small.jpg" />
+                <div class="column right">
+                    <div class="box">
+                        <div class="title">Important Dates</div>
+                        <ul class="list">
+                            <li class="head">December 15, 2011</li>
+                            <li class="tail">Abstract submission deadline.</li>
+                            <li class="head">December 15, 2011</li>
+                            <li class="tail">Minisymposia proposals.</li>
+                            <li class="head">January 15, 2012</li>
+                            <li class="tail">Notification of acceptance.</li>
+                            <li class="head">March 15, 2012</li>
+                            <li class="tail">Early registration fee payment.</li>
+                            <li class="head">September 30, 2012</li>
+                            <li class="tail">Paper submission.</li>
+                        </ul>
+                    </div>
+                    <div class="box">
+                        <div class="title">Previous Conferences</div>
+                        <ul class="menu">
+                            <li><a href="http://hpfem.org/events/esco-2010/">ESCO 2010</a></li>
+                            <li><a href="http://hpfem.org/events/esco-2008/">ESCO 2008</a></li>
+                        </ul>
+                    </div>
+                    <div class="box">
+                        <img src="{{ MEDIA_URL }}img/pilsen/pilsen-15-small.png" />
+                        <img src="{{ MEDIA_URL }}img/pilsen/pilsen-20-small.png" />
+                        <img src="{{ MEDIA_URL }}img/pilsen/pilsen-16-small.png" />
+                        <img src="{{ MEDIA_URL }}img/pilsen/pilsen-2-small.jpg" />
+                        <img src="{{ MEDIA_URL }}img/pilsen/pilsen-5-small.jpg" />
+                    </div>
                 </div>
                 <div id="content">
                     {% block content %}

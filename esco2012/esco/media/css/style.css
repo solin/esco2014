@@ -96,6 +96,28 @@ a:hover {
     height: 82px;
 }
 
+.column {
+    width: 183px;
+    margin-top: 5px;
+}
+
+.column.left {
+    float: left;
+    clear: left;
+    margin-left: 5px;
+}
+
+.column.right {
+    float: right;
+    clear: right;
+    margin-right: 5px;
+}
+
+.column * {
+    margin: 0;
+    padding: 0;
+}
+
 #content {
     margin-right: 190px;
     margin-left: 190px;
