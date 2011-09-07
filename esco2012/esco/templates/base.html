@@ -46,22 +46,29 @@
                         <li><a href="/payment/">Payment Information</a></li>
                         <li><a href="/contact/">Contact</a></li>
                     </ul>
-                        <img src="/media/img/pilsen/pilsen-7-small.png" style="border: none" width=183></img>
-                        <img src="/media/img/pilsen/pilsen-11-small.png" style="border: none" width=183></img>
-                        <img src="/media/img/pilsen/pilsen-1-small.jpg" style="border: none" width=183></img>
-                        <img src="/media/img/pilsen/pilsen-3-small.jpg" style="border: none" width=183></img>
-                        <img src="/media/img/pilsen/pilsen-4-small.jpg" style="border: none" width=183></img>
-                        <img src="/media/img/pilsen/pilsen-17-small.png" style="border: none" width=183></img>
-<!--
-        <a href="/media/img/pilsen/pilsen-5.jpg">
-            <img src="/media/img/pilsen/pilsen-5-small.jpg" style="border: none"></img>
-        </a>
-        <a href="/media/img/pilsen/pilsen-6.jpg">
-            <img src="/media/img/pilsen/pilsen-6-small.jpg" style="border: none"></img>
-        </a>
--->
                 </div>
-                
+                {% if user.is_authenticated %}
+                <div class="box left">
+                    <div class="title">User Menu</div>
+                    <ul class="menu">
+                        <li><a href="/account/">User Home</a></li>
+                        <li><a href="/account/profile/">Edit Profile</a></li>
+                        {% if ENABLE_ABSTRACT_SUBMISSION %}
+                        <li><a href="/account/abstracts/">Submit Abstract</a></li>
+                        {% endif %}
+                        <li><a href="/account/password/change/">Change Password</a></li>
+                        <li><a href="/account/delete/">Delete Account</a></li>
+                    </ul>
+                </div>
+                {% endif %}
+                <div class="box left">
+                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-7-small.png" />
+                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-11-small.png" />
+                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-1-small.jpg" />
+                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-3-small.jpg" />
+                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-4-small.jpg" />
+                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-17-small.png" />
+                </div>
                 <div class="box right">
                     <div class="title">Important Dates</div>
                     <ul class="list">
@@ -77,35 +84,6 @@
                         <li class="tail">Paper submission.</li>
                     </ul>
                 </div>
-<!--                <div class="box right">
-                <div class="box right">
-                    <div class="title">Latest News</div>
-                    <ul class="list">
-                        <li class="head">July 22, 2011</li>
-                        <li class="tail">ESCO 2012 website launched.</li>
-                    </ul>
-                </div>
-                    <div class="title">ESCO 2012 Color Flyer</div>
-                    <ul class="list">
-                        <li class="tail">The flyer for ESCO 2012 in PDF can be found
-                        <a href="{{ MEDIA_URL }}img/flyer-esco-2012.pdf">here</a>.</li>
-                    </ul>
-                </div>
- -->
-                {% if user.is_authenticated %}
-                <div class="box left">
-                    <div class="title">User Menu</div>
-                    <ul class="menu">
-                        <li><a href="/account/">User Home</a></li>
-                        <li><a href="/account/profile/">Edit Profile</a></li>
-                        {% if ENABLE_ABSTRACT_SUBMISSION %}
-                        <li><a href="/account/abstracts/">Submit Abstract</a></li>
-                        {% endif %}
-                        <li><a href="/account/password/change/">Change Password</a></li>
-                        <li><a href="/account/delete/">Delete Account</a></li>
-                    </ul>
-                </div>
-                {% endif %}
                 <div class="box right">
                     <div class="title">Previous Conferences</div>
                     <ul class="menu">
@@ -114,11 +92,11 @@
                     </ul>
                 </div>
                 <div class="box right">
-                        <img src="/media/img/pilsen/pilsen-15-small.png" style="border: none" vspace=1 width=183></img>
-                        <img src="/media/img/pilsen/pilsen-20-small.png" style="border: none" vspace=1 width=183></img>
-                        <img src="/media/img/pilsen/pilsen-16-small.png" style="border: none" vspace=1 width=183></img>
-                        <img src="/media/img/pilsen/pilsen-2-small.jpg" style="border: none" vspace=1 width=183></img>
-                        <img src="/media/img/pilsen/pilsen-5-small.jpg" style="border: none" vspace=1 width=183></img>
+                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-15-small.png" />
+                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-20-small.png" />
+                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-16-small.png" />
+                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-2-small.jpg" />
+                    <img src="{{ MEDIA_URL }}img/pilsen/pilsen-5-small.jpg" />
                 </div>
                 <div id="content">
                     {% block content %}
@@ -139,9 +117,7 @@
                         </h3>
                         <hr>
                         <p>
-
-
-                            ESCO 2012 is the 3rd event in a successful series of interdisciplineary meetings 
+                            ESCO 2012 is the 3rd event in a successful series of interdisciplineary meetings
                             dedicated to modern methods and practices of scientific computing.
 
                         <h3>2012 themes</h3>
@@ -150,42 +126,42 @@
                         Multiphysics coupled problems,
                         Higher-order computational methods,
                         Computing with Python,
-                        GPU computing, and 
+                        GPU computing, and
                         Cloud computing.
                         </p>
                         <h3>Application areas</h3>
                         <p>
-                        Theoretical results as well as applications are welcome. Application areas 
+                        Theoretical results as well as applications are welcome. Application areas
                         include, but are not limited to: Computational electromagnetics, Civil engineering,
-                        Nuclear engineering, Mechanical engineering, Computational fluid dynamics, 
-                        Computational geophysics, Geomechanics and rock mechanics, Computational hydrology, 
-                        Subsurface modeling, Biomechanics, Computational chemistry, 
-                        Climate and weather modeling, Wave propagation, Acoustics, Stochastic differential 
+                        Nuclear engineering, Mechanical engineering, Computational fluid dynamics,
+                        Computational geophysics, Geomechanics and rock mechanics, Computational hydrology,
+                        Subsurface modeling, Biomechanics, Computational chemistry,
+                        Climate and weather modeling, Wave propagation, Acoustics, Stochastic differential
                         equations, and Uncertainty quantification.
                         </p>
 
                         <h3>Minisymposia</h3>
                         <p>
-                        Minisymposia proposals are welcome. A minisymposium should consist of at 
+                        Minisymposia proposals are welcome. A minisymposium should consist of at
                         least four lectures related to the same topic.
                         Current list of minisymposia can be found <a href="/minisymposia/">here</a>.
                         </p>
 
                         <h3>Software afternoon</h3>
                         <p>
-                        Important part of each ESCO conference is a software afternoon featuring 
+                        Important part of each ESCO conference is a software afternoon featuring
                         software projects by participants. Presented can be any computational
                         software that has reached certain level of maturity, i.e., it is used outside
                         of the author's institution, and it has a web page and a user documentation.
-                        If you would like to present your software project, let us know soon. 
+                        If you would like to present your software project, let us know soon.
                         </p>
 
                         <h3>Proceedings</h3>
                         <p>
-                        For each ESCO we strive to reserve a special issue of an international 
+                        For each ESCO we strive to reserve a special issue of an international
                         journal with impact factor. Proceedings of ESCO 2008 appeared in Math.
                         Comput. Simul., proceedings of ESCO 2010 in CiCP and Appl. Math. Comput.
-                        Negotiations for ESCO 2012 are still under way. 
+                        Negotiations for ESCO 2012 are still under way.
                         <!--<a href="http://www.elsevier.com/wps/find/journaldescription.cws_home/522482/description">Applied Mathematics and
                         Computation</a> (AMC), an Elsevier journal with impact factor 1.534.-->
                         </p>
@@ -196,9 +172,9 @@
                         </p>
 <!--                        <h3>Organizers</h3>
                         <p>
-                            ESCO 2012 is organized by <a href="http://femhub.com">FEMhub Inc.</a> along with  
+                            ESCO 2012 is organized by <a href="http://femhub.com">FEMhub Inc.</a> along with
                             collaborators from <a href="http://www.sandia.gov">Sandia National Laboratories</a>, <a href="http://www.zcu.cz/en/">University of West Bohemia</a>,
-                            <a href="http://www.cvut.cz/en?set_language=en">Czech Technical University</a>, <a href="http://www.tu-darmstadt.de/index.en.jsp">Technical University of Darmstadt</a>, and 
+                            <a href="http://www.cvut.cz/en?set_language=en">Czech Technical University</a>, <a href="http://www.tu-darmstadt.de/index.en.jsp">Technical University of Darmstadt</a>, and
                             <a href="http://www.uni-erlangen.org/">University of Erlangen-Nuernberg</a>.
                         </p>
 -->
