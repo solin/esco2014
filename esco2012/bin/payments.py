@@ -70,33 +70,31 @@ prefix = r'''
 '''
 
 template = r'''
-\vbox{}
-\vspace{-2cm}
-\begin{figure}[!ht]
-\includegraphics[width=7cm]{../horizon_no_slogan.jpg}
-\end{figure}
+%\vbox{}
+%\vspace{-2cm}
+%\begin{figure}[!ht]
+%\includegraphics[width=7cm]{../horizon_no_slogan.jpg}
+%\end{figure}
 \noindent
 %(data)s
 \noindent
 \hbox{} \hfill May 10, 2012\\
 \hbox{} \hfill Reno, NV, USA\\
-Dear Mr. %(name)s,\\
+Dear %(name)s,\\
 \noindent
-The Department of Mathematics and Statistics, University of Nevada, Reno
-acknowledges the receipt of your registration fee for the ESCO 2012
+Thank you for the payment of registration fee for the ESCO 2012
 conference in the amount of USD %(paid)s. \\
 \begin{figure}[!ht]
 \includegraphics[width=3.5cm]{../signature.pdf}
 \vspace{-4mm}
 \end{figure}
 \noindent
-Eric Herzik, Ph.D., Chair\\
-Department of Mathematics and Statistics\\
-University of Nevada, Reno\\
-1664 N Virginia Street\\
-Reno, NV 89557\\
+Pavel Solin\\
+FEMhub Inc.\\
+5490 Twin Creeks Dr.\\
+Reno, NV 89523\\
 Phone: (775) 848-7892\\
-E-mail: esco2012@unr.edu
+E-mail: esco2012@femhub.com
 '''
 
 postfix = r'''
