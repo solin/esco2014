@@ -22,23 +22,7 @@
                         </tr>
                         <tr>
                             <th>Title:</th>
-                            <td>{{ abstract.title|escape }}</td>
-                        </tr>
-                        <tr>
-                            <th>Digest TeX:</th>
-                            <td class="mono">{{ abstract.digest_tex }}</td>
-                        </tr>
-                        <tr>
-                            <th>Digest PDF:</th>
-                            <td class="mono">{{ abstract.digest_pdf }}</td>
-                        </tr>
-                        <tr>
-                            <th>Size TeX:</th>
-                            <td>{{ abstract.size_tex }} bytes</td>
-                        </tr>
-                        <tr>
-                            <th>Size PDF:</th>
-                            <td>{{ abstract.size_pdf }} bytes</td>
+                            <td>{{ abstract.to_cls.title|escape }}</td>
                         </tr>
                         <tr>
                             <th>Submitted:</th>
@@ -70,4 +54,3 @@
 
     <button class="button" onclick="window.location='/account/abstracts/submit/'">Submit Abstract</button>
 {% endblock %}
-
