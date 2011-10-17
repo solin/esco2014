@@ -22,6 +22,7 @@ from django.conf import settings
 from esco.settings import MIN_PASSWORD_LEN, ABSTRACTS_PATH
 
 import os
+import shutil
 import hashlib
 import datetime
 
@@ -288,39 +289,34 @@ def conditional(name):
 
     return wrapper
 
+def get_object_if_can(request, model, query):
+    if not (request.user.is_staff and request.user.is_superuser):
+        obj = get_object_or_404(UserAbstract, user=request.user, **query)
+    else:
+        obj = get_object_or_404(UserAbstract, **query)
+
+    return obj
+
+def get_abstract_path(aid):
+    return os.path.join(ABSTRACTS_PATH, aid)
+
+def get_data_path(aid, ext):
+    return os.path.join(ABSTRACTS_PATH, aid, "abstract." + ext)
+
+def get_data_or_404(aid, ext):
+    path = get_data_path(aid, ext)
+
+    try:
+        with open(path, 'rb') as f:
+            return f.read()
+    except (OSError, IOError):
+        raise Http404
+
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_view(request, **args):
     return _render_to_response('abstracts/abstracts.html', request,
-        {'abstracts': UserAbstract.objects.filter(user=request.user)})
-
-class FileExistsError(Exception):
-    pass
-
-def _file_digest(request, ext):
-    sha1 = hashlib.new('sha1')
-    ifile = request.FILES['abstract_' + ext]
-
-    for chunk in ifile.chunks():
-        sha1.update(chunk)
-
-    return sha1.hexdigest()
-
-def _write_file(request, digest, ext):
-    path = os.path.join(ABSTRACTS_PATH, digest + '.' + ext)
-
-    if os.path.exists(path):
-        raise FileExistsError
-
-    ifile = request.FILES['abstract_' + ext]
-    ofile = open(path, 'wb')
-
-    for chunk in ifile.chunks():
-        ofile.write(chunk)
-
-    ofile.close()
-
-    return os.path.getsize(path)
+        {'abstracts': UserAbstract2.objects.filter(user=request.user)})
 
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
@@ -457,37 +453,33 @@ def abstracts_modify_view(request, abstract_id, **args):
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_delete_view(request, abstract_id, **args):
     try:
-        get_object_or_404(UserAbstract, pk=abstract_id, user=request.user).delete()
+        abstract = get_object_or_404(UserAbstract, pk=abstract_id, user=request.user)
     except UserAbstract.DoesNotExist:
         pass # don't care about missing abstract
+    else:
+        shutil.rmtree(get_abstract_path(abstract.id), True)
+        abstract.delete()
 
     return HttpResponsePermanentRedirect('/account/abstracts/')
 
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_tex_view(request, abstract_id, **args):
-    if not (request.user.is_staff and request.user.is_superuser):
-        abstract = get_object_or_404(UserAbstract, pk=abstract_id, user=request.user)
-    else:
-        abstract = get_object_or_404(UserAbstract, pk=abstract_id)
+    abstract = get_object_if_can(request, UserAbstract, dict(pk=abstract_id))
+    tex = get_data_or_404(abstract.id, "tex")
 
-    with open(os.path.join(ABSTRACTS_PATH, abstract.digest_tex+'.tex'), 'rb') as f:
-        response = HttpResponse(f.read(), mimetype='application/x-latex')
-        response['Content-Disposition'] = 'inline; filename=abstract.tex'
+    response = HttpResponse(tex, mimetype='application/x-latex')
+    response['Content-Disposition'] = 'inline; filename=abstract.tex'
 
     return response
 
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_pdf_view(request, abstract_id, **args):
-    if not (request.user.is_staff and request.user.is_superuser):
-        abstract = get_object_or_404(UserAbstract, pk=abstract_id, user=request.user)
-    else:
-        abstract = get_object_or_404(UserAbstract, pk=abstract_id)
+    abstract = get_object_if_can(request, UserAbstract, dict(pk=abstract_id))
+    pdf = get_data_or_404(abstract.id, "pdf")
 
-    with open(os.path.join(ABSTRACTS_PATH, abstract.digest_tex+'.pdf'), 'rb') as f:
-        response = HttpResponse(f.read(), mimetype='application/pdf')
-        response['Content-Disposition'] = 'inline; filename=abstract.pdf'
+    response = HttpResponse(pdf, mimetype='application/pdf')
+    response['Content-Disposition'] = 'inline; filename=abstract.pdf'
 
     return response
-
