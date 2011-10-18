@@ -65,9 +65,9 @@ function getLog(id) {
                             <td>
                                 <button class="button" onclick="modifyAbstract('{{ abstract.id }}')">Modify</button>
                                 <button class="button" onclick="deleteAbstract('{{ abstract.id }}')">Delete</button>
-                                <button class="button" onclick="getTex('{{ abstract.id }}')">Get TeX</button>
-                                <button class="button" onclick="getPdf('{{ abstract.id }}')">Get PDF</button>
-                                <button class="button" onclick="getLog('{{ abstract.id }}')">Get Log</button>
+                                <button class="button" onclick="getTex('{{ abstract.id }}')">TeX</button>
+                                <button class="button" onclick="getPdf('{{ abstract.id }}')">PDF</button>
+                                <button class="button" onclick="getLog('{{ abstract.id }}')">Log</button>
                             </td>
                         </tr>
                         {% if not forloop.last %}

@@ -304,43 +304,40 @@ def abstracts_view(request, **args):
     abstracts = UserAbstract.objects.filter(user=request.user)
     return _render_to_response('abstracts/abstracts.html', request, {'abstracts': abstracts})
 
+def get_submit_form_data(post):
+    title = post['title']
+    abstract = post['abstract']
+
+    prefixes = post.getlist('prefix')
+    first_names = post.getlist('first_name')
+    last_names = post.getlist('last_name')
+    addresses = post.getlist('address')
+    emails = post.getlist('email')
+    presentings = post.getlist('presenting')
+
+    authors = zip(prefixes, first_names, last_names, addresses, emails, presentings)
+    fields = ('prefix', 'first_name', 'last_name', 'address', 'email', 'presenting')
+
+    for i, author in enumerate(authors):
+        author = dict(zip(fields, author))
+        authors[i] = author
+
+    data = {
+        'title': title,
+        'abstract': abstract,
+        'authors': authors,
+        'bibitems': [],
+    }
+
+    return json.dumps(data)
+
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_submit_view(request, **args):
     if request.method == 'POST':
         post = request.POST
 
-        title = post['title']
-        abstract = post['abstract']
-
-        prefixes = post.getlist('prefix')
-        first_names = post.getlist('first_name')
-        last_names = post.getlist('last_name')
-        addresses = post.getlist('address')
-        emails = post.getlist('email')
-        presentings = post.getlist('presenting')
-
-        authors = zip(prefixes, first_names, last_names, addresses, emails, presentings)
-        fields = ('prefix', 'first_name', 'last_name', 'address', 'email', 'presenting')
-
-        for i, author in enumerate(authors):
-            author = dict(zip(fields, author))
-
-            if author['presenting'] == 'on':
-                author['presenting'] = True
-            else:
-                author['presenting'] = False
-
-            authors[i] = author
-
-        data = {
-            'title': title,
-            'abstract': abstract,
-            'authors': authors,
-            'bibitems': [],
-        }
-
-        data = json.dumps(data)
+        data = get_submit_form_data(post)
         date = datetime.datetime.today()
 
         abstract = UserAbstract(
@@ -370,8 +367,8 @@ def abstracts_submit_view(request, **args):
             mail_admins("[ESCO 2012][ADMIN] New Abstract", body)
 
         return HttpResponsePermanentRedirect('/account/abstracts/')
-
-    return _render_to_response('abstracts/submit.html', request)
+    else:
+        return _render_to_response('abstracts/submit.html', request)
 
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
@@ -379,22 +376,24 @@ def abstracts_modify_view(request, abstract_id, **args):
     abstract = get_object_or_404(UserAbstract, pk=abstract_id, user=request.user)
 
     if request.method == 'POST':
-        form = SubmitAbstractForm(request.POST)
+        post = request.POST
 
-        if form.is_valid():
-            date = datetime.datetime.today()
+        data = get_submit_form_data(post)
+        date = datetime.datetime.today()
 
-            title = form.cleaned_data.get('title')
+        abstract.data = data
+        abstract.modify_date = date
+        abstract.save()
 
-            abstract.modify_date = date
-            abstract.title = title
-            abstract.save()
+        cls = abstract.to_cls()
+        compiled = cls.build(abstract.get_path())
 
-            return HttpResponsePermanentRedirect('/account/abstracts/')
+        abstract.compiled = compiled
+        abstract.save()
+
+        return HttpResponsePermanentRedirect('/account/abstracts/')
     else:
-        form = SubmitAbstractForm(initial={'title': abstract.to_cls().title})
-
-    return _render_to_response('abstracts/modify.html', request, {'form': form})
+        return _render_to_response('abstracts/modify.html', request, dict(initial=abstract.data))
 
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')

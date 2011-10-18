@@ -2,14 +2,25 @@
 
 {% block scripts %}
 <script type="text/javascript">
-function addAuthorField(event, after) {
+function addAuthorField(event, after, initial) {
     if (after === undefined) {
         after = $(event.target).parent().parent();
     } else {
         after = $(after);
     }
 
-    after.after($("#author_tpl").html());
+    var el = after.after($("#author_tpl").html());
+
+    if (initial) {
+        el = el.next();
+
+        el.find("[name='prefix']").val(initial.prefix);
+        el.find("[name='first_name']").val(initial.first_name);
+        el.find("[name='last_name']").val(initial.last_name);
+        el.find("[name='address']").val(initial.address);
+        el.find("[name='email']").val(initial.email);
+        el.find("[name='presenting']").val(initial.presenting);
+    }
 }
 
 function delAuthorField(event) {
@@ -73,8 +84,26 @@ function validateForm() {
 }
 
 $(document).ready(function() {
+    {% if initial %}
+    var initial = $("#initial").html().trim();
+    var data = JSON.parse(initial);
+
+    $("form [name='title']").val(data['title']);
+    $("form [name='abstract']").val(data['abstract']);
+
+    $.each(data.authors, function(i, author) {
+        addAuthorField(undefined, "form ul li:last", author);
+    });
+    {% else %}
     addAuthorField(undefined, "#abstract");
+    {% endif %}
 });
+</script>
+
+<script id="initial" type="plain/text">
+{% if initial %}
+{{ initial|safe }}
+{% endif %}
 </script>
 {% endblock %}
 
@@ -148,8 +177,12 @@ $(document).ready(function() {
                 <span>E-mail</span>
             </span>
             <br />
-            <div class="checkbox">
-                <span><input type="checkbox" name="presenting"></input>Presenting?</span>
+            <div class="block presenting">
+                <select name="presenting">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+                <span>Presenting?</span>
             </div>
             <span>Enter author information</span>
             <span class="links">

@@ -30,14 +30,16 @@ class Author(Latexible):
         self.email = email
         self.presenting = presenting
 
-    def to_latex(self):
-        if self.presenting:
+    def to_latex(self, single_author=False):
+        if not single_author and self.presenting == 'yes':
             person_template = self._presenting_person
         else:
             person_template = self._nonpresenting_person
 
+        prefix = "" if self.prefix == "Mr." else self.prefix
+
         person = person_template % dict(
-            prefix=self.prefix,
+            prefix=prefix,
             first_name=self.first_name,
             last_name=self.last_name)
 
@@ -64,7 +66,8 @@ class Authors(Latexible):
         self.authors = authors
 
     def to_latex(self):
-        return self._template.join([ author.to_latex() for author in self.authors ])
+        single_author = len(self.authors) == 1
+        return self._template.join([ author.to_latex(single_author) for author in self.authors ])
 
     @classmethod
     def from_json(cls, data):
