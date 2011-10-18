@@ -19,9 +19,8 @@ from esco.site.forms import LoginForm, ReminderForm, RegistrationForm, ChangePas
 from esco.site.forms import UserProfileForm
 
 from django.conf import settings
-from esco.settings import MIN_PASSWORD_LEN, ABSTRACTS_PATH
+from esco.settings import MIN_PASSWORD_LEN
 
-import os
 import json
 import shutil
 import datetime
@@ -68,9 +67,11 @@ urlpatterns = patterns('esco.site.views',
     (r'^account/abstracts/delete/(\d+)/$', 'abstracts_delete_view'),
     (r'^account/abstracts/tex/(\d+)/$', 'abstracts_tex_view'),
     (r'^account/abstracts/pdf/(\d+)/$', 'abstracts_pdf_view'),
+    (r'^account/abstracts/log/(\d+)/$', 'abstracts_log_view'),
 
     (r'^admin/site/userabstract/(\d+)/tex/$', 'abstracts_tex_view'),
     (r'^admin/site/userabstract/(\d+)/pdf/$', 'abstracts_pdf_view'),
+    (r'^admin/site/userabstract/(\d+)/log/$', 'abstracts_log_view'),
 )
 
 def _render_to_response(page, request, args=None):
@@ -297,21 +298,6 @@ def get_object_if_can(request, model, query):
 
     return obj
 
-def get_abstract_path(aid):
-    return os.path.join(ABSTRACTS_PATH, str(aid))
-
-def get_data_path(aid, ext):
-    return os.path.join(ABSTRACTS_PATH, str(aid), "abstract." + ext)
-
-def get_data_or_404(aid, ext):
-    path = get_data_path(aid, ext)
-
-    try:
-        with open(path, 'rb') as f:
-            return f.read()
-    except (OSError, IOError):
-        raise Http404
-
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_view(request, **args):
@@ -366,6 +352,12 @@ def abstracts_submit_view(request, **args):
 
         abstract.save()
 
+        cls = abstract.to_cls()
+        compiled = cls.build(abstract.get_path())
+
+        abstract.compiled = compiled
+        abstract.save()
+
         if settings.SEND_EMAIL:
             template = loader.get_template('e-mails/user/abstract.txt')
             body = template.render(Context({'user': request.user, 'abstract': abstract}))
@@ -412,7 +404,7 @@ def abstracts_delete_view(request, abstract_id, **args):
     except UserAbstract.DoesNotExist:
         pass # don't care about missing abstract
     else:
-        shutil.rmtree(get_abstract_path(abstract.id), True)
+        shutil.rmtree(abstract.get_path(), True)
         abstract.delete()
 
     return HttpResponsePermanentRedirect('/account/abstracts/')
@@ -421,9 +413,10 @@ def abstracts_delete_view(request, abstract_id, **args):
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_tex_view(request, abstract_id, **args):
     abstract = get_object_if_can(request, UserAbstract, dict(pk=abstract_id))
-    tex = get_data_or_404(abstract.id, "tex")
+    tex = abstract.get_data_or_404("tex")
 
-    response = HttpResponse(tex, mimetype='application/x-latex')
+    response = HttpResponse(tex, mimetype='text/plain')
+    response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=abstract.tex'
 
     return response
@@ -432,9 +425,22 @@ def abstracts_tex_view(request, abstract_id, **args):
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_pdf_view(request, abstract_id, **args):
     abstract = get_object_if_can(request, UserAbstract, dict(pk=abstract_id))
-    pdf = get_data_or_404(abstract.id, "pdf")
+    pdf = abstract.get_data_or_404("pdf")
 
     response = HttpResponse(pdf, mimetype='application/pdf')
+    response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=abstract.pdf'
+
+    return response
+
+@login_required
+@conditional('ENABLE_ABSTRACT_SUBMISSION')
+def abstracts_log_view(request, abstract_id, **args):
+    abstract = get_object_if_can(request, UserAbstract, dict(pk=abstract_id))
+    log = abstract.get_data_or_404("log")
+
+    response = HttpResponse(log, mimetype='text/plain')
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=abstract.log'
 
     return response

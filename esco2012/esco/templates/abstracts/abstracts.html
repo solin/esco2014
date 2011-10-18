@@ -19,6 +19,10 @@ function getTex(id) {
 function getPdf(id) {
     window.location = '/account/abstracts/pdf/' + id;
 }
+
+function getLog(id) {
+    window.location = '/account/abstracts/log/' + id;
+}
 </script>
 {% endblock %}
 
@@ -63,6 +67,7 @@ function getPdf(id) {
                                 <button class="button" onclick="deleteAbstract('{{ abstract.id }}')">Delete</button>
                                 <button class="button" onclick="getTex('{{ abstract.id }}')">Get TeX</button>
                                 <button class="button" onclick="getPdf('{{ abstract.id }}')">Get PDF</button>
+                                <button class="button" onclick="getLog('{{ abstract.id }}')">Get Log</button>
                             </td>
                         </tr>
                         {% if not forloop.last %}

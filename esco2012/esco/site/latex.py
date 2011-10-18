@@ -1,3 +1,9 @@
+import os
+import shutil
+import subprocess
+
+from esco.settings import MEDIA_ROOT
+
 class Latexible(object):
 
     def __unicode__(self):
@@ -204,3 +210,21 @@ class Abstract(Latexible):
         abstract = data['abstract']
         bibitems = BibItems.from_json(data['bibitems'])
         return cls(title, authors, abstract, bibitems)
+
+    def build(self, cwd):
+        if not os.path.exists(cwd):
+            os.mkdir(cwd)
+            shutil.copy(
+                os.path.join(MEDIA_ROOT, 'tex', 'llncs.cls'),
+                os.path.join(cwd, 'llncs.cls'))
+
+        latex = self.to_latex()
+
+        with open(os.path.join(cwd, 'abstract.tex'), 'wb') as f:
+            f.write(latex)
+
+        proc = subprocess.Popen(['pdflatex', '-halt-on-error', 'abstract.tex'],
+            cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, errors = proc.communicate()
+
+        return proc.returncode == 0
