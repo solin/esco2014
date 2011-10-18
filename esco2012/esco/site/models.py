@@ -68,8 +68,13 @@ class UserAbstract2(models.Model):
     submit_date = models.DateTimeField()
     modify_date = models.DateTimeField()
 
-    compiled = models.NullBooleanField()
+    compiled = models.BooleanField(default=False)
+    verified = models.NullBooleanField()
     accepted = models.NullBooleanField()
+
+    class Meta:
+        verbose_name = "User abstract"
+        verbose_name_plural = "User abstracts"
 
     def __unicode__(self):
         return u"Abstract for %s" % self.user.get_full_name()

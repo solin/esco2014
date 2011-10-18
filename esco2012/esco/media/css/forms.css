@@ -129,3 +129,10 @@ form {
     color: #254b6f !important;
 }
 
+.button[disabled] {
+    color: gray !important;
+}
+
+.button[disabled]:hover {
+    background-color: #254b6f !important;
+}

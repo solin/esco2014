@@ -51,6 +51,18 @@ function getLog(id) {
                             <td>{{ abstract.to_cls.title|escape }}</td>
                         </tr>
                         <tr>
+                            <th>Compiled:</th>
+                            <td>{{ abstract.compiled|yesno:"Yes,No,Unknown" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Verified:</th>
+                            <td>{{ abstract.verified|yesno:"Yes,No,Unknown" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Accepted:</th>
+                            <td>{{ abstract.accepted|yesno:"Yes,No,Unknown" }}</td>
+                        </tr>
+                        <tr>
                             <th>Submitted:</th>
                             <td>{{ abstract.submit_date }}</td>
                         </tr>
@@ -63,8 +75,10 @@ function getLog(id) {
                         <tr>
                             <th></th>
                             <td>
-                                <button class="button" onclick="modifyAbstract('{{ abstract.id }}')">Modify</button>
-                                <button class="button" onclick="deleteAbstract('{{ abstract.id }}')">Delete</button>
+                                <button class="button" onclick="modifyAbstract('{{ abstract.id }}')"
+                                    {% if abstract.accepted != None %} disabled="disabled" {% endif %}>Modify</button>
+                                <button class="button" onclick="deleteAbstract('{{ abstract.id }}')"
+                                    {% if abstract.accepted != None %} disabled="disabled" {% endif %}>Delete</button>
                                 <button class="button" onclick="getTex('{{ abstract.id }}')">TeX</button>
                                 <button class="button" onclick="getPdf('{{ abstract.id }}')">PDF</button>
                                 <button class="button" onclick="getLog('{{ abstract.id }}')">Log</button>

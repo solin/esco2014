@@ -215,11 +215,13 @@ class Abstract(Latexible):
         return cls(title, authors, abstract, bibitems)
 
     def build(self, cwd):
-        if not os.path.exists(cwd):
-            os.mkdir(cwd)
-            shutil.copy(
-                os.path.join(MEDIA_ROOT, 'tex', 'llncs.cls'),
-                os.path.join(cwd, 'llncs.cls'))
+        if os.path.exists(cwd):
+            shutil.rmtree(cwd, True)
+
+        os.mkdir(cwd)
+        shutil.copy(
+            os.path.join(MEDIA_ROOT, 'tex', 'llncs.cls'),
+            os.path.join(cwd, 'llncs.cls'))
 
         latex = self.to_latex()
 
