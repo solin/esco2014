@@ -31,11 +31,11 @@ class Author(Latexible):
             person_template = self._nonpresenting_person
 
         person = person_template % dict(
+            prefix=self.prefix,
             first_name=self.first_name,
             last_name=self.last_name)
 
         return self._template % dict(
-            prefix=self.prefix,
             person=person,
             address=self.address,
             email=self.email)
@@ -62,7 +62,7 @@ class Authors(Latexible):
 
     @classmethod
     def from_json(cls, data):
-        return cls(*[ Authors.from_json(author) for author in data ])
+        return cls(*[ Author.from_json(author) for author in data ])
 
 class BibAuthor(Latexible):
 

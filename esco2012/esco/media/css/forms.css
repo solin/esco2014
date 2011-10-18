@@ -54,27 +54,65 @@ form {
 }
 
 .form span {
-    margin-top: 5px;
+    <margin-top: 5px;
     font-size: 8pt;
-    display: block;
 }
 
-.form input {
+.form .links {
+    float: right;
+}
+
+.form input,
+.form select,
+.form textarea {
     background-color: #fbfbfb !important;
     border: 1px solid #e5e5e5 !important;
     color: #000000 !important;
     margin-top: 5px;
     font-size: 14px;
+}
+
+.form li > input,
+.form li > select,
+.form li > textarea {
     width: 100%;
 }
 
-.form input:hover {
-    background-color: #f5f5f5 !important;
+.form .block {
+    width: 100%;
 }
 
-.form select {
-    margin-top: 5px;
-    font-size: 14px;
+.form textarea {
+    height: 200px;
+}
+
+.form .inline {
+    display: inline-block;
+}
+
+.form .inline input,
+.form .block input,
+.form .inline select,
+.form .block select {
+    width: 100%;
+}
+
+.form .prefix {
+    width: 70px;
+}
+
+.form .first_name {
+    width: 170px;
+}
+
+.form .last_name {
+    width: 170px;
+}
+
+.form input:hover,
+.form select:hover,
+.form textarea:hover {
+    background-color: #f5f5f5 !important;
 }
 
 .form button, .button {

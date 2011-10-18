@@ -11,19 +11,19 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 
-from django.core.mail import send_mail, mail_admins
+from django.core.mail import mail_admins
 
-from esco.site.models import UserProfile, UserAbstract
+from esco.site.models import UserProfile, UserAbstract2 as UserAbstract
 
 from esco.site.forms import LoginForm, ReminderForm, RegistrationForm, ChangePasswordForm
-from esco.site.forms import UserProfileForm, SubmitAbstractForm, ModifyAbstractForm
+from esco.site.forms import UserProfileForm
 
 from django.conf import settings
 from esco.settings import MIN_PASSWORD_LEN, ABSTRACTS_PATH
 
 import os
+import json
 import shutil
-import hashlib
 import datetime
 
 from functools import wraps
@@ -298,10 +298,10 @@ def get_object_if_can(request, model, query):
     return obj
 
 def get_abstract_path(aid):
-    return os.path.join(ABSTRACTS_PATH, aid)
+    return os.path.join(ABSTRACTS_PATH, str(aid))
 
 def get_data_path(aid, ext):
-    return os.path.join(ABSTRACTS_PATH, aid, "abstract." + ext)
+    return os.path.join(ABSTRACTS_PATH, str(aid), "abstract." + ext)
 
 def get_data_or_404(aid, ext):
     path = get_data_path(aid, ext)
@@ -315,64 +315,71 @@ def get_data_or_404(aid, ext):
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_view(request, **args):
-    return _render_to_response('abstracts/abstracts.html', request,
-        {'abstracts': UserAbstract2.objects.filter(user=request.user)})
+    abstracts = UserAbstract.objects.filter(user=request.user)
+    return _render_to_response('abstracts/abstracts.html', request, {'abstracts': abstracts})
 
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_submit_view(request, **args):
     if request.method == 'POST':
-        form = SubmitAbstractForm(request.POST, request.FILES)
+        post = request.POST
 
-        if form.is_valid():
-            digest_tex = _file_digest(request, 'tex')
-            digest_pdf = _file_digest(request, 'pdf')
+        title = post['title']
+        abstract = post['abstract']
 
-            if digest_tex == digest_pdf:
-                return _render_to_response('abstracts/submit.html', request,
-                    {'form': form, 'error': 'TeX and PDF files do not differ.' })
+        prefixes = post.getlist('prefix')
+        first_names = post.getlist('first_name')
+        last_names = post.getlist('last_name')
+        addresses = post.getlist('address')
+        emails = post.getlist('email')
+        presentings = post.getlist('presenting')
 
-            try:
-                size_tex = _write_file(request, digest_tex, 'tex')
-                size_pdf = _write_file(request, digest_tex, 'pdf')
-            except FileExistsError:
-                return _render_to_response('abstracts/submit.html', request,
-                    {'form': form, 'error': 'The same abstract was already submitted.'})
+        authors = zip(prefixes, first_names, last_names, addresses, emails, presentings)
+        fields = ('prefix', 'first_name', 'last_name', 'address', 'email', 'presenting')
 
-            date = datetime.datetime.today()
+        for i, author in enumerate(authors):
+            author = dict(zip(fields, author))
 
-            abstract = UserAbstract(
-                user=request.user,
-                title=form.cleaned_data['title'],
-                digest_tex=digest_tex,
-                digest_pdf=digest_pdf,
-                size_tex=size_tex,
-                size_pdf=size_pdf,
-                submit_date=date,
-                modify_date=date,
-            )
+            if author['presenting'] == 'on':
+                author['presenting'] = True
+            else:
+                author['presenting'] = False
 
-            abstract.save()
+            authors[i] = author
 
-            if settings.SEND_EMAIL:
-                template = loader.get_template('e-mails/user/abstract.txt')
-                body = template.render(Context({'user': request.user, 'abstract': abstract}))
+        data = {
+            'title': title,
+            'abstract': abstract,
+            'authors': authors,
+            'bibitems': [],
+        }
 
-                request.user.email_user("[ESCO 2012] Abstract Submission Notification", body)
+        data = json.dumps(data)
+        date = datetime.datetime.today()
 
-                template = loader.get_template('e-mails/admin/abstract.txt')
-                body = template.render(Context({'user': request.user, 'abstract': abstract}))
+        abstract = UserAbstract(
+            user=request.user,
+            data=data,
+            submit_date=date,
+            modify_date=date,
+        )
 
-                mail_admins("[ESCO 2012][ADMIN] New Abstract", body)
+        abstract.save()
 
-            return HttpResponsePermanentRedirect('/account/abstracts/')
-    else:
-        form = SubmitAbstractForm()
+        if settings.SEND_EMAIL:
+            template = loader.get_template('e-mails/user/abstract.txt')
+            body = template.render(Context({'user': request.user, 'abstract': abstract}))
 
-    return _render_to_response('abstracts/submit.html', request, {'form': form})
+            request.user.email_user("[ESCO 2012] Abstract Submission Notification", body)
 
-class AbstractFilesDoNotDiffer(Exception):
-    pass
+            template = loader.get_template('e-mails/admin/abstract.txt')
+            body = template.render(Context({'user': request.user, 'abstract': abstract}))
+
+            mail_admins("[ESCO 2012][ADMIN] New Abstract", body)
+
+        return HttpResponsePermanentRedirect('/account/abstracts/')
+
+    return _render_to_response('abstracts/submit.html', request)
 
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
@@ -380,72 +387,20 @@ def abstracts_modify_view(request, abstract_id, **args):
     abstract = get_object_or_404(UserAbstract, pk=abstract_id, user=request.user)
 
     if request.method == 'POST':
-        form = ModifyAbstractForm(request.POST, request.FILES)
+        form = SubmitAbstractForm(request.POST)
 
         if form.is_valid():
             date = datetime.datetime.today()
 
             title = form.cleaned_data.get('title')
 
-            if title and title != abstract.title:
-                abstract.modify_date = date
-                abstract.title = title
-                abstract.save()
-
-            if 'abstract_tex' in request.FILES:
-                digest_tex = _file_digest(request, 'tex')
-            else:
-                digest_tex = None
-
-            if 'abstract_pdf' in request.FILES:
-                digest_pdf = _file_digest(request, 'pdf')
-            else:
-                digest_pdf = None
-
-            try:
-                if digest_tex is not None and digest_pdf is not None:
-                    if digest_tex == digest_pdf:
-                        raise AbstractFilesDoNotDiffer
-
-                if digest_tex is not None and digest_tex != abstract.digest_tex:
-                    if digest_pdf is None and digest_tex == abstract.digest_pdf:
-                        raise AbstractFilesDoNotDiffer
-
-                    try:
-                        size_tex = _write_file(request, digest_tex, 'tex')
-
-                        os.remove(os.path.join(ABSTRACTS_PATH, abstract.digest_tex+'.tex'))
-                        os.rename(os.path.join(ABSTRACTS_PATH, abstract.digest_tex+'.pdf'),
-                                  os.path.join(ABSTRACTS_PATH,          digest_tex+'.pdf'))
-
-                        abstract.digest_tex = digest_tex
-                        abstract.size_tex = size_tex
-                        abstract.modify_date = date
-                        abstract.save()
-                    except FileExistsError:
-                        return _render_to_response('abstracts/modify.html', request,
-                            {'form': form, 'error': 'The same abstract was already submitted.'})
-                else:
-                    digest_tex = abstract.digest_tex
-
-                if digest_pdf is not None and digest_pdf != abstract.digest_pdf:
-                    if digest_tex == digest_pdf:
-                        raise AbstractFilesDoNotDiffer
-
-                    os.remove(os.path.join(ABSTRACTS_PATH, digest_tex+'.pdf'))
-                    size_pdf = _write_file(request, digest_tex, 'pdf')
-
-                    abstract.digest_pdf = digest_pdf
-                    abstract.size_pdf = size_pdf
-                    abstract.modify_date = date
-                    abstract.save()
-            except AbstractFilesDoNotDiffer:
-                return _render_to_response('abstracts/submit.html', request,
-                    {'form': form, 'error': 'TeX and PDF files do not differ.' })
+            abstract.modify_date = date
+            abstract.title = title
+            abstract.save()
 
             return HttpResponsePermanentRedirect('/account/abstracts/')
     else:
-        form = ModifyAbstractForm(initial={'title': abstract.title})
+        form = SubmitAbstractForm(initial={'title': abstract.to_cls().title})
 
     return _render_to_response('abstracts/modify.html', request, {'form': form})
 

@@ -1,9 +1,11 @@
 import os
+import json
 
 from django.db import models
 from django.contrib.auth.models import User
 
 from esco.settings import ABSTRACTS_PATH
+from esco.site.latex import Abstract
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
@@ -58,3 +60,21 @@ class UserAbstract(models.Model):
 
         super(UserAbstract, self).delete()
 
+class UserAbstract2(models.Model):
+    user = models.ForeignKey(User)
+    data = models.TextField()
+
+    submit_date = models.DateTimeField()
+    modify_date = models.DateTimeField()
+
+    accepted = models.NullBooleanField()
+
+    def __unicode__(self):
+        return u"Abstract for %s" % self.user.get_full_name()
+
+    def to_cls(self):
+        data = json.loads(self.data)
+        return Abstract.from_json(data)
+
+    def to_latex(self):
+        return self.to_cls().to_latex()

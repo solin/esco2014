@@ -1,5 +1,27 @@
 {% extends "base.html" %}
 
+{% block scripts %}
+<script type="text/javascript">
+function modifyAbstract(id) {
+    window.location = '/account/abstracts/modify/' + id;
+}
+
+function deleteAbstract(id) {
+    if (confirm("Do your really want do delete this abstract?") === true) {
+        window.location = '/account/abstracts/delete/' + id;
+    }
+}
+
+function getTex(id) {
+    window.location = '/account/abstracts/tex/' + id;
+}
+
+function getPdf(id) {
+    window.location = '/account/abstracts/pdf/' + id;
+}
+</script>
+{% endblock %}
+
 {% block content %}
     <h2>My Abstracts</h2>
 
@@ -37,10 +59,10 @@
                         <tr>
                             <th></th>
                             <td>
-                                <button class="button" onclick="window.location='/account/abstracts/modify/{{ abstract.id }}/'">Modify</button>
-                                <button class="button" onclick="window.location='/account/abstracts/delete/{{ abstract.id }}/'">Delete</button>
-                                <button class="button" onclick="window.location='/account/abstracts/tex/{{ abstract.id }}/'">Get TeX</button>
-                                <button class="button" onclick="window.location='/account/abstracts/pdf/{{ abstract.id }}/'">Get PDF</button>
+                                <button class="button" onclick="modifyAbstract('{{ abstract.id }}')">Modify</button>
+                                <button class="button" onclick="deleteAbstract('{{ abstract.id }}')">Delete</button>
+                                <button class="button" onclick="getTex('{{ abstract.id }}')">Get TeX</button>
+                                <button class="button" onclick="getPdf('{{ abstract.id }}')">Get PDF</button>
                             </td>
                         </tr>
                         {% if not forloop.last %}
@@ -51,6 +73,5 @@
             </table>
         </div>
     {% endif %}
-
     <button class="button" onclick="window.location='/account/abstracts/submit/'">Submit Abstract</button>
 {% endblock %}
