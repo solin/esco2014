@@ -52,15 +52,15 @@ function getLog(id) {
                         </tr>
                         <tr>
                             <th>Compiled:</th>
-                            <td>{{ abstract.compiled|yesno:"Yes,No,Unknown" }}</td>
+                            <td>{{ abstract.compiled|yesno:"Yes (compilation succeeded),No (failed to compile - see log for details),Unknown (compilation in progress)" }}</td>
                         </tr>
                         <tr>
                             <th>Verified:</th>
-                            <td>{{ abstract.verified|yesno:"Yes,No,Unknown" }}</td>
+                            <td>{{ abstract.verified|yesno:"Yes (your abstract is ready for final review),No (problems with your template were discovered),Unknown (your abstract wasn't verified yet)" }}</td>
                         </tr>
                         <tr>
                             <th>Accepted:</th>
-                            <td>{{ abstract.accepted|yesno:"Yes,No,Unknown" }}</td>
+                            <td>{{ abstract.accepted|yesno:"Yes (your abstract was accepted for the conference),No (your abstract wasn't accepted for the conference),Unknown (your abstract wasn't reviewed yet)" }}</td>
                         </tr>
                         <tr>
                             <th>Submitted:</th>

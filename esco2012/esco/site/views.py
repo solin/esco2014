@@ -382,6 +382,7 @@ def abstracts_modify_view(request, abstract_id, **args):
         date = datetime.datetime.today()
 
         abstract.data = data
+        abstract.verified = None
         abstract.modify_date = date
         abstract.save()
 
