@@ -11,18 +11,18 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 
-from django.core.mail import send_mail, mail_admins
+from django.core.mail import mail_admins
 
-from esco.site.models import UserProfile, UserAbstract
+from esco.site.models import UserProfile, UserAbstract2 as UserAbstract
 
 from esco.site.forms import LoginForm, ReminderForm, RegistrationForm, ChangePasswordForm
-from esco.site.forms import UserProfileForm, SubmitAbstractForm, ModifyAbstractForm
+from esco.site.forms import UserProfileForm
 
 from django.conf import settings
-from esco.settings import MIN_PASSWORD_LEN, ABSTRACTS_PATH
+from esco.settings import MIN_PASSWORD_LEN
 
-import os
-import hashlib
+import json
+import shutil
 import datetime
 
 from functools import wraps
@@ -67,9 +67,11 @@ urlpatterns = patterns('esco.site.views',
     (r'^account/abstracts/delete/(\d+)/$', 'abstracts_delete_view'),
     (r'^account/abstracts/tex/(\d+)/$', 'abstracts_tex_view'),
     (r'^account/abstracts/pdf/(\d+)/$', 'abstracts_pdf_view'),
+    (r'^account/abstracts/log/(\d+)/$', 'abstracts_log_view'),
 
     (r'^admin/site/userabstract/(\d+)/tex/$', 'abstracts_tex_view'),
     (r'^admin/site/userabstract/(\d+)/pdf/$', 'abstracts_pdf_view'),
+    (r'^admin/site/userabstract/(\d+)/log/$', 'abstracts_log_view'),
 )
 
 def _render_to_response(page, request, args=None):
@@ -145,15 +147,16 @@ def account_create_view(request, **args):
             user.last_name = form.cleaned_data['last_name']
             user.save()
 
-            template = loader.get_template('e-mails/user/create.txt')
-            body = template.render(Context({'user': user}))
+            if settings.SEND_EMAIL:
+                template = loader.get_template('e-mails/user/create.txt')
+                body = template.render(Context({'user': user}))
 
-            user.email_user("[ESCO 2012] Account Creation Notification", body)
+                user.email_user("[ESCO 2012] Account Creation Notification", body)
 
-            template = loader.get_template('e-mails/admin/create.txt')
-            body = template.render(Context({'user': user}))
+                template = loader.get_template('e-mails/admin/create.txt')
+                body = template.render(Context({'user': user}))
 
-            mail_admins("[ESCO 2012][ADMIN] New Account", body)
+                mail_admins("[ESCO 2012][ADMIN] New Account", body)
 
             return HttpResponsePermanentRedirect('/account/create/success/')
     else:
@@ -192,10 +195,11 @@ def account_password_remind_view(request, **args):
             user.set_password(password)
             user.save()
 
-            template = loader.get_template('e-mails/user/reminder.txt')
-            body = template.render(Context({'user': user, 'password': password}))
+            if settings.SEND_EMAIL:
+                template = loader.get_template('e-mails/user/reminder.txt')
+                body = template.render(Context({'user': user, 'password': password}))
 
-            user.email_user("[ESCO 2012] Password Reminder Notification", body)
+                user.email_user("[ESCO 2012] Password Reminder Notification", body)
 
             return HttpResponsePermanentRedirect('/account/password/remind/success/')
     else:
@@ -235,10 +239,11 @@ def account_profile_view(request, **args):
 
             profile.save()
 
-            template = loader.get_template('e-mails/user/profile.txt')
-            body = template.render(Context({'user': request.user, 'profile': profile}))
+            if settings.SEND_EMAIL:
+                template = loader.get_template('e-mails/user/profile.txt')
+                body = template.render(Context({'user': request.user, 'profile': profile}))
 
-            request.user.email_user("[ESCO 2012] User Profile Confirmation", body)
+                request.user.email_user("[ESCO 2012] User Profile Confirmation", body)
 
             message = 'Your profile was updated successfully.'
 
@@ -285,76 +290,72 @@ def conditional(name):
 
     return wrapper
 
+def get_object_if_can(request, model, query):
+    if not (request.user.is_staff and request.user.is_superuser):
+        obj = get_object_or_404(UserAbstract, user=request.user, **query)
+    else:
+        obj = get_object_or_404(UserAbstract, **query)
+
+    return obj
+
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_view(request, **args):
-    return _render_to_response('abstracts/abstracts.html', request,
-        {'abstracts': UserAbstract.objects.filter(user=request.user)})
+    abstracts = UserAbstract.objects.filter(user=request.user)
+    return _render_to_response('abstracts/abstracts.html', request, {'abstracts': abstracts})
 
-class FileExistsError(Exception):
-    pass
+def get_submit_form_data(post):
+    title = post['title']
+    abstract = post['abstract']
 
-def _file_digest(request, ext):
-    sha1 = hashlib.new('sha1')
-    ifile = request.FILES['abstract_' + ext]
+    prefixes = post.getlist('prefix')
+    first_names = post.getlist('first_name')
+    last_names = post.getlist('last_name')
+    addresses = post.getlist('address')
+    emails = post.getlist('email')
+    presentings = post.getlist('presenting')
 
-    for chunk in ifile.chunks():
-        sha1.update(chunk)
+    authors = zip(prefixes, first_names, last_names, addresses, emails, presentings)
+    fields = ('prefix', 'first_name', 'last_name', 'address', 'email', 'presenting')
 
-    return sha1.hexdigest()
+    for i, author in enumerate(authors):
+        author = dict(zip(fields, author))
+        authors[i] = author
 
-def _write_file(request, digest, ext):
-    path = os.path.join(ABSTRACTS_PATH, digest + '.' + ext)
+    data = {
+        'title': title,
+        'abstract': abstract,
+        'authors': authors,
+        'bibitems': [],
+    }
 
-    if os.path.exists(path):
-        raise FileExistsError
-
-    ifile = request.FILES['abstract_' + ext]
-    ofile = open(path, 'wb')
-
-    for chunk in ifile.chunks():
-        ofile.write(chunk)
-
-    ofile.close()
-
-    return os.path.getsize(path)
+    return json.dumps(data)
 
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_submit_view(request, **args):
     if request.method == 'POST':
-        form = SubmitAbstractForm(request.POST, request.FILES)
+        post = request.POST
 
-        if form.is_valid():
-            digest_tex = _file_digest(request, 'tex')
-            digest_pdf = _file_digest(request, 'pdf')
+        data = get_submit_form_data(post)
+        date = datetime.datetime.today()
 
-            if digest_tex == digest_pdf:
-                return _render_to_response('abstracts/submit.html', request,
-                    {'form': form, 'error': 'TeX and PDF files do not differ.' })
+        abstract = UserAbstract(
+            user=request.user,
+            data=data,
+            submit_date=date,
+            modify_date=date,
+        )
 
-            try:
-                size_tex = _write_file(request, digest_tex, 'tex')
-                size_pdf = _write_file(request, digest_tex, 'pdf')
-            except FileExistsError:
-                return _render_to_response('abstracts/submit.html', request,
-                    {'form': form, 'error': 'The same abstract was already submitted.'})
+        abstract.save()
 
-            date = datetime.datetime.today()
+        cls = abstract.to_cls()
+        compiled = cls.build(abstract.get_path())
 
-            abstract = UserAbstract(
-                user=request.user,
-                title=form.cleaned_data['title'],
-                digest_tex=digest_tex,
-                digest_pdf=digest_pdf,
-                size_tex=size_tex,
-                size_pdf=size_pdf,
-                submit_date=date,
-                modify_date=date,
-            )
+        abstract.compiled = compiled
+        abstract.save()
 
-            abstract.save()
-
+        if settings.SEND_EMAIL:
             template = loader.get_template('e-mails/user/abstract.txt')
             body = template.render(Context({'user': request.user, 'abstract': abstract}))
 
@@ -365,14 +366,9 @@ def abstracts_submit_view(request, **args):
 
             mail_admins("[ESCO 2012][ADMIN] New Abstract", body)
 
-            return HttpResponsePermanentRedirect('/account/abstracts/')
+        return HttpResponsePermanentRedirect('/account/abstracts/')
     else:
-        form = SubmitAbstractForm()
-
-    return _render_to_response('abstracts/submit.html', request, {'form': form})
-
-class AbstractFilesDoNotDiffer(Exception):
-    pass
+        return _render_to_response('abstracts/submit.html', request)
 
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
@@ -380,110 +376,71 @@ def abstracts_modify_view(request, abstract_id, **args):
     abstract = get_object_or_404(UserAbstract, pk=abstract_id, user=request.user)
 
     if request.method == 'POST':
-        form = ModifyAbstractForm(request.POST, request.FILES)
+        post = request.POST
 
-        if form.is_valid():
-            date = datetime.datetime.today()
+        data = get_submit_form_data(post)
+        date = datetime.datetime.today()
 
-            title = form.cleaned_data.get('title')
+        abstract.data = data
+        abstract.verified = None
+        abstract.modify_date = date
+        abstract.save()
 
-            if title and title != abstract.title:
-                abstract.modify_date = date
-                abstract.title = title
-                abstract.save()
+        cls = abstract.to_cls()
+        compiled = cls.build(abstract.get_path())
 
-            if 'abstract_tex' in request.FILES:
-                digest_tex = _file_digest(request, 'tex')
-            else:
-                digest_tex = None
+        abstract.compiled = compiled
+        abstract.save()
 
-            if 'abstract_pdf' in request.FILES:
-                digest_pdf = _file_digest(request, 'pdf')
-            else:
-                digest_pdf = None
-
-            try:
-                if digest_tex is not None and digest_pdf is not None:
-                    if digest_tex == digest_pdf:
-                        raise AbstractFilesDoNotDiffer
-
-                if digest_tex is not None and digest_tex != abstract.digest_tex:
-                    if digest_pdf is None and digest_tex == abstract.digest_pdf:
-                        raise AbstractFilesDoNotDiffer
-
-                    try:
-                        size_tex = _write_file(request, digest_tex, 'tex')
-
-                        os.remove(os.path.join(ABSTRACTS_PATH, abstract.digest_tex+'.tex'))
-                        os.rename(os.path.join(ABSTRACTS_PATH, abstract.digest_tex+'.pdf'),
-                                  os.path.join(ABSTRACTS_PATH,          digest_tex+'.pdf'))
-
-                        abstract.digest_tex = digest_tex
-                        abstract.size_tex = size_tex
-                        abstract.modify_date = date
-                        abstract.save()
-                    except FileExistsError:
-                        return _render_to_response('abstracts/modify.html', request,
-                            {'form': form, 'error': 'The same abstract was already submitted.'})
-                else:
-                    digest_tex = abstract.digest_tex
-
-                if digest_pdf is not None and digest_pdf != abstract.digest_pdf:
-                    if digest_tex == digest_pdf:
-                        raise AbstractFilesDoNotDiffer
-
-                    os.remove(os.path.join(ABSTRACTS_PATH, digest_tex+'.pdf'))
-                    size_pdf = _write_file(request, digest_tex, 'pdf')
-
-                    abstract.digest_pdf = digest_pdf
-                    abstract.size_pdf = size_pdf
-                    abstract.modify_date = date
-                    abstract.save()
-            except AbstractFilesDoNotDiffer:
-                return _render_to_response('abstracts/submit.html', request,
-                    {'form': form, 'error': 'TeX and PDF files do not differ.' })
-
-            return HttpResponsePermanentRedirect('/account/abstracts/')
+        return HttpResponsePermanentRedirect('/account/abstracts/')
     else:
-        form = ModifyAbstractForm(initial={'title': abstract.title})
-
-    return _render_to_response('abstracts/modify.html', request, {'form': form})
+        return _render_to_response('abstracts/modify.html', request, dict(initial=abstract.data))
 
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_delete_view(request, abstract_id, **args):
     try:
-        get_object_or_404(UserAbstract, pk=abstract_id, user=request.user).delete()
+        abstract = get_object_or_404(UserAbstract, pk=abstract_id, user=request.user)
     except UserAbstract.DoesNotExist:
         pass # don't care about missing abstract
+    else:
+        shutil.rmtree(abstract.get_path(), True)
+        abstract.delete()
 
     return HttpResponsePermanentRedirect('/account/abstracts/')
 
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_tex_view(request, abstract_id, **args):
-    if not (request.user.is_staff and request.user.is_superuser):
-        abstract = get_object_or_404(UserAbstract, pk=abstract_id, user=request.user)
-    else:
-        abstract = get_object_or_404(UserAbstract, pk=abstract_id)
+    abstract = get_object_if_can(request, UserAbstract, dict(pk=abstract_id))
+    tex = abstract.get_data_or_404("tex")
 
-    with open(os.path.join(ABSTRACTS_PATH, abstract.digest_tex+'.tex'), 'rb') as f:
-        response = HttpResponse(f.read(), mimetype='application/x-latex')
-        response['Content-Disposition'] = 'inline; filename=abstract.tex'
+    response = HttpResponse(tex, mimetype='text/plain')
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=abstract.tex'
 
     return response
 
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_pdf_view(request, abstract_id, **args):
-    if not (request.user.is_staff and request.user.is_superuser):
-        abstract = get_object_or_404(UserAbstract, pk=abstract_id, user=request.user)
-    else:
-        abstract = get_object_or_404(UserAbstract, pk=abstract_id)
+    abstract = get_object_if_can(request, UserAbstract, dict(pk=abstract_id))
+    pdf = abstract.get_data_or_404("pdf")
 
-    with open(os.path.join(ABSTRACTS_PATH, abstract.digest_tex+'.pdf'), 'rb') as f:
-        response = HttpResponse(f.read(), mimetype='application/pdf')
-        response['Content-Disposition'] = 'inline; filename=abstract.pdf'
+    response = HttpResponse(pdf, mimetype='application/pdf')
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=abstract.pdf'
 
     return response
 
+@login_required
+@conditional('ENABLE_ABSTRACT_SUBMISSION')
+def abstracts_log_view(request, abstract_id, **args):
+    abstract = get_object_if_can(request, UserAbstract, dict(pk=abstract_id))
+    log = abstract.get_data_or_404("log")
+
+    response = HttpResponse(log, mimetype='text/plain')
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=abstract.log'
+
+    return response

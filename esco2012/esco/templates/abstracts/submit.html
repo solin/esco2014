@@ -1,14 +1,194 @@
-{% extends "large-form.html" %}
+{% extends "base.html" %}
 
-{% block header %}
-Submit Abstract
+{% block scripts %}
+<script type="text/javascript">
+function addAuthorField(event, after, initial) {
+    if (after === undefined) {
+        after = $(event.target).parent().parent();
+    } else {
+        after = $(after);
+    }
+
+    var el = after.after($("#author_tpl").html());
+
+    if (initial) {
+        el = el.next();
+
+        el.find("[name='prefix']").val(initial.prefix);
+        el.find("[name='first_name']").val(initial.first_name);
+        el.find("[name='last_name']").val(initial.last_name);
+        el.find("[name='address']").val(initial.address);
+        el.find("[name='email']").val(initial.email);
+        el.find("[name='presenting']").val(initial.presenting);
+    }
+}
+
+function delAuthorField(event) {
+    if ($("form li.author").length === 1) {
+        alert("Abstract must have at least one author.");
+    } else {
+        $(event.target).parent().parent().remove();
+    }
+}
+
+function validateForm() {
+    var title = $("form [name='title']");
+    var content = $("form [name='abstract']");
+    var prefixes = $("form [name='prefix']");
+    var first_names = $("form [name='first_name']");
+    var last_names = $("form [name='last_name']");
+    var addresses = $("form [name='address']");
+    var emails = $("form [name='email']");
+    var presentings = $("form [name='presenting']");
+
+    $('form > ul > li').removeClass('error');
+
+    if (title.val().length == 0) {
+        title.parents('li').addClass('error');
+        alert("Title must be non-empty.");
+        return false;
+    }
+
+    if (content.val().length == 0) {
+        content.parents('li').addClass('error');
+        alert("Abstract must be non-empty.");
+        return false;
+    }
+
+    function Error() {}
+
+    function validateEls(els, message) {
+        $.each(els, function(i, el) {
+            if ($(el).val().length == 0) {
+                $(el).parents('li').addClass('error');
+                alert(message);
+                throw new Error();
+            }
+        });
+    }
+
+    try {
+        validateEls(first_names, "Missing first name.");
+        validateEls(last_names, "Missing last name.");
+        validateEls(addresses, "Missing address.");
+        validateEls(emails, "Missing E-mail.");
+    } catch (exc) {
+        if (exc instanceof Error) {
+            return false;
+        } else {
+            throw exc;
+        }
+    }
+
+    return true;
+}
+
+$(document).ready(function() {
+    {% if initial %}
+    var initial = $("#initial").html().trim();
+    var data = JSON.parse(initial);
+
+    $("form [name='title']").val(data['title']);
+    $("form [name='abstract']").val(data['abstract']);
+
+    $.each(data.authors, function(i, author) {
+        addAuthorField(undefined, "form ul li:last", author);
+    });
+    {% else %}
+    addAuthorField(undefined, "#abstract");
+    {% endif %}
+});
+</script>
+
+<script id="initial" type="plain/text">
+{% if initial %}
+{{ initial|safe }}
+{% endif %}
+</script>
 {% endblock %}
 
-{% block encoding %}
-enctype="multipart/form-data"
-{% endblock %}
+{% block content %}
+    <h2>
+        {% block header %}
+        Submit Abstract
+        {% endblock %}
+    </h2>
 
-{% block submit %}
-Submit Abstract
-{% endblock %}
+    {% if error %}
+        <div class="note error">
+            <b>ERROR:</b> {{ error|safe }}
+        </div>
+    {% endif %}
 
+    {% if message %}
+        <div class="note success">
+            {{ message|safe }}
+        </div>
+    {% endif %}
+
+    <div class="form large">
+        <form id="form" method="post" action=".{% if next %}/?next={{ next }}{% endif %}" onsubmit="return validateForm()">
+            <ul>
+                <li id="title">
+                    <label>Title</label>
+                    <br />
+                    <input type="text" name="title"></input>
+                    <span>Enter full title of your work.</span>
+                </li>
+                <li id="abstract">
+                    <label>Abstract</label>
+                    <br />
+                    <textarea name="abstract"></textarea>
+                    <span>Enter contents of your abstract.</span>
+                </li>
+            </ul>
+            <button id="submit" type="submit">{% block submit %}Submit Abstract{% endblock %}</button>
+        </form>
+    </div>
+
+    <div id="author_tpl" style="display: none">
+        <li class="author">
+            <label>Author</label>
+            <br />
+            <span class="inline prefix">
+                <select name="prefix">
+                    <option value="Mr.">Mr.</option>
+                    <option value="Dr.">Dr.</option>
+                    <option value="Prof.">Prof.</option>
+                </select>
+                <span>Prefix</span>
+            </span>
+            <span class="inline first_name">
+                <input type="text" name="first_name"></input>
+                <span>First name</span>
+            </span>
+            <span class="inline last_name">
+                <input type="text" name="last_name"></input>
+                <span>Last name</span>
+            </span>
+            <br />
+            <span class="block address">
+                <input type="text" name="address"></input>
+                <span>Affiliation</span>
+            </span>
+            <br />
+            <span class="block email">
+                <input type="text" name="email"></input>
+                <span>E-mail</span>
+            </span>
+            <br />
+            <div class="block presenting">
+                <select name="presenting">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+                <span>Presenting?</span>
+            </div>
+            <span>Enter author information</span>
+            <span class="links">
+                <a href="javascript://" onclick="addAuthorField(event)">more</a>
+                <a href="javascript://" onclick="delAuthorField(event)">delete</a>
+            </span>
+        </li>
+    </div>
+{% endblock %}

@@ -21,6 +21,7 @@ import os
 # MEDIA_ROOT
 # ABSTRACTS_PATH
 # ENABLE_ABSTRACT_SUBMISSION
+# SEND_EMAIL
 # ADMINS
 #
 # See Django documentation for possible values.

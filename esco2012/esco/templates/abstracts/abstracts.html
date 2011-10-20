@@ -1,5 +1,31 @@
 {% extends "base.html" %}
 
+{% block scripts %}
+<script type="text/javascript">
+function modifyAbstract(id) {
+    window.location = '/account/abstracts/modify/' + id;
+}
+
+function deleteAbstract(id) {
+    if (confirm("Do your really want do delete this abstract?") === true) {
+        window.location = '/account/abstracts/delete/' + id;
+    }
+}
+
+function getTex(id) {
+    window.location = '/account/abstracts/tex/' + id;
+}
+
+function getPdf(id) {
+    window.location = '/account/abstracts/pdf/' + id;
+}
+
+function getLog(id) {
+    window.location = '/account/abstracts/log/' + id;
+}
+</script>
+{% endblock %}
+
 {% block content %}
     <h2>My Abstracts</h2>
 
@@ -22,23 +48,19 @@
                         </tr>
                         <tr>
                             <th>Title:</th>
-                            <td>{{ abstract.title|escape }}</td>
+                            <td>{{ abstract.to_cls.title|escape }}</td>
                         </tr>
                         <tr>
-                            <th>Digest TeX:</th>
-                            <td class="mono">{{ abstract.digest_tex }}</td>
+                            <th>Compiled:</th>
+                            <td>{{ abstract.compiled|yesno:"Yes (compilation succeeded),No (failed to compile - see log for details),Unknown (compilation in progress)" }}</td>
                         </tr>
                         <tr>
-                            <th>Digest PDF:</th>
-                            <td class="mono">{{ abstract.digest_pdf }}</td>
+                            <th>Verified:</th>
+                            <td>{{ abstract.verified|yesno:"Yes (your abstract is ready for final review),No (problems with your template were discovered),Unknown (your abstract wasn't verified yet)" }}</td>
                         </tr>
                         <tr>
-                            <th>Size TeX:</th>
-                            <td>{{ abstract.size_tex }} bytes</td>
-                        </tr>
-                        <tr>
-                            <th>Size PDF:</th>
-                            <td>{{ abstract.size_pdf }} bytes</td>
+                            <th>Accepted:</th>
+                            <td>{{ abstract.accepted|yesno:"Yes (your abstract was accepted for the conference),No (your abstract wasn't accepted for the conference),Unknown (your abstract wasn't reviewed yet)" }}</td>
                         </tr>
                         <tr>
                             <th>Submitted:</th>
@@ -53,10 +75,13 @@
                         <tr>
                             <th></th>
                             <td>
-                                <button class="button" onclick="window.location='/account/abstracts/modify/{{ abstract.id }}/'">Modify</button>
-                                <button class="button" onclick="window.location='/account/abstracts/delete/{{ abstract.id }}/'">Delete</button>
-                                <button class="button" onclick="window.location='/account/abstracts/tex/{{ abstract.id }}/'">Get TeX</button>
-                                <button class="button" onclick="window.location='/account/abstracts/pdf/{{ abstract.id }}/'">Get PDF</button>
+                                <button class="button" onclick="modifyAbstract('{{ abstract.id }}')"
+                                    {% if abstract.accepted != None %} disabled="disabled" {% endif %}>Modify</button>
+                                <button class="button" onclick="deleteAbstract('{{ abstract.id }}')"
+                                    {% if abstract.accepted != None %} disabled="disabled" {% endif %}>Delete</button>
+                                <button class="button" onclick="getTex('{{ abstract.id }}')">TeX</button>
+                                <button class="button" onclick="getPdf('{{ abstract.id }}')">PDF</button>
+                                <button class="button" onclick="getLog('{{ abstract.id }}')">Log</button>
                             </td>
                         </tr>
                         {% if not forloop.last %}
@@ -67,7 +92,5 @@
             </table>
         </div>
     {% endif %}
-
     <button class="button" onclick="window.location='/account/abstracts/submit/'">Submit Abstract</button>
 {% endblock %}
-

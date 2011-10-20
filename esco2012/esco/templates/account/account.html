@@ -10,15 +10,18 @@ In order to submit an abstract, follow these instructions:
 <h4>Edit Profile</h4>
 
 <p>
-    Please provide your basic information via a form that you can access by clicking
-    at the link "Edit Profile". After submitting the form, a new link
-    "Submit Abstract" will appear in the menu.
+Please provide your basic information via a form that you can access by clicking
+at the link "Edit Profile". After submitting the form, a new link "Submit Abstract"
+will appear in the menu.
 </p>
 
 <h4>Submit Abstract</h4>
 
-<p>
-    Online abstract submission form coming soon.
-</p>
+{% if ENABLE_ABSTRACT_SUBMISSION %}
+<p>To submit an abstract follow <a href="/account/abstracts">this</a> link.</p>
+{% else %}
+<p>Online abstract submission form coming soon.</p>
+{% endif %}
+
 {% endblock %}
 

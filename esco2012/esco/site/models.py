@@ -1,9 +1,12 @@
 import os
+import json
 
 from django.db import models
+from django.http import Http404
 from django.contrib.auth.models import User
 
 from esco.settings import ABSTRACTS_PATH
+from esco.site.latex import Abstract
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
@@ -58,3 +61,42 @@ class UserAbstract(models.Model):
 
         super(UserAbstract, self).delete()
 
+class UserAbstract2(models.Model):
+    user = models.ForeignKey(User)
+    data = models.TextField()
+
+    submit_date = models.DateTimeField()
+    modify_date = models.DateTimeField()
+
+    compiled = models.BooleanField(default=False)
+    verified = models.NullBooleanField()
+    accepted = models.NullBooleanField()
+
+    class Meta:
+        verbose_name = "User abstract"
+        verbose_name_plural = "User abstracts"
+
+    def __unicode__(self):
+        return u"Abstract for %s" % self.user.get_full_name()
+
+    def to_cls(self):
+        data = json.loads(self.data)
+        return Abstract.from_json(data)
+
+    def to_latex(self):
+        return self.to_cls().to_latex()
+
+    def get_path(self):
+        return os.path.join(ABSTRACTS_PATH, str(self.id))
+
+    def get_data_path(self, ext):
+        return os.path.join(self.get_path(), "abstract." + ext)
+
+    def get_data_or_404(self, ext):
+        path = self.get_data_path(ext)
+
+        try:
+            with open(path, 'rb') as f:
+                return f.read()
+        except (OSError, IOError):
+            raise Http404
