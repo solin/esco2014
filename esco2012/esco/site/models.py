@@ -1,7 +1,11 @@
 from __future__ import with_statement
 
 import os
-import json
+
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 from django.db import models
 from django.http import Http404

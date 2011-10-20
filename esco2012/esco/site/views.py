@@ -21,7 +21,11 @@ from esco.site.forms import UserProfileForm
 from django.conf import settings
 from esco.settings import MIN_PASSWORD_LEN
 
-import json
+try:
+    import json
+except ImportError:
+    import simplejson as json
+
 import shutil
 import datetime
 
