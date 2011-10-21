@@ -1,17 +1,17 @@
 {% extends "e-mails/user/base.txt" %}
 
 {% block content %}
-thank you for submitting an abstract for ESCO 2012 conference.
+thank you for submitting an abstract for ESCO 2012.
 
-Your abstract is identified by following data:
+Your abstract is identified by the following data:
 
 ID: {{ abstract.id }}
 Title: {{ abstract.to_cls.title }}
 
 Submitted on: {{ abstract.submit_date }}
 
-Any time before submission deadline you can modify you abstract
-by changing its title or submitting updated TeX and PDF files.
+You can modify your abstract any time before the submission
+deadline.
 
 You can now proceed to:
 
