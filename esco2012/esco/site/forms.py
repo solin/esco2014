@@ -37,9 +37,9 @@ class LoginForm(forms.Form):
                 if self.user.is_active:
                     return cleaned_data
                 else:
-                    raise forms.ValidationError('Your account has been disabled.')
+                    raise forms.ValidationError('Your account was disabled.')
 
-        raise forms.ValidationError('Wrong login or password. Please try again.')
+        raise forms.ValidationError('Incorrect login name or password. Please try again.')
 
 class ReminderForm(forms.Form):
     """Password reminder form. """
@@ -54,7 +54,7 @@ class ReminderForm(forms.Form):
     )
 
     def clean_username(self):
-        """Make sure `username` is registred in the system. """
+        """Make sure that `username` is registred in the system. """
         username = self.cleaned_data['username']
 
         try:
@@ -74,35 +74,35 @@ class RegistrationForm(forms.Form):
     username = forms.EmailField(
         required   = True,
         label      = "E-mail",
-        help_text  = "This will be your login.",
+        help_text  = "This will be your login name.",
     )
     username_again = forms.EmailField(
         required   = True,
-        label      = "E-mail (Again)",
-        help_text  = "Make sure this is a valid E-mail address.",
+        label      = "E-mail (again)",
+        help_text  = "Make sure that this is a valid E-mail address.",
     )
 
     password = forms.CharField(
         required   = True,
         label      = "Password",
         widget     = forms.PasswordInput(),
-        help_text  = "Use lower and upper case letters, numbers etc.",
+        help_text  = "Use lower and upper case letters, numbers, etc.",
     )
     password_again = forms.CharField(
         required   = True,
-        label      = "Password (Again)",
+        label      = "Password (again)",
         widget     = forms.PasswordInput(),
     )
 
     first_name = forms.CharField(
         required   = True,
         label      = "First Name",
-        help_text  = "Enter your first name using Unicode character set.",
+        help_text  = "Enter your first name.",
     )
     last_name = forms.CharField(
         required   = True,
         label      = "Last Name",
-        help_text  = "Enter your last name using Unicode character set.",
+        help_text  = "Enter your last name.",
     )
 
     captcha = CaptchaField(
@@ -111,7 +111,7 @@ class RegistrationForm(forms.Form):
     )
 
     def clean_username(self):
-        """Make sure `login` is unique in the system. """
+        """Make sure that `login` is unique in the system. """
         username = self.cleaned_data['username']
 
         try:
@@ -119,10 +119,10 @@ class RegistrationForm(forms.Form):
         except ObjectDoesNotExist:
             return username
 
-        raise forms.ValidationError('Login is already in use.')
+        raise forms.ValidationError('Login name already in use.')
 
     def clean_username_again(self):
-        """Make sure user verified `login` he entered. """
+        """Make sure that user verified `login` that he entered. """
         if 'username' in self.cleaned_data:
             username       = self.cleaned_data['username']
             username_again = self.cleaned_data['username_again']
@@ -132,7 +132,7 @@ class RegistrationForm(forms.Form):
         else:
             return None
 
-        raise forms.ValidationError('Logins do not match.')
+        raise forms.ValidationError('Login names do not match.')
 
     def clean_password(self):
         """Make sure `password` isn't too easy to break. """
@@ -147,12 +147,12 @@ class RegistrationForm(forms.Form):
             if not ((_digit & symbols and _upper & symbols) or \
                     (_digit & symbols and _lower & symbols) or \
                     (_lower & symbols and _upper & symbols)):
-                raise forms.ValidationError('Password is too week. Invent better one.')
+                raise forms.ValidationError('Password is too weak, please choose a better one.')
 
         return password
 
     def clean_password_again(self):
-        """Make sure user verified `password` he entered. """
+        """Make sure that the user verified the `password` he entered. """
         if 'password' in self.cleaned_data:
             password       = self.cleaned_data['password']
             password_again = self.cleaned_data['password_again']
@@ -171,12 +171,12 @@ class ChangePasswordForm(forms.Form):
         required   = True,
         label      = "New Password",
         widget     = forms.PasswordInput(),
-        help_text  = "Use lower and upper case letters, numbers etc.",
+        help_text  = "Use lower and upper case letters, numbers, etc.",
     )
 
     password_new_again = forms.CharField(
         required   = True,
-        label      = "New Password (Again)",
+        label      = "New Password (again)",
         widget     = forms.PasswordInput(),
     )
 
@@ -193,7 +193,7 @@ class ChangePasswordForm(forms.Form):
             if not ((_digit & symbols and _upper & symbols) or \
                     (_digit & symbols and _lower & symbols) or \
                     (_lower & symbols and _upper & symbols)):
-                raise forms.ValidationError('Password is too week. Invent better one.')
+                raise forms.ValidationError('Password is too weak, please enter a better one.')
 
         return password_new
 
@@ -216,31 +216,31 @@ class UserProfileForm(forms.Form):
     first_name = forms.CharField(
         required  = True,
         label     = "First Name",
-        help_text = "Enter your first name using Unicode character set.",
+        help_text = "Enter your first name.",
     )
 
     last_name = forms.CharField(
         required  = True,
         label     = "Last Name",
-        help_text = "Enter your last name using Unicode character set.",
+        help_text = "Enter your last name.",
     )
 
     affiliation = forms.CharField(
         required  = True,
         label     = "Affiliation",
-        help_text = "e.g. University of Nevada",
+        help_text = "Your institution, in English (for example: Technical University of Munich)",
     )
 
     address = forms.CharField(
         required  = True,
-        label     = "Address",
-        help_text = "You can use Unicode character set.",
+        label     = "Street Address",
+        help_text = "",
     )
 
     city = forms.CharField(
         required  = True,
         label     = "City",
-        help_text = "You can use Unicode character set.",
+        help_text = "",
     )
 
     postal_code = forms.CharField(
@@ -252,13 +252,13 @@ class UserProfileForm(forms.Form):
     country = forms.CharField(
         required  = True,
         label     = "Country",
-        help_text = "Enter english country name.",
+        help_text = "Enter the name of your country in English.",
     )
 
     speaker = forms.ChoiceField(
         required  = True,
         label     = "Are you going to present a paper?",
-        help_text = "If you choose 'Yes', you will be able to upload your abstract(s).",
+        help_text = "Select 'Yes' to be able to upload an abstract.",
         choices   = [
             (1, 'Yes'),
             (0, 'No'),
@@ -271,8 +271,8 @@ class UserProfileForm(forms.Form):
 
     student = forms.ChoiceField(
         required  = True,
-        label     = "Are you a student participant?",
-        help_text = "If you choose 'Yes', you will be required to provide a student ID.",
+        label     = "Are you a student?",
+        help_text = "If you choose 'Yes', you will need to send us your student ID.",
         choices   = [
             (1, 'Yes'),
             (0, 'No'),
@@ -293,7 +293,7 @@ class UserProfileForm(forms.Form):
 
     vegeterian = forms.ChoiceField(
         required  = True,
-        label     = "Do you require vegeterian food?",
+        label     = "Do you require vegetarian food?",
         help_text = "",
         choices   = [
             (1, 'Yes'),
@@ -308,7 +308,7 @@ class UserProfileForm(forms.Form):
     arrival = forms.DateField(
         required  = True,
         label     = "Arrival Date",
-        help_text = "e.g., 24/06/2012",
+        help_text = "DD/MM/YYYY, e.g., 24/06/2012",
         input_formats = [
             '%d/%m/%Y',      # '24/06/2012'
         ],
@@ -320,7 +320,7 @@ class UserProfileForm(forms.Form):
     departure = forms.DateField(
         required  = True,
         label     = "Departure Date",
-        help_text = "e.g., 29/06/2012",
+        help_text = "DD/MM/YYYY, e.g., 29/06/2012",
         input_formats = [
             '%d/%m/%Y',      # '29/06/2012'
         ],
@@ -346,7 +346,7 @@ class UserProfileForm(forms.Form):
 
     tshirt = forms.ChoiceField(
         required  = True,
-        label     = "T-shirt Size",
+        label     = "T-Shirt Size",
         help_text = "",
         choices   = [
             ('S', 'S (small)'),
