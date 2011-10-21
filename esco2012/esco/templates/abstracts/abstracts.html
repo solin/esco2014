@@ -13,15 +13,15 @@ function deleteAbstract(id) {
 }
 
 function getTex(id) {
-    window.location = '/account/abstracts/tex/' + id;
+    window.open('/account/abstracts/tex/' + id, '_blank');
 }
 
 function getPdf(id) {
-    window.location = '/account/abstracts/pdf/' + id;
+    window.open('/account/abstracts/pdf/' + id, '_blank');
 }
 
 function getLog(id) {
-    window.location = '/account/abstracts/log/' + id;
+    window.open('/account/abstracts/log/' + id, '_blank');
 }
 </script>
 {% endblock %}
