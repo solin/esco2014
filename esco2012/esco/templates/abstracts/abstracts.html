@@ -93,8 +93,12 @@ function getLog(id) {
                 </table>
             </div>
         {% endif %}
+        {% if not abstracts %}
         <button class="button" onclick="window.location='/account/abstracts/submit/'">Submit Abstract</button>
+        {% else %}
+        <button class="button" onclick="window.location='/account/abstracts/submit/'">Submit Another Abstract</button>
+        {% endif %}
     {% else %}
-        <div id="abstracts-box">Abstract submission is disabled until you finish your user <a href="/account/profile/">profile</a>.</div>
+        <div id="abstracts-box">An automated abstract submission form becomes available once you finish your user <a href="/account/profile/">profile</a>.</div>
     {% endif %}
 {% endblock %}
