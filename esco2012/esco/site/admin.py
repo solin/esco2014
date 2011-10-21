@@ -31,6 +31,9 @@ class UserAbstractAdmin(admin.ModelAdmin):
     def full_name(obj):
         return obj.user.get_full_name()
 
+    def email(obj):
+        return obj.user.email
+
     def title(obj):
         return obj.to_cls().title
 
@@ -44,6 +47,7 @@ class UserAbstractAdmin(admin.ModelAdmin):
         return '<a href="/account/abstracts/log/%s">LOG</a>' % obj.id
 
     full_name.short_description = 'Full Name'
+    email.short_description = 'E-mail'
     title.short_description = 'Title'
 
     tex.short_description = 'TEX'
@@ -55,7 +59,8 @@ class UserAbstractAdmin(admin.ModelAdmin):
     log.short_description = 'LOG'
     log.allow_tags = True
 
-    list_display = (full_name, title, 'submit_date', 'modify_date', 'compiled', 'verified', 'accepted', tex, pdf, log)
+    list_display = (full_name, email, title, 'submit_date', 'modify_date', 'compiled', 'verified', 'accepted', tex, pdf, log)
+    list_editable = ('verified', 'accepted')
 
     class Media:
         css = {
