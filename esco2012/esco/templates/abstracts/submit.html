@@ -114,6 +114,15 @@ $(document).ready(function() {
         {% endblock %}
     </h2>
 
+    <p>
+    Please enter your abstract below. Latex formulas are allowed, inclusion
+    of images is not supported, references to related or competitive work are
+    required. The abstract must not exceed one page, including references.
+    After submission, your abstract will go through a quick formatting check
+    followed by an email notification. If the format is OK, it will be automatically
+    forwarded for review. The review will be followed by an email notification.
+    </p>
+
     {% if error %}
         <div class="note error">
             <b>ERROR:</b> {{ error|safe }}
@@ -186,7 +195,7 @@ $(document).ready(function() {
             </div>
             <span>Enter author information</span>
             <span class="links">
-                <a href="javascript://" onclick="addAuthorField(event)">more</a>
+                <a href="javascript://" onclick="addAuthorField(event)">add</a>
                 <a href="javascript://" onclick="delAuthorField(event)">delete</a>
             </span>
         </li>
