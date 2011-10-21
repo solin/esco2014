@@ -252,7 +252,7 @@ def account_profile_view(request, **args):
             message = 'Your profile was updated successfully.'
 
             if profile.speaker:
-                message += '<br />Click <a href="/account/abstracts/">here</a> to submit your abstract(s).'
+                message += '<br />Click <a href="/account/abstracts/">here</a> to submit your abstract.'
 
             return _render_to_response('account/profile.html', request, {'form': form, 'message': message})
     else:
