@@ -306,9 +306,17 @@ def get_object_if_can(request, model, query):
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_view(request, **args):
     abstracts = UserAbstract.objects.filter(user=request.user)
-    return _render_to_response('abstracts/abstracts.html', request, {'abstracts': abstracts})
 
-def get_submit_form_data(post):
+    try:
+        request.user.get_profile()
+    except UserProfile.DoesNotExist:
+        has_profile = False
+    else:
+        has_profile = True
+
+    return _render_to_response('abstracts/abstracts.html', request, {'abstracts': abstracts, 'has_profile': has_profile})
+
+def get_submit_form_data(post, user):
     title = post['title']
     abstract = post['abstract']
 
