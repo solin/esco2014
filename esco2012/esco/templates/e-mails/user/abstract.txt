@@ -10,11 +10,5 @@ Title: {{ abstract.to_cls.title }}
 
 Submitted on: {{ abstract.submit_date }}
 
-You can modify your abstract any time before the submission
-deadline.
-
-You can now proceed to:
-
-http://esco2012.femhub.com/account/abstracts/
 {% endblock %}
 

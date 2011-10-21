@@ -1,7 +1,7 @@
 {% extends "e-mails/user/base.txt" %}
 
 {% block content %}
-thank you for submitting your user profile. You have now completed
+thank you for submitting/updating your user profile. You have now completed
 initial registration for the ESCO 2012 conference. Please verify
 that the following information is correct:
 
