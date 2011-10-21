@@ -21,11 +21,10 @@ class Author(Latexible):
 %(address)s\\\\
 {\\tt %(email)s}
 """
-    _presenting_person = u"\\underline{%(prefix)s %(first_name)s %(last_name)s}"
-    _nonpresenting_person = u"%(prefix)s %(first_name)s %(last_name)s"
+    _presenting_person = u"\\underline{%(first_name)s %(last_name)s}"
+    _nonpresenting_person = u"%(first_name)s %(last_name)s"
 
-    def __init__(self, prefix, first_name, last_name, address, email, presenting):
-        self.prefix = prefix
+    def __init__(self, first_name, last_name, address, email, presenting):
         self.first_name = first_name
         self.last_name = last_name
         self.address = address
@@ -38,10 +37,7 @@ class Author(Latexible):
         else:
             person_template = self._nonpresenting_person
 
-        prefix = "" if self.prefix == "Mr." else self.prefix
-
         person = person_template % dict(
-            prefix=prefix,
             first_name=self.first_name,
             last_name=self.last_name)
 
@@ -52,13 +48,12 @@ class Author(Latexible):
 
     @classmethod
     def from_json(cls, data):
-        prefix = data['prefix']
         first_name = data['first_name']
         last_name = data['last_name']
         address = data['address']
         email = data['email']
         presenting = data['presenting']
-        return cls(prefix, first_name, last_name, address, email, presenting)
+        return cls(first_name, last_name, address, email, presenting)
 
 class Authors(Latexible):
 

@@ -97,16 +97,12 @@ form {
     width: 100%;
 }
 
-.form .prefix {
-    width: 70px;
-}
-
 .form .first_name {
-    width: 170px;
+    width: 207px;
 }
 
 .form .last_name {
-    width: 170px;
+    width: 207px;
 }
 
 .form input:hover,

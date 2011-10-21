@@ -320,7 +320,6 @@ def get_submit_form_data(post, user):
     title = post['title']
     abstract = post['abstract']
 
-    prefixes = post.getlist('prefix')
     first_names = post.getlist('first_name')
     last_names = post.getlist('last_name')
     addresses = post.getlist('address')
@@ -332,8 +331,8 @@ def get_submit_form_data(post, user):
             presentings[i] = 'yes'
             break
 
-    authors = zip(prefixes, first_names, last_names, addresses, emails, presentings)
-    fields = ('prefix', 'first_name', 'last_name', 'address', 'email', 'presenting')
+    authors = zip(first_names, last_names, addresses, emails, presentings)
+    fields = ('first_name', 'last_name', 'address', 'email', 'presenting')
 
     for i, author in enumerate(authors):
         author = dict(zip(fields, author))

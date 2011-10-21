@@ -14,7 +14,6 @@ function addAuthorField(event, after, initial) {
     if (initial) {
         el = el.next();
 
-        el.find("[name='prefix']").val(initial.prefix);
         el.find("[name='first_name']").val(initial.first_name);
         el.find("[name='last_name']").val(initial.last_name);
         el.find("[name='address']").val(initial.address);
@@ -33,7 +32,6 @@ function delAuthorField(event) {
 function validateForm() {
     var title = $("form [name='title']");
     var content = $("form [name='abstract']");
-    var prefixes = $("form [name='prefix']");
     var first_names = $("form [name='first_name']");
     var last_names = $("form [name='last_name']");
     var addresses = $("form [name='address']");
@@ -140,13 +138,13 @@ $(document).ready(function() {
                     <label>Title</label>
                     <br />
                     <input type="text" name="title"></input>
-                    <span>Enter full title of your work.</span>
+                    <span>Example: "New Finite Element Method for Electromagnetics".</span>
                 </li>
                 <li id="abstract">
                     <label>Abstract</label>
                     <br />
                     <textarea name="abstract"></textarea>
-                    <span>Enter contents of your abstract.</span>
+                    <span>Your abstract should have at least 10 lines.</span>
                 </li>
             </ul>
             <button id="submit" type="submit">{% block submit %}Submit Abstract{% endblock %}</button>
@@ -157,14 +155,6 @@ $(document).ready(function() {
         <li class="author">
             <label>Author</label>
             <br />
-            <span class="inline prefix">
-                <select name="prefix">
-                    <option value="Mr.">Mr.</option>
-                    <option value="Dr.">Dr.</option>
-                    <option value="Prof.">Prof.</option>
-                </select>
-                <span>Prefix</span>
-            </span>
             <span class="inline first_name">
                 <input type="text" name="first_name"></input>
                 <span>First name</span>
