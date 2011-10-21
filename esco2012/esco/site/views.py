@@ -325,7 +325,12 @@ def get_submit_form_data(post, user):
     last_names = post.getlist('last_name')
     addresses = post.getlist('address')
     emails = post.getlist('email')
-    presentings = post.getlist('presenting')
+    presentings = ['no']*len(first_names)
+
+    for i, (first_name, last_name) in enumerate(zip(first_names, last_names)):
+        if first_name == user.first_name and last_name == user.last_name:
+            presentings[i] = 'yes'
+            break
 
     authors = zip(prefixes, first_names, last_names, addresses, emails, presentings)
     fields = ('prefix', 'first_name', 'last_name', 'address', 'email', 'presenting')
@@ -349,7 +354,7 @@ def abstracts_submit_view(request, **args):
     if request.method == 'POST':
         post = request.POST
 
-        data = get_submit_form_data(post)
+        data = get_submit_form_data(post, request.user)
         date = datetime.datetime.today()
 
         abstract = UserAbstract(
@@ -390,7 +395,7 @@ def abstracts_modify_view(request, abstract_id, **args):
     if request.method == 'POST':
         post = request.POST
 
-        data = get_submit_form_data(post)
+        data = get_submit_form_data(post, request.user)
         date = datetime.datetime.today()
 
         abstract.data = data

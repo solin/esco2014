@@ -19,7 +19,6 @@ function addAuthorField(event, after, initial) {
         el.find("[name='last_name']").val(initial.last_name);
         el.find("[name='address']").val(initial.address);
         el.find("[name='email']").val(initial.email);
-        el.find("[name='presenting']").val(initial.presenting);
     }
 }
 
@@ -39,7 +38,6 @@ function validateForm() {
     var last_names = $("form [name='last_name']");
     var addresses = $("form [name='address']");
     var emails = $("form [name='email']");
-    var presentings = $("form [name='presenting']");
 
     $('form > ul > li').removeClass('error');
 
@@ -185,14 +183,6 @@ $(document).ready(function() {
                 <input type="text" name="email"></input>
                 <span>E-mail</span>
             </span>
-            <br />
-            <div class="block presenting">
-                <select name="presenting">
-                    <option value="no">No</option>
-                    <option value="yes">Yes</option>
-                </select>
-                <span>Presenting?</span>
-            </div>
             <span>Enter author information</span>
             <span class="links">
                 <a href="javascript://" onclick="addAuthorField(event)">add</a>
