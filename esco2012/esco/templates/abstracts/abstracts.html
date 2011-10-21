@@ -51,16 +51,16 @@ function getLog(id) {
                             <td>{{ abstract.to_cls.title|escape }}</td>
                         </tr>
                         <tr>
-                            <th>Compiled:</th>
-                            <td>{{ abstract.compiled|yesno:"Yes (compilation succeeded),No (failed to compile - see log for details),Unknown (compilation in progress)" }}</td>
+                            <th>Compilation:</th>
+                            <td>{{ abstract.compiled|yesno:"Success (compilation succeeded),Failure (see log for details),Pending (compilation in progress)" }}</td>
                         </tr>
                         <tr>
-                            <th>Verified:</th>
-                            <td>{{ abstract.verified|yesno:"Yes (your abstract is ready for final review),No (problems with your template were discovered),Unknown (your abstract wasn't verified yet)" }}</td>
+                            <th>Format Check:</th>
+                            <td>{{ abstract.verified|yesno:"Success (your abstract is ready for final review),Failure (problems with your template were discovered),Pending (your abstract wasn't checked yet)" }}</td>
                         </tr>
                         <tr>
-                            <th>Accepted:</th>
-                            <td>{{ abstract.accepted|yesno:"Yes (your abstract was accepted for the conference),No (your abstract wasn't accepted for the conference),Unknown (your abstract wasn't reviewed yet)" }}</td>
+                            <th>Review Status:</th>
+                            <td>{{ abstract.accepted|yesno:"Accepted (your abstract was accepted for the conference),Not Accepted (your abstract wasn't accepted for the conference),Pending (your abstract wasn't reviewed yet)" }}</td>
                         </tr>
                         <tr>
                             <th>Submitted:</th>
