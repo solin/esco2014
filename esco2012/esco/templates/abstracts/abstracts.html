@@ -37,7 +37,7 @@ function getLog(id) {
 
     {% if has_profile %}
         {% if not abstracts %}
-            <div id="abstracts-box">You didn't submit any abstracts yet.</div>
+            <div id="abstracts-box">Currently you have no abstract in the system.</div>
         {% else %}
             <div id="abstracts">
                 <table>
@@ -52,16 +52,16 @@ function getLog(id) {
                                 <td>{{ abstract.to_cls.title|escape }}</td>
                             </tr>
                             <tr>
-                                <th>Compilation:</th>
+                                <th>Build Status:</th>
                                 <td>{{ abstract.compiled|yesno:"Success (compilation succeeded),Failure (see log for details),Pending (compilation in progress)" }}</td>
                             </tr>
                             <tr>
                                 <th>Format Check:</th>
-                                <td>{{ abstract.verified|yesno:"Success (your abstract is ready for final review),Failure (problems with your template were discovered),Pending (your abstract wasn't checked yet)" }}</td>
+                                <td>{{ abstract.verified|yesno:"Success (your abstract was sent for review),Failure (format compliance problems detected),Pending (your abstract is waiting for format check)" }}</td>
                             </tr>
                             <tr>
                                 <th>Review Status:</th>
-                                <td>{{ abstract.accepted|yesno:"Accepted (your abstract was accepted for the conference),Not Accepted (your abstract wasn't accepted for the conference),Pending (your abstract wasn't reviewed yet)" }}</td>
+                                <td>{{ abstract.accepted|yesno:"Accepted (your abstract was accepted),Not Accepted (your abstract was not accepted),Pending (your abstract is under review)" }}</td>
                             </tr>
                             <tr>
                                 <th>Submitted:</th>
