@@ -223,7 +223,7 @@ class Abstract(Latexible):
         latex = self.to_latex()
 
         with open(os.path.join(cwd, 'abstract.tex'), 'wb') as f:
-            f.write(latex)
+            f.write(latex.encode('utf-8'))
 
         proc = subprocess.Popen(['pdflatex', '-halt-on-error', 'abstract.tex'],
             cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
