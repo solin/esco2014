@@ -86,7 +86,10 @@ class BibAuthor(Latexible):
     @classmethod
     def from_json(cls, data):
         first_name = data['first_name']
-        last_name = data['last_name']
+        try:
+            last_name = data['last_name']
+        except KeyError:
+            last_name = ""
         return cls(first_name, last_name)
 
 class BibAuthors(Latexible):
