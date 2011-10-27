@@ -235,7 +235,7 @@ $(document).ready(function() {
 
     <div id="author_tpl" style="display: none">
         <li class="author">
-            <label>Author</label>
+            <label>Author:</label>
             <br />
             <span class="inline first_name">
                 <input type="text" name="first_name"></input>
@@ -257,9 +257,9 @@ $(document).ready(function() {
             </span>
             <br />
             <br />
-            <span>Add or remove authors?</span>
+            <span>Add a new author or remove this one?</span>
             <span class="links">
-                <a href="javascript://" onclick="addAuthorField(event)">add</a>
+                <a href="javascript://" onclick="addAuthorField(event)">add new,</a>
                 <a href="javascript://" onclick="delAuthorField(event)">remove</a>
             </span>
         </li>
@@ -267,13 +267,13 @@ $(document).ready(function() {
 
     <div id="bibitem_tpl" style="display: none">
         <li class="bibitem">
-            <label>Bibliography item</label>
-            <br />
-            <span class="block">
-                <input type="text" name="bibitem_bibid"></input>
-                <span>Identifier of bibliography item</span>
-            </span>
-            <br />
+            <label>Bibliography item:</label>
+            #<br />
+            #<span class="block">
+            #    <input type="text" name="bibitem_bibid"></input>
+            #    <span>Label (for cross-referencing)</span>
+            #</span>
+            #<br />
             <span class="block">
                 <input type="text" name="bibitem_authors"></input>
                 <span>Comma-separated list of authors</span>
@@ -290,9 +290,9 @@ $(document).ready(function() {
             </span>
             <br />
             <br />
-            <span>Add or remove bibliography items?</span>
+            <span>Add a new bibliography item or remove this one?</span>
             <span class="links">
-                <a href="javascript://" onclick="addBibitemField(event)">add</a>
+                <a href="javascript://" onclick="addBibitemField(event)">add new,</a>
                 <a href="javascript://" onclick="delBibitemField(event)">remove</a>
             </span>
         </li>
