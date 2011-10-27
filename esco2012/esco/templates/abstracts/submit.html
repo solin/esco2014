@@ -98,25 +98,43 @@ function validateForm() {
 
     function Error() {}
 
-    function validateEls(els, message) {
+    function lengthValidator(val) {
+        return val.length !== 0;
+    }
+
+    function validateEls(els, message, validators) {
+        if (validators === undefined) {
+            validators = [];
+        }
+
+        validators.push(lengthValidator);
+
         $.each(els, function(i, el) {
-            if ($(el).val().length == 0) {
-                $(el).parents('li').addClass('error');
-                alert(message);
-                throw new Error();
-            }
+            var val = $(el).val();
+
+            $.each(validators, function(j, validator) {
+                if (!validator(val)) {
+                    $(el).parents('li').addClass('error');
+                    alert(message);
+                    throw new Error();
+                }
+            });
         });
     }
 
+    function spaceValidator(val) {
+        return val.indexOf(" ") !== -1;
+    }
+
     try {
-        validateEls(first_names, "Missing author's first name.");
-        validateEls(last_names, "Missing author's last name.");
-        validateEls(addresses, "Missing author's address.");
-        validateEls(emails, "Missing author's E-mail.");
-        validateEls(bibitems_bibid, "Missing bibliography item's id.");
-        validateEls(bibitems_authors, "Missing bibliography item's authors.");
-        validateEls(bibitems_title, "Missing bibliography item's title.");
-        validateEls(bibitems_other, "Missing bibliography item's other data.");
+        validateEls(first_names, "Missing or invalid author's first name.");
+        validateEls(last_names, "Missing or invalid author's last name.");
+        validateEls(addresses, "Missing or invalid author's address.");
+        validateEls(emails, "Missing or invalid author's E-mail.");
+        validateEls(bibitems_bibid, "Missing or invalid bibliography item's id.");
+        validateEls(bibitems_authors, "Missing or invalid bibliography item's authors.", [spaceValidator]);
+        validateEls(bibitems_title, "Missing or invalid bibliography item's title.");
+        validateEls(bibitems_other, "Missing or invalid bibliography item's other data.");
     } catch (exc) {
         if (exc instanceof Error) {
             return false;
