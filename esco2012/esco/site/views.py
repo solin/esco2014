@@ -26,6 +26,7 @@ try:
 except ImportError:
     import simplejson as json
 
+import re
 import shutil
 import datetime
 
@@ -325,6 +326,10 @@ def get_submit_form_data(post, user):
     addresses = post.getlist('address')
     emails = post.getlist('email')
     presentings = ['no']*len(first_names)
+    bibitems_bibid = post.getlist('bibitem_bibid')
+    bibitems_authors = post.getlist('bibitem_authors')
+    bibitems_title = post.getlist('bibitem_title')
+    bibitems_other = post.getlist('bibitem_other')
 
     for i, (first_name, last_name) in enumerate(zip(first_names, last_names)):
         if first_name == user.first_name and last_name == user.last_name:
@@ -338,11 +343,23 @@ def get_submit_form_data(post, user):
         author = dict(zip(fields, author))
         authors[i] = author
 
+    fields = ('first_name', 'last_name')
+
+    bibitems_authors = [ [ dict(zip(fields, re.split("\s+", author, 1)))
+        for author in re.split("\s*,\s*", bibitem_authors) ] for bibitem_authors in bibitems_authors ]
+
+    bibitems = zip(bibitems_bibid, bibitems_authors, bibitems_title, bibitems_other)
+    fields = ('bibid', 'authors', 'title', 'other')
+
+    for i, bibitem in enumerate(bibitems):
+        bibitem = dict(zip(fields, bibitem))
+        bibitems[i] = bibitem
+
     data = {
         'title': title,
         'abstract': abstract,
         'authors': authors,
-        'bibitems': [],
+        'bibitems': bibitems,
     }
 
     return json.dumps(data)

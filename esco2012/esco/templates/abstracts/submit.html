@@ -29,6 +29,47 @@ function delAuthorField(event) {
     }
 }
 
+function addBibitemField(event, after, initial) {
+    if (after === undefined) {
+        after = $(event.target).parent().parent();
+    } else {
+        after = $(after);
+    }
+
+    var el = after.after($("#bibitem_tpl").html());
+
+    if (initial) {
+        el = el.next();
+
+        function bibitemAuthorToString(author) {
+            return author.first_name + " " + author.last_name;
+        }
+
+        function bibitemAuthorsToString(authors) {
+            var arr = [];
+
+            $.each(authors, function(i, author) {
+                arr.push(bibitemAuthorToString(author));
+            });
+
+            return arr.join(", ");
+        }
+
+        el.find("[name='bibitem_bibid']").val(initial.bibid);
+        el.find("[name='bibitem_authors']").val(bibitemAuthorsToString(initial.authors));
+        el.find("[name='bibitem_title']").val(initial.title);
+        el.find("[name='bibitem_other']").val(initial.other);
+    }
+}
+
+function delBibitemField(event) {
+    if ($("form li.bibitem").length === 1) {
+        alert("Abstract must have at least one bibliography item.");
+    } else {
+        $(event.target).parent().parent().remove();
+    }
+}
+
 function validateForm() {
     var title = $("form [name='title']");
     var content = $("form [name='abstract']");
@@ -36,6 +77,10 @@ function validateForm() {
     var last_names = $("form [name='last_name']");
     var addresses = $("form [name='address']");
     var emails = $("form [name='email']");
+    var bibitems_bibid = $("form [name='bibitem_bibid']");
+    var bibitems_authors = $("form [name='bibitem_authors']");
+    var bibitems_title = $("form [name='bibitem_title']");
+    var bibitems_other = $("form [name='bibitem_other']");
 
     $('form > ul > li').removeClass('error');
 
@@ -64,10 +109,14 @@ function validateForm() {
     }
 
     try {
-        validateEls(first_names, "Missing first name.");
-        validateEls(last_names, "Missing last name.");
-        validateEls(addresses, "Missing address.");
-        validateEls(emails, "Missing E-mail.");
+        validateEls(first_names, "Missing author's first name.");
+        validateEls(last_names, "Missing author's last name.");
+        validateEls(addresses, "Missing author's address.");
+        validateEls(emails, "Missing author's E-mail.");
+        validateEls(bibitems_bibid, "Missing bibliography item's id.");
+        validateEls(bibitems_authors, "Missing bibliography item's authors.");
+        validateEls(bibitems_title, "Missing bibliography item's title.");
+        validateEls(bibitems_other, "Missing bibliography item's other data.");
     } catch (exc) {
         if (exc instanceof Error) {
             return false;
@@ -90,8 +139,13 @@ $(document).ready(function() {
     $.each(data.authors, function(i, author) {
         addAuthorField(undefined, "form ul li:last", author);
     });
+
+    $.each(data.bibitems, function(i, bibitem) {
+        addBibitemField(undefined, "form ul li:last", bibitem);
+    });
     {% else %}
-    addAuthorField(undefined, "#abstract");
+    addAuthorField(undefined, "form ul li:last");
+    addBibitemField(undefined, "form ul li:last");
     {% endif %}
 });
 </script>
@@ -112,12 +166,12 @@ $(document).ready(function() {
 
     <p>
     Please enter your abstract below. Latex formulas are allowed, inclusion
-    of images is not supported, and a few references to related or competitive work 
+    of images is not supported, and a few references to related or competitive work
     are required. The abstract must not exceed one page, including references.
     After submission, your abstract will go through a quick format compliance check
     followed by a notification. If the format is correct, your abstract will be automatically
     forwarded for review. The review will be followed by a notification again.
-    At any time, you can return to this page and check the current status of your 
+    At any time, you can return to this page and check the current status of your
     submission.
     </p>
 
@@ -181,6 +235,39 @@ $(document).ready(function() {
             <span class="links">
                 <a href="javascript://" onclick="addAuthorField(event)">add</a>
                 <a href="javascript://" onclick="delAuthorField(event)">remove</a>
+            </span>
+        </li>
+    </div>
+
+    <div id="bibitem_tpl" style="display: none">
+        <li class="bibitem">
+            <label>Bibliography item</label>
+            <br />
+            <span class="block">
+                <input type="text" name="bibitem_bibid"></input>
+                <span>Identifier of bibliography item</span>
+            </span>
+            <br />
+            <span class="block">
+                <input type="text" name="bibitem_authors"></input>
+                <span>Comma-separated list of authors</span>
+            </span>
+            <br />
+            <span class="block">
+                <input type="text" name="bibitem_title"></input>
+                <span>Title (can contain LaTeX)</span>
+            </span>
+            <br />
+            <span class="block">
+                <input type="text" name="bibitem_other"></input>
+                <span>Other data (journal, issue, publisher, pages, year) </span>
+            </span>
+            <br />
+            <br />
+            <span>Add or remove bibliography items?</span>
+            <span class="links">
+                <a href="javascript://" onclick="addBibitemField(event)">add</a>
+                <a href="javascript://" onclick="delBibitemField(event)">remove</a>
             </span>
         </li>
     </div>

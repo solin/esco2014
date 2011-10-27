@@ -72,22 +72,22 @@ class Authors(Latexible):
 
 class BibAuthor(Latexible):
 
-    _template = u"%(name_initial)s.~%(last_name)s"
+    _template = u"%(first_name)s %(last_name)s"
 
-    def __init__(self, name_initial, last_name):
-        self.name_initial = name_initial
+    def __init__(self, first_name, last_name):
+        self.first_name = first_name
         self.last_name = last_name
 
     def to_latex(self):
         return self._template % dict(
-            name_initial=self.name_initial,
+            first_name=self.first_name,
             last_name=self.last_name)
 
     @classmethod
     def from_json(cls, data):
-        name_initial = data['name_initial']
+        first_name = data['first_name']
         last_name = data['last_name']
-        return cls(name_initial, last_name)
+        return cls(first_name, last_name)
 
 class BibAuthors(Latexible):
 
@@ -101,7 +101,7 @@ class BibAuthors(Latexible):
 
     @classmethod
     def from_json(cls, data):
-        return cls(*[ BibAuthors.from_json(author) for author in data ])
+        return cls(*[ BibAuthor.from_json(author) for author in data ])
 
 class BibItem(Latexible):
 
