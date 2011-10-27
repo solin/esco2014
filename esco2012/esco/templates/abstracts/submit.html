@@ -136,13 +136,21 @@ $(document).ready(function() {
     $("form [name='title']").val(data['title']);
     $("form [name='abstract']").val(data['abstract']);
 
-    $.each(data.authors, function(i, author) {
-        addAuthorField(undefined, "form ul li:last", author);
-    });
+    if (data.authors.length === 0) {
+        addAuthorField(undefined, "form ul li:last");
+    } else {
+        $.each(data.authors, function(i, author) {
+            addAuthorField(undefined, "form ul li:last", author);
+        });
+    }
 
-    $.each(data.bibitems, function(i, bibitem) {
-        addBibitemField(undefined, "form ul li:last", bibitem);
-    });
+    if (data.bibitems.length === 0) {
+        addBibitemField(undefined, "form ul li:last");
+    } else {
+        $.each(data.bibitems, function(i, bibitem) {
+            addBibitemField(undefined, "form ul li:last", bibitem);
+        });
+    }
     {% else %}
     addAuthorField(undefined, "form ul li:last");
     addBibitemField(undefined, "form ul li:last");
