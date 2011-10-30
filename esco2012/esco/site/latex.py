@@ -228,8 +228,14 @@ class Abstract(Latexible):
         with open(os.path.join(cwd, 'abstract.tex'), 'wb') as f:
             f.write(latex.encode('utf-8'))
 
-        proc = subprocess.Popen(['pdflatex', '-halt-on-error', 'abstract.tex'],
-            cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        output, errors = proc.communicate()
+        cmd = ['pdflatex', '-halt-on-error', 'abstract.tex']
+        pipe = subprocess.PIPE
 
-        return proc.returncode == 0
+        for i in xrange(3):
+            proc = subprocess.Popen(cmd, cwd=cwd, stdout=pipe, stderr=pipe)
+            output, errors = proc.communicate()
+
+            if proc.returncode:
+                break
+
+        return proc.returncode
