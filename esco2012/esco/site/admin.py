@@ -32,7 +32,7 @@ class UserAbstractAdmin(admin.ModelAdmin):
         return obj.user.get_full_name()
 
     def email(obj):
-        return obj.user.email
+        return '<a href="mailto:%(email)s">%(email)s</a>' % {'email': obj.user.email}
 
     def title(obj):
         return obj.to_cls().title
@@ -47,7 +47,10 @@ class UserAbstractAdmin(admin.ModelAdmin):
         return '<a href="/account/abstracts/log/%s">LOG</a>' % obj.id
 
     full_name.short_description = 'Full Name'
+
     email.short_description = 'E-mail'
+    email.allow_tags = True
+
     title.short_description = 'Title'
 
     tex.short_description = 'TEX'
