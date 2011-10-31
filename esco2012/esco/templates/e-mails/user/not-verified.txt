@@ -1,0 +1,11 @@
+{% extends "e-mails/user/base.txt" %}
+
+{% block content %}
+your abstract did not pass format check. Details will be
+E-mailed to you shortly. This means this abstract won't
+be considered for final review, until you fix all issues.
+
+To modify your abstract visit:
+
+{{ modify_url }}
+{% endblock %}

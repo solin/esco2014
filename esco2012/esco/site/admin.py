@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.conf import settings
+from django.template import Context, loader
 
 from django.contrib.auth.models import User
 from esco.site.models import UserProfile, UserAbstract2 as UserAbstract
@@ -74,5 +76,26 @@ class UserAbstractAdmin(admin.ModelAdmin):
 
     actions_on_top = False
     actions_on_bottom = False
+
+    def save_model(self, request, obj, form, change):
+        if 'verified' in form.changed_data:
+            verified = form.cleaned_data['verified']
+
+            if verified is True:
+                template = loader.get_template('e-mails/user/verified.txt')
+                body = template.render(Context({'user': obj.user}))
+
+                if settings.SEND_EMAIL:
+                    obj.user.email_user("Abstract Status Update", body)
+            elif verified is False:
+                host = request.META.get("HTTP_ORIGIN", "http://esco2012.femhub.com")
+                modify_url = "%s/account/abstracts/modify/%s/" % (host, obj.id)
+                template = loader.get_template('e-mails/user/not-verified.txt')
+                body = template.render(Context({'user': obj.user, 'modify_url': modify_url}))
+
+                if settings.SEND_EMAIL:
+                    obj.user.email_user("Abstract Status Update", body)
+
+        super(UserAbstractAdmin, self).save_model(request, obj, form, change)
 
 admin.site.register(UserAbstract, UserAbstractAdmin)
