@@ -238,4 +238,4 @@ class Abstract(Latexible):
             if proc.returncode:
                 break
 
-        return proc.returncode
+        return proc.returncode == 0
