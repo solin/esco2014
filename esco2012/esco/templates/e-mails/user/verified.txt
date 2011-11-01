@@ -1,5 +1,6 @@
 {% extends "e-mails/user/base.txt" %}
 
 {% block content %}
-your abstract passed format check and awaits final review.
+your abstract passed format compliance check and 
+will be forwarded for review shortly. 
 {% endblock %}

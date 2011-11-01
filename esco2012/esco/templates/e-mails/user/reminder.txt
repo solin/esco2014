@@ -1,16 +1,11 @@
 {% extends "e-mails/user/base.txt" %}
 
 {% block content %}
-we received reqest to replace your old password with new,
-auto-generated one. Your new password is:
+your new, auto-generated password is:
 
 {{ password }}
 
-The above password was E-mailed to you in clear text, so
-it is suggested to log in using this new password to ESCO
-2012 conference website and change it.
-
-As a shortcut you can proceed with this link:
+For security reasons, please change it by following this link: 
 
 http://esco2012.femhub.com/account/password/change/
 {% endblock %}
