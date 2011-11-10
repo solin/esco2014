@@ -48,10 +48,10 @@ class Author(Latexible):
 
     @classmethod
     def from_json(cls, data):
-        first_name = data['first_name']
-        last_name = data['last_name']
-        address = data['address']
-        email = data['email']
+        first_name = data.get('first_name', "")
+        last_name = data.get('last_name', "")
+        address = data.get('address', "")
+        email = data.get('email', "")
         presenting = data['presenting']
         return cls(first_name, last_name, address, email, presenting)
 
