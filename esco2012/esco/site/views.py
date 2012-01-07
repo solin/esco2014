@@ -38,6 +38,7 @@ urlpatterns = patterns('esco.site.views',
 
     (r'^topics/$',        '_render_template', {'template': 'content/topics.html'}),
     (r'^committees/$',    '_render_template', {'template': 'content/committees.html'}),
+    (r'^participants/$',  '_render_template', {'template': 'content/participants.html'}),
     (r'^minisymposia/$',  '_render_template', {'template': 'content/minisymposia.html'}),
     (r'^payment/$',       '_render_template', {'template': 'content/payment.html'}),
     (r'^accommodation/$', '_render_template', {'template': 'content/accommodation.html'}),
