@@ -2,6 +2,6 @@
 *.swp
 *~
 
-esco*/esco/media/admin
-esco*/esco/media/captchas
+femtec*/femtec/media/admin
+femtec*/femtec/media/captchas
 

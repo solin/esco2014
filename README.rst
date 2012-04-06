@@ -7,7 +7,7 @@ Updating Dreamhost
 
 If this is your first time updating Dreamhost, issue the following command::
 
-    $ git remote add <username> https://<username>@github.com/femhub/esco.git
+    $ git remote add <username> https://<username>@github.com/femhub/femtec.git
 
 (use your username at GitHub in place of ``<username>``). We use this approach
 to avoid storing private SSH keys at Dreamhost. Note that every remote command

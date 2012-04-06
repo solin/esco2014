@@ -1,0 +1,11 @@
+Dear {{ user.get_full_name }},
+{% block content %}
+{% endblock %}
+With best regards,
+
+-- 
+ESCO 2012 Organizing Committee
+E-mail: femtec2012-at-femhub-dot-com
+Phone: 1-775-848-7892
+Fax: 1-775-784-6378
+ 
