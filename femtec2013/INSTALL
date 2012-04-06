@@ -1,5 +1,5 @@
 
-HOWTO INSTALL ESCO 2012
+HOWTO INSTALL FEMTEC 2012
 
 NOTES:
 
@@ -21,7 +21,7 @@ Install MySQL, unless it's already installed:
 
 (possibly you will also edit /etc/mysql/my.cnf)
 
-Configure MySQL for ESCO 2012:
+Configure MySQL for FEMTEC 2012:
 
  # mysql -u root
 
@@ -31,7 +31,7 @@ Configure MySQL for ESCO 2012:
  mysql> create user femtec identified by 'femtec-pass';
  mysql> grant all privileges on femtec_2012.* to femtec;
 
-(database name, user name and password must match ESCO 2012
+(database name, user name and password must match FEMTEC 2012
  configuration, which is stored in femtec-2012/femtec/settings.py)
 
 Install Django and PIL:
@@ -46,12 +46,12 @@ Create directory where abstracts will be stored:
  # mkdir -p /var/db/femtec-2012/abstracts
  # chown -R apache:apache /var/db/femtec-2012
 
-Create directory where ESCO site will be stored:
+Create directory where FEMTEC site will be stored:
 
  # mkdir -p /var/www/events/femtec-2012
  # chown -R apache:apache /var/www/events
 
-Now unpack archieve with ESCO sources:
+Now unpack archieve with FEMTEC sources:
 
  $ cd /home/user
  $ tar -xjvf femtec-2012.tar.bz2
@@ -67,7 +67,7 @@ Create tables in femtec_2012 database:
 (if you changed MySQL configuration, then adjust femtec/settings.py,
  when creating tables you will be asked to setup main admin account)
 
-Create symbolic links to ESCO code and media files:
+Create symbolic links to FEMTEC code and media files:
 
  # ln -s /home/user/femtec-2012/femtec /var/www/events/femtec-2012/femtec
  # ln -s /home/user/femtec-2012/femtec/media /var/www/events/femtec-2012/media

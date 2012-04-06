@@ -2,7 +2,7 @@
 
 {% block content %}
 thank you for submitting/updating your user profile. You have now completed
-initial registration for ESCO 2012. The data that we received are:
+initial registration for FEMTEC 2012. The data that we received are:
 
 Affiliation: {{ profile.affiliation }}
 Address: {{ profile.address }}

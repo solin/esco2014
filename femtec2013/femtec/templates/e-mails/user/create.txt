@@ -1,7 +1,7 @@
 {% extends "e-mails/user/base.txt" %}
 
 {% block content %}
-thank you for creating an account at ESCO 2012 conference. You can now
+thank you for creating an account at FEMTEC 2012 conference. You can now
 proceed to http://femtec2012.femhub.com/account/login/ and log in.
 
 After logging in you will get detailed information about further steps,

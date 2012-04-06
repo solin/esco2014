@@ -82,7 +82,7 @@ template = r'''
 \hbox{} \hfill Reno, NV, USA\\
 Dear %(name)s,\\
 \noindent
-Thank you for the payment of registration fee for the ESCO 2012
+Thank you for the payment of registration fee for the FEMTEC 2012
 conference in the amount of USD %(paid)s. \\
 \begin{figure}[!ht]
 \includegraphics[width=3.5cm]{../signature.pdf}

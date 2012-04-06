@@ -1,7 +1,7 @@
 import os
 import code
 
-class ESCOConsole(code.InteractiveConsole):
+class FEMTECConsole(code.InteractiveConsole):
     """An interactive console with readline support. """
 
     def __init__(self):
@@ -27,5 +27,5 @@ class ESCOConsole(code.InteractiveConsole):
 
                 atexit.register(readline.write_history_file, history)
 
-console = ESCOConsole()
+console = FEMTECConsole()
 console.interact()
