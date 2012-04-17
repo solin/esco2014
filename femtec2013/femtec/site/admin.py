@@ -4,6 +4,15 @@ from django.template import Context, loader
 
 from django.contrib.auth.models import User
 from femtec.site.models import UserProfile, UserAbstract2 as UserAbstract
+from titlecase import titlecase
+
+import datetime
+
+try:
+    import json
+except ImportError:
+    import simplejson as json
+
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ('email', 'first_name', 'last_name', 'is_staff')
@@ -78,6 +87,23 @@ class UserAbstractAdmin(admin.ModelAdmin):
     actions_on_bottom = False
 
     def save_model(self, request, obj, form, change):
+        if request.method == 'POST' and change == True:
+            data = json.loads(form.cleaned_data['data'])
+            data['title'] = titlecase(data['title'])
+            data = json.dumps(data)
+            date = datetime.datetime.today()
+            
+            obj.data = data
+
+            obj.modify_date = date
+            obj.save()
+
+            cls = obj.to_cls()
+            compiled = cls.build(obj.get_path())
+
+            obj.compiled = True
+            obj.save()
+
         if 'verified' in form.changed_data:
             verified = form.cleaned_data['verified']
 
@@ -88,7 +114,7 @@ class UserAbstractAdmin(admin.ModelAdmin):
                 if settings.SEND_EMAIL:
                     obj.user.email_user("Abstract Status Update", body)
             elif verified is False:
-                host = request.META.get("HTTP_ORIGIN", "http://femtec2012.femhub.com")
+                host = request.META.get("HTTP_ORIGIN", "http://femtec2013.femhub.com")
                 modify_url = "%s/account/abstracts/modify/%s/" % (host, obj.id)
                 template = loader.get_template('e-mails/user/not-verified.txt')
                 body = template.render(Context({'user': obj.user, 'modify_url': modify_url}))

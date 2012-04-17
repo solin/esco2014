@@ -1,6 +1,8 @@
 from __future__ import with_statement
 
 import os
+import re
+import htmlentitydefs
 import shutil
 import subprocess
 
@@ -13,6 +15,131 @@ class Latexible(object):
 
     def to_latex(self):
         raise NotImplementedError
+
+def convert_html_entities(s):
+    matches = re.findall("&#\d+;", s)
+    if len(matches) > 0:
+        hits = set(matches)
+        for hit in hits:
+            name = hit[2:-1]
+            try:
+                entnum = int(name)
+                s = s.replace(hit, unichr(entnum))
+            except ValueError:
+                pass
+
+    matches = re.findall("&#[xX][0-9a-fA-F]+;", s)
+    if len(matches) > 0:
+        hits = set(matches)
+        for hit in hits:
+            hex = hit[3:-1]
+            try:
+                entnum = int(hex, 16)
+                s = s.replace(hit, unichr(entnum))
+            except ValueError:
+                pass
+
+    s = s.replace("&quot;", "")
+    s = s.replace("&amp;", "&")
+    return s 
+
+class TocAuthors(Latexible):
+
+    _template = u", "
+
+    def __init__(self, authors):
+        self.authors = authors
+
+    def to_latex(self):
+        single_author = len(self.authors) == 1
+        return self._template.join([ author.to_latex(single_author) for author in self.authors ])
+
+class PresentingAuthors(Latexible):
+
+    _template = u", "
+
+    def __init__(self, authors):
+        self.authors = authors
+
+    def to_latex(self):
+        single_author = len(self.authors) == 1
+        return self._template.join([ author.to_latex(single_author) for author in self.authors ])
+
+class PresentingAuthor(Latexible):
+
+    _template = u"""%(person)s
+    %(address)s\\\\
+    """
+    _presenting_person = u"{%(first_name)s %(last_name)s}"
+    _nonpresenting_person = u"%(first_name)s %(last_name)s"
+
+    def __init__(self, first_name, last_name, address, email, presenting):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.address = address
+        self.email = email
+        self.presenting = presenting
+
+    def to_latex(self, single_author=False):
+        if not single_author and self.presenting == 'yes':
+            person_template = self._presenting_person
+        else:
+            person_template = self._nonpresenting_person
+
+        person = person_template % dict(
+            first_name=self.first_name,
+            last_name=self.last_name)
+
+        return self._template % dict(
+            person=person,
+            address=self.address,
+            email=self.email)
+
+    @classmethod
+    def from_json(cls, data):
+        first_name = data.get('first_name', "")
+        last_name = data.get('last_name', "")
+        address = data.get('address', "")
+        email = data.get('email', "")
+        presenting = data['presenting']
+        return cls(first_name, last_name, address, email, presenting)
+
+class TocAuthor(Latexible):
+
+    _template = u"%(person)s"
+    _presenting_person = u"\\underline{%(first_name)s %(last_name)s}"
+    _nonpresenting_person = u"%(first_name)s %(last_name)s"
+
+    def __init__(self, first_name, last_name, address, email, presenting):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.address = address
+        self.email = email
+        self.presenting = presenting
+
+    def to_latex(self, single_author=False):
+        if not single_author and self.presenting == 'yes':
+            person_template = self._presenting_person
+        else:
+            person_template = self._nonpresenting_person
+
+        person = person_template % dict(
+            first_name=self.first_name,
+            last_name=self.last_name)
+
+        return self._template % dict(
+            person=person,
+            address=self.address,
+            email=self.email)
+
+    @classmethod
+    def from_json(cls, data):
+        first_name = data.get('first_name', "")
+        last_name = data.get('last_name', "")
+        address = data.get('address', "")
+        email = data.get('email', "")
+        presenting = data['presenting']
+        return cls(first_name, last_name, address, email, presenting)
 
 class Author(Latexible):
 
@@ -150,6 +277,13 @@ class BibItems(Latexible):
 
 class Abstract(Latexible):
 
+    _template_abstracts = u"""
+\\title{%(title)s}
+\\section*{Abstract}
+%(abstract)s"""
+
+    _template_presenting = u"%(authors)s"
+
     _template = u"""
 \\documentclass[article,A4,11pt]{llncs}
 \\usepackage[T1]{fontenc}
@@ -175,7 +309,7 @@ class Abstract(Latexible):
 \\begin{document}
 
 \\title{%(title)s}
-\\author{} \\institute{}
+\\author{} \\tocauthor{%(tocauthors)s} \\institute{}
 \\maketitle
 \\begin{center}
 %(authors)s
@@ -194,17 +328,32 @@ class Abstract(Latexible):
 """
 
     def __init__(self, title, authors, abstract, bibitems):
-        self.title = title
+        self.title = title.replace('\n', '').replace('\r', '')
         self.authors = authors
-        self.abstract = abstract
+        self.abstract = abstract.replace('\n', '').replace('\r', '')
+        self.abstract = convert_html_entities(self.abstract)
         self.bibitems = bibitems
+        temp_authors = [TocAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting) for author in self.authors.authors]
+        self.tocauthors = TocAuthors(temp_authors)
+        temp_presenting = []
+        for author in self.authors.authors:
+            if author.presenting == "yes":
+                temp_presenting.append(PresentingAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting))
+        self.presenting = PresentingAuthors(temp_presenting)
 
     def to_latex(self):
         return self._template % dict(
             title=self.title,
             authors=self.authors.to_latex(),
+            tocauthors=self.tocauthors.to_latex(),
             abstract=self.abstract,
             bibitems=self.bibitems.to_latex())
+
+    def to_latex_raw(self):
+        return self._template_abstracts % dict(title=self.title, abstract=self.abstract)
+
+    def to_latex_presenting(self):
+        return self._template_presenting % dict(authors=self.presenting)
 
     @classmethod
     def from_json(cls, data):
@@ -213,6 +362,12 @@ class Abstract(Latexible):
         abstract = data['abstract']
         bibitems = BibItems.from_json(data['bibitems'])
         return cls(title, authors, abstract, bibitems)
+
+    def build_raw(self):
+        return self.to_latex_raw()
+
+    def build_presenting(self):
+        return self.to_latex_presenting()
 
     def build(self, cwd):
         if os.path.exists(cwd):
