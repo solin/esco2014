@@ -27,7 +27,7 @@ import os
 # See Django documentation for possible values.
 #
 
-path = os.path.expanduser('~/femtec-2012.conf')
+path = os.path.expanduser('~/femtec-2013.conf')
 
 if os.path.exists(path):
     with open(path) as conf:

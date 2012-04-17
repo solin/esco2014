@@ -38,7 +38,6 @@ urlpatterns = patterns('femtec.site.views',
 
     (r'^topics/$',        '_render_template', {'template': 'content/topics.html'}),
     (r'^committees/$',    '_render_template', {'template': 'content/committees.html'}),
-    (r'^participants/$',  '_render_template', {'template': 'content/participants.html'}),
     (r'^minisymposia/$',  '_render_template', {'template': 'content/minisymposia.html'}),
     (r'^payment/$',       '_render_template', {'template': 'content/payment.html'}),
     (r'^accommodation/$', '_render_template', {'template': 'content/accommodation.html'}),
@@ -68,6 +67,7 @@ urlpatterns = patterns('femtec.site.views',
     (r'^account/profile/$', 'account_profile_view'),
 
     (r'^account/abstracts/$', 'abstracts_view'),
+    (r'^account/abstracts/book/$', 'abstracts_book'),
     (r'^account/abstracts/submit/$', 'abstracts_submit_view'),
     (r'^account/abstracts/modify/(\d+)/$', 'abstracts_modify_view'),
     (r'^account/abstracts/delete/(\d+)/$', 'abstracts_delete_view'),
@@ -157,12 +157,12 @@ def account_create_view(request, **args):
                 template = loader.get_template('e-mails/user/create.txt')
                 body = template.render(Context({'user': user}))
 
-                user.email_user("[FEMTEC 2012] Account Creation Notification", body)
+                user.email_user("[ESCO 2012] Account Creation Notification", body)
 
                 template = loader.get_template('e-mails/admin/create.txt')
                 body = template.render(Context({'user': user}))
 
-                mail_admins("[FEMTEC 2012][ADMIN] New Account", body)
+                mail_admins("[ESCO 2012][ADMIN] New Account", body)
 
             return HttpResponsePermanentRedirect('/account/create/success/')
     else:
@@ -205,7 +205,7 @@ def account_password_remind_view(request, **args):
                 template = loader.get_template('e-mails/user/reminder.txt')
                 body = template.render(Context({'user': user, 'password': password}))
 
-                user.email_user("[FEMTEC 2012] Password Reminder Notification", body)
+                user.email_user("[ESCO 2012] Password Reminder Notification", body)
 
             return HttpResponsePermanentRedirect('/account/password/remind/success/')
     else:
@@ -249,7 +249,7 @@ def account_profile_view(request, **args):
                 template = loader.get_template('e-mails/user/profile.txt')
                 body = template.render(Context({'user': request.user, 'profile': profile}))
 
-                request.user.email_user("[FEMTEC 2012] User Profile Confirmation", body)
+                request.user.email_user("[ESCO 2012] User Profile Confirmation", body)
 
             message = 'Your profile was updated successfully.'
 
@@ -317,6 +317,23 @@ def abstracts_view(request, **args):
         has_profile = True
 
     return _render_to_response('abstracts/abstracts.html', request, {'abstracts': abstracts, 'has_profile': has_profile})
+
+@login_required
+def abstracts_book(request, **args):
+    abstracts = UserAbstract.objects.order_by("id")
+
+    compiled_abstracts = []
+    compiled_authors = []
+
+    for abstract in abstracts:
+        cls = abstract.to_cls()
+        compiled_abstracts.append(cls.build_raw())
+        compiled_authors.append(cls.build_presenting())
+
+    compiled_abstracts.sort()
+    compiled_authors.sort()
+
+    return render_to_response('abstracts/book.html', RequestContext(request, {'abstracts': compiled_abstracts, 'authors' : compiled_authors}), mimetype="text/plain")
 
 def get_submit_form_data(post, user):
     title = post['title']
@@ -393,12 +410,12 @@ def abstracts_submit_view(request, **args):
             template = loader.get_template('e-mails/user/abstract.txt')
             body = template.render(Context({'user': request.user, 'abstract': abstract}))
 
-            request.user.email_user("[FEMTEC 2012] Abstract Submission Notification", body)
+            request.user.email_user("[ESCO 2012] Abstract Submission Notification", body)
 
             template = loader.get_template('e-mails/admin/abstract.txt')
             body = template.render(Context({'user': request.user, 'abstract': abstract}))
 
-            mail_admins("[FEMTEC 2012][ADMIN] New Abstract", body)
+            mail_admins("[ESCO 2012][ADMIN] New Abstract", body)
 
         return HttpResponsePermanentRedirect('/account/abstracts/')
     else:
