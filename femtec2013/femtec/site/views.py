@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponsePermanentRedirect, Http404
 from django.template import RequestContext, Context, loader
 
 from django.shortcuts import render_to_response, get_object_or_404
-
+from django.template.loader import render_to_string
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
@@ -333,7 +333,14 @@ def abstracts_book(request, **args):
     compiled_abstracts.sort()
     compiled_authors.sort()
 
-    return render_to_response('abstracts/book.html', RequestContext(request, {'abstracts': compiled_abstracts, 'authors' : compiled_authors}), mimetype="text/plain")
+    output = render_to_string('abstracts/book.html', RequestContext(request, {'abstracts': compiled_abstracts, 'authors' : compiled_authors}))
+
+    response = HttpResponse(output, mimetype='text/plain')
+    response['Content-Type'] = 'application/octet-stream'
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=boa.tex'
+
+    return response
 
 def get_submit_form_data(post, user):
     title = post['title']
