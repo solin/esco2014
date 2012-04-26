@@ -335,6 +335,14 @@ def abstracts_book(request, **args):
 
     output = render_to_string('abstracts/book.html', RequestContext(request, {'abstracts': compiled_abstracts, 'authors' : compiled_authors}))
 
+    output = output.replace('&amp;','&')
+    output = output.replace('&lt;','<')
+    output = output.replace('&gt;','>')
+    output = output.replace('&quot;','"')
+    output = output.replace('&#39;',"'")
+    output = output.replace('&#','&\#')
+    output = output.replace('displaystyleK','displaystyle')
+
     response = HttpResponse(output, mimetype='text/plain')
     response['Content-Type'] = 'application/octet-stream'
     response['Cache-Control'] = 'must-revalidate'
