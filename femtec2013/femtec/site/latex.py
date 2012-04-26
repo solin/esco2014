@@ -248,7 +248,7 @@ class BibItem(Latexible):
     def __init__(self, bibid, authors, title, other):
         self.bibid = bibid
         self.authors = authors
-        self.title = title
+        self.title = title.replace('&quot;', '')
         self.other = other
 
     def to_latex(self):
@@ -284,7 +284,8 @@ class Abstract(Latexible):
 
     _template_abstracts = u"""
 \\title{%(title)s}
-\\author{} \\tocauthor{%(tocauthors)s} \\institute{}
+\\author{} \\institute{}
+\\tocauthor{}
 \\maketitle
 \\begin{center}
 %(authors)s
@@ -346,10 +347,10 @@ class Abstract(Latexible):
 """
 
     def __init__(self, title, authors, abstract, bibitems):
-        self.title = title.replace('\n', '').replace('\r', '')
+        self.title = title.replace('\n', '').replace('\r', '').replace('&quot;', '')
         self.authors = authors
         self.abstract = abstract.replace('\n', '').replace('\r', '')
-        self.abstract = convert_html_entities(self.abstract)
+        self.abstract = self.abstract
         self.bibitems = bibitems
         temp_authors = [TocAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting) for author in self.authors.authors]
         self.tocauthors = TocAuthors(temp_authors)
