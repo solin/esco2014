@@ -26,6 +26,7 @@ try:
 except ImportError:
     import simplejson as json
 
+import os
 import re
 import shutil
 import datetime
@@ -322,19 +323,30 @@ def abstracts_view(request, **args):
 def abstracts_book(request, **args):
     abstracts = UserAbstract.objects.order_by("id")
 
-    compiled_abstracts = []
-    compiled_authors = []
+    compiled_abstracts = {}
+    compiled_authors = {}
 
     for abstract in abstracts:
         cls = abstract.to_cls()
-        compiled_abstracts.append(cls.build_raw())
-        compiled_authors.append(cls.build_presenting())
+        compiled_abstracts[cls.title] = cls.build_raw()
+        compiled_authors[cls.title] = cls.build_presenting()
 
-    compiled_abstracts.sort()
-    compiled_authors.sort()
+    abstract_keys = compiled_abstracts.keys()
+    abstract_keys.sort()
 
-    output = render_to_string('abstracts/book.html', RequestContext(request, {'abstracts': compiled_abstracts, 'authors' : compiled_authors}))
-
+    #output = render_to_string('abstracts/book.html', RequestContext(request, {'abstracts': compiled_abstracts, 'authors' : compiled_authors}))
+    str_list = []
+    f = open(os.path.join(os.path.dirname(__file__), 'boa.txt'))
+    str_list.append(f.read())
+    f.close()
+    for a in abstract_keys:
+        str_list.append(compiled_abstracts[a])
+    str_list.append('\newpage')
+    str_list.append('\part{List of Participants}')
+    for a in abstract_keys:
+        str_list.append(compiled_authors[a])
+    str_list.append('\end{document}')
+    output = ''.join(str_list)
     output = output.replace('&amp;','&')
     output = output.replace('&lt;','<')
     output = output.replace('&gt;','>')
