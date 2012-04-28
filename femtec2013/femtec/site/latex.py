@@ -2,6 +2,7 @@ from __future__ import with_statement
 
 import os
 import re
+import string
 import shutil
 import subprocess
 
@@ -46,7 +47,7 @@ def convert_html_entities(s):
 
 class TocAuthors(Latexible):
 
-    _template = u", "
+    _template = u""
 
     def __init__(self, authors):
         self.authors = authors
@@ -62,11 +63,17 @@ class PresentingAuthors(Latexible):
 
     def __init__(self, authors):
         self.authors = authors
+        self.sorted_keys = authors.keys()
+        self.sorted_keys.sort()
+
 
     def to_latex(self):
         single_author = len(self.authors) == 1
-        return self._template.join([ author.to_latex(single_author) for author in self.authors ])
-
+        #return self._template.join([ author.to_latex(single_author) for author in self.authors ])
+        strlist = []
+        for key in self.sorted_keys:
+            strlist.append(self.authors[key].to_latex(single_author))
+        return self._template.join(strlist)
 
 class PresentingAuthor(Latexible):
 
@@ -284,8 +291,7 @@ class Abstract(Latexible):
 
     _template_abstracts = u"""
 \\title{%(title)s}
-\\author{} \\institute{}
-\\tocauthor{}
+\\tocauthor{%(tocauthors)s} \\author{} \\institute{}
 \\maketitle
 \\begin{center}
 %(authors)s
@@ -348,16 +354,21 @@ class Abstract(Latexible):
 
     def __init__(self, title, authors, abstract, bibitems):
         self.title = title.replace('\n', '').replace('\r', '').replace('&quot;', '')
+        self.title = self.title.replace('"', '')
+        self.title = self.title.replace('$hp$', 'hp')
+        self.title = self.title.strip()
         self.authors = authors
         self.abstract = abstract.replace('\n', '').replace('\r', '')
         self.abstract = self.abstract
         self.bibitems = bibitems
-        temp_authors = [TocAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting) for author in self.authors.authors]
-        self.tocauthors = TocAuthors(temp_authors)
-        temp_presenting = []
+        temp_authors = []
+        temp_presenting = {}
         for author in self.authors.authors:
-            temp_presenting.append(PresentingAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting))
+            temp_presenting[author.last_name + " " + author.first_name]=PresentingAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting)
+            if author.presenting == 'yes':
+                temp_authors.append(TocAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting))
         self.presenting = PresentingAuthors(temp_presenting)
+        self.tocauthors = TocAuthors(temp_authors)
 
     def to_latex(self):
         return self._template % dict(
