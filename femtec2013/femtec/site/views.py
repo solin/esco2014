@@ -341,11 +341,11 @@ def abstracts_book(request, **args):
     f.close()
     for a in abstract_keys:
         str_list.append(compiled_abstracts[a])
-    str_list.append('\newpage')
-    str_list.append('\part{List of Participants}')
+    str_list.append('\\newpage\n')
+    str_list.append('\\part{List of Participants}\n')
     for a in abstract_keys:
         str_list.append(compiled_authors[a])
-    str_list.append('\end{document}')
+    str_list.append('\\end{document}')
     output = ''.join(str_list)
     output = output.replace('&amp;','&')
     output = output.replace('&lt;','<')
