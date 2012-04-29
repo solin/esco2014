@@ -1,32 +1,16 @@
-\documentclass[article,A4,11pt]{llncs}%
-\usepackage[T1]{fontenc}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{amsfonts}
-\usepackage{graphicx}
-\usepackage{mathrsfs}
-\usepackage{wrapfig}
-\usepackage{color}
-\usepackage{amsmath,mathrsfs,bm}
-\usepackage{cases}
-\usepackage{subfig}
 
-\leftmargin=0.2cm
-\oddsidemargin=1.2cm
-\evensidemargin=0cm
-\topmargin=0cm
-\textwidth=15.5cm
-\textheight=21.5cm
-\pagestyle{plain}
-\begin{document}
 {% for abstract in abstracts %}
 {{ abstract }}
 {% endfor %}
-\maketitle
-\begin{center}
-List of participants
-\end{center}
+
+%--------------------------------------------------------------------------------------
+\newpage
+
+
+\part{List of Participants}
+
 {% for author in authors %}
 {{ author }}
 {% endfor %}
+
 \end{document}

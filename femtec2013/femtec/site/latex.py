@@ -59,7 +59,7 @@ class TocAuthors(Latexible):
 
 class PresentingAuthors(Latexible):
 
-    _template = u"\\\\ \\vspace{4mm}"
+    _template = u""
 
     def __init__(self, authors):
         self.authors = authors
@@ -77,16 +77,18 @@ class PresentingAuthors(Latexible):
 
 class PresentingAuthor(Latexible):
 
-    _template = u"""%(person)s
+    _template = u"""
+    \\noindent
+    %(person)s
     %(address)s\\\\
     """
-    _presenting_person = u"%(first_name)s %(last_name)s"
-    _nonpresenting_person = u"%(first_name)s %(last_name)s"
+    _presenting_person = u"{\\bf %(first_name)s %(last_name)s}\\\\"
+    _nonpresenting_person = u"{\\bf %(first_name)s %(last_name)s}\\\\"
 
     def __init__(self, first_name, last_name, address, email, presenting):
-        self.first_name = first_name
-        self.last_name = last_name
-        self.address = address
+        self.first_name = first_name.strip()
+        self.last_name = last_name.strip()
+        self.address = address.strip()
         self.email = email
         self.presenting = presenting
 
@@ -118,7 +120,7 @@ class PresentingAuthor(Latexible):
 class TocAuthor(Latexible):
 
     _template = u"%(person)s"
-    _presenting_person = u"\\underline{%(first_name)s %(last_name)s}"
+    _presenting_person = u"%(first_name)s %(last_name)s"
     _nonpresenting_person = u"%(first_name)s %(last_name)s"
 
     def __init__(self, first_name, last_name, address, email, presenting):
@@ -356,19 +358,22 @@ class Abstract(Latexible):
         self.title = title.replace('\n', '').replace('\r', '').replace('&quot;', '')
         self.title = self.title.replace('"', '')
         self.title = self.title.replace('$hp$', 'hp')
+        self.title = "".join([x for x in self.title if ord(x) < 128])
         self.title = self.title.strip()
         self.authors = authors
         self.abstract = abstract.replace('\n', '').replace('\r', '')
         self.abstract = self.abstract
         self.bibitems = bibitems
-        temp_authors = []
+        toc_author = []
         temp_presenting = {}
         for author in self.authors.authors:
             temp_presenting[author.last_name + " " + author.first_name]=PresentingAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting)
+            if len(toc_author) == 0:
+                toc_author.append(TocAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting))
             if author.presenting == 'yes':
-                temp_authors.append(TocAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting))
+                toc_author.append(TocAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting))
         self.presenting = PresentingAuthors(temp_presenting)
-        self.tocauthors = TocAuthors(temp_authors)
+        self.tocauthors = TocAuthors(toc_author)
 
     def to_latex(self):
         return self._template % dict(
