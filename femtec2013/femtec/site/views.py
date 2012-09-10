@@ -42,7 +42,7 @@ urlpatterns = patterns('femtec.site.views',
     (r'^minisymposia/$',  '_render_template', {'template': 'content/minisymposia.html'}),
     (r'^payment/$',       '_render_template', {'template': 'content/payment.html'}),
     (r'^accommodation/$', '_render_template', {'template': 'content/accommodation.html'}),
-    (r'^travel/$',        '_render_template', {'template': 'content/travel.html'}),
+    (r'^venue/$',        '_render_template', {'template': 'content/venue.html'}),
     (r'^postconf/$',      '_render_template', {'template': 'content/postconf.html'}),
     (r'^contact/$',       '_render_template', {'template': 'content/contact.html'}),
 
