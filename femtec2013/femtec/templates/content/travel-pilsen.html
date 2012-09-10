@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Conference Venue</h2>
+
+    <p>
+        Pilsen is a beautiful historical city whose origins date back to the 13th
+        century. On 6 May 1945, near the end of World War II, it was liberated 
+        from the Nazis by the 16th Armored Division of General Patton's 3rd Army. 
+        An overview of the rich Pilsen's history can be found on its
+        <a href="http://en.wikipedia.org/wiki/Plze%C5%88">Wikipedia page</a>.
+        The city features many sightseeing attractions.
+    </p>
+
+    <p>
+        The conference will take place in the historical
+        <a href="http://www.plzensky-prazdroj.cz/en/come-and-visit/pilsen-brewery/lease-of-premises">conference center Secese</a>
+        of the Pilsner Urquell Brewery, and catering will be provided by the famous brewery restaurant
+        <a href="http://www.plzensky-prazdroj.cz/en/come-and-visit/pilsen-brewery/na-spilce-restaurant">Na Spilce</a>.
+    </p>
+
+    <p>
+        Part of the conference program will be optional tours of the
+        <a href="http://www.plzensky-prazdroj.cz/en/come-and-visit/pilsen-brewery/brewery-museum-tour">Pilsner Urquell brewery museum</a>,
+        <a href="http://www.plzenskepodzemi.cz/en/">historical undergrounds of Pilsen</a>, and
+        <a href="http://en.wikipedia.org/wiki/Cathedral_of_St._Bartholomew_(Plze%C5%88)">St. Bartholomeus Cathedral</a>.
+    </p>
+
+    <h2>Travel Information</h2>
+
+    <p>
+        Conference registration will take place in the lobby of the hotel Angelo Pilsen on Sunday
+        June 24, 2012. Dinner will be provided.
+    </p>
+
+    <h4>Using a train from Prague</h4>
+
+    <p>
+        This is a recommended way of transportation as the Angelo Hotel is located approx. 400 m from the
+        Pilsen Railway Station. The trains leave from the Prague Main Railway Station
+        (Praha Hlavni Nadrazi) often and the trip takes less than 3 hours. When coming through the Prague
+        Airport, use the <a href="http://czech-transport.com/index.php?id=357">Airport Express</a> shuttle
+        service which takes you there directly. When coming from other parts of the city, the Main Railway
+        Station is a stop of the red line "C" of Prague subway. Train tickets can be purchased in the lobby
+        of the railway station, or directly in the train (higher fees apply).
+    </p>
+
+    <h2>Accommodation</h2>
+
+    <p>
+        A limited number of rooms has been reserved in the <a href="http://www.angelo-pilsen.cz/">Angelo Pilsen</a>
+        hotel across the street from the conference venue, at a special conference price of 50 EUR single room
+        and 65 EUR two bed room (in both cases including breakfast). Please mention that you belong to the FEMTEC 2012 conference while
+        making a reservation. Alternatively, accommodation is possible in the
+        <a href="http://www.marriott.com/hotels/travel/prgpz-courtyard-pilsen/">Marriott Courtyard Pilsen</a>
+        and many other hotels in Pilsen.
+    </p>
+
+    <h2>Map</h2>
+
+    <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
+    <script type="text/javascript">
+        pilsen_lat = 49.74520;
+        pilsen_lon = 13.38500;
+
+        pilsen_zoom = 15;
+
+        var map;
+
+        markers = [];
+
+        $(document).ready(function() {
+            pilsen_latlon = new google.maps.LatLng(pilsen_lat, pilsen_lon);
+
+            map = new google.maps.Map(document.getElementById("map"), {
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                center: pilsen_latlon,
+                zoom: pilsen_zoom,
+            });
+
+            markers.push(new google.maps.Marker({
+                position: new google.maps.LatLng(49.745985, 13.387030),
+                title: "Angelo Hotel",
+                map: map,
+            }));
+
+            markers.push(new google.maps.Marker({
+                position: new google.maps.LatLng(49.748530, 13.381530),
+                title: "Marriott Hotel",
+                map: map,
+            }));
+
+            markers.push(new google.maps.Marker({
+                position: new google.maps.LatLng(49.747230, 13.387730),
+                title: "Na Spilce Restaurant",
+                map: map,
+            }));
+
+            markers.push(new google.maps.Marker({
+                position: new google.maps.LatLng(49.748947, 13.380708),
+                title: "Brewery Museum",
+                map: map,
+            }));
+
+            markers.push(new google.maps.Marker({
+                position: new google.maps.LatLng(49.747588, 13.377632),
+                title: "St. Bartholomeus Cathedral",
+                map: map,
+            }));
+        });
+    </script>
+
+    <div id="map"></div>
+{% endblock %}
