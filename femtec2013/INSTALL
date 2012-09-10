@@ -1,5 +1,5 @@
 
-HOWTO INSTALL FEMTEC 2012
+HOWTO INSTALL FEMTEC 2013
 
 NOTES:
 
@@ -21,18 +21,18 @@ Install MySQL, unless it's already installed:
 
 (possibly you will also edit /etc/mysql/my.cnf)
 
-Configure MySQL for FEMTEC 2012:
+Configure MySQL for FEMTEC 2013:
 
  # mysql -u root
 
 (use -p if you have password for MySQL root)
 
- mysql> create database femtec_2012;
+ mysql> create database femtec_2013;
  mysql> create user femtec identified by 'femtec-pass';
- mysql> grant all privileges on femtec_2012.* to femtec;
+ mysql> grant all privileges on femtec_2013.* to femtec;
 
-(database name, user name and password must match FEMTEC 2012
- configuration, which is stored in femtec-2012/femtec/settings.py)
+(database name, user name and password must match FEMTEC 2013
+ configuration, which is stored in femtec-2013/femtec/settings.py)
 
 Install Django and PIL:
 
@@ -43,25 +43,25 @@ Install Django and PIL:
 
 Create directory where abstracts will be stored:
 
- # mkdir -p /var/db/femtec-2012/abstracts
- # chown -R apache:apache /var/db/femtec-2012
+ # mkdir -p /var/db/femtec-2013/abstracts
+ # chown -R apache:apache /var/db/femtec-2013
 
 Create directory where FEMTEC site will be stored:
 
- # mkdir -p /var/www/events/femtec-2012
+ # mkdir -p /var/www/events/femtec-2013
  # chown -R apache:apache /var/www/events
 
 Now unpack archieve with FEMTEC sources:
 
  $ cd /home/user
- $ tar -xjvf femtec-2012.tar.bz2
+ $ tar -xjvf femtec-2013.tar.bz2
 
 (substitute `user` with your login, alternatively you can put this
  into /opt or /usr, or in location which you are comfortable with)
 
-Create tables in femtec_2012 database:
+Create tables in femtec_2013 database:
 
- $ cd /home/user/femtec-2012/femtec
+ $ cd /home/user/femtec-2013/femtec
  $ python manage.py syncdb
 
 (if you changed MySQL configuration, then adjust femtec/settings.py,
@@ -69,17 +69,17 @@ Create tables in femtec_2012 database:
 
 Create symbolic links to FEMTEC code and media files:
 
- # ln -s /home/user/femtec-2012/femtec /var/www/events/femtec-2012/femtec
- # ln -s /home/user/femtec-2012/femtec/media /var/www/events/femtec-2012/media
+ # ln -s /home/user/femtec-2013/femtec /var/www/events/femtec-2013/femtec
+ # ln -s /home/user/femtec-2013/femtec/media /var/www/events/femtec-2013/media
 
 Copy Apache2 configuration to appropriate location:
 
- # cp /home/user/femtec-2012/conf/femtec-2012.conf /etc/apache2/sites-enabled/
+ # cp /home/user/femtec-2013/conf/femtec-2013.conf /etc/apache2/sites-enabled/
 
 (if you prefer to use /var/www2 or something instead /var/www, you will
- need to adjust previous step accordingly and edit femtec-2012.conf manually)
+ need to adjust previous step accordingly and edit femtec-2013.conf manually)
 
-(possibly you will also need to adjust ServerName in femtec-2012.conf)
+(possibly you will also need to adjust ServerName in femtec-2013.conf)
 
 Now you can restart Apache2 service:
 
@@ -87,7 +87,7 @@ Now you can restart Apache2 service:
 
 Last step is to create (or link) special directories:
 
- $ cd /home/user/femtec-2012/femtec/media
+ $ cd /home/user/femtec-2013/femtec/media
 
  $ mkdir captchas
  # chmod 775 captchas
@@ -99,7 +99,7 @@ Last step is to create (or link) special directories:
 
 Finally, if everything works, you can will be able to browse:
 
- http://yourhost/events/femtec-2012/
+ http://yourhost/events/femtec-2013/
 
 (where `yourhost` can be localhost, hpfem.org etc., depending on configuration)
 
