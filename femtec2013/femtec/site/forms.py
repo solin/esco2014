@@ -310,7 +310,7 @@ class UserProfileForm(forms.Form):
         label     = "Arrival Date",
         help_text = "MM/DD/YYYY, e.g., 05/19/2013",
         input_formats = [
-            '%d/%m/%Y',      # '05/19/2013'
+            '%m/%d/%Y',      # '05/19/2013'
         ],
         error_messages = {
             'required': 'Enter arrival date, e.g., 05/19/2013',
@@ -322,7 +322,7 @@ class UserProfileForm(forms.Form):
         label     = "Departure Date",
         help_text = "MM/DD/YYYY, e.g., 05/24/2013",
         input_formats = [
-            '%d/%m/%Y',      # '05/24/2013'
+            '%m/%d/%Y',      # '05/24/2013'
         ],
         error_messages = {
             'required': 'Enter departure date, e.g., 05/24/2013',
