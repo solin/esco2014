@@ -1,8 +1,8 @@
 {% extends "e-mails/user/base.txt" %}
 
 {% block content %}
-thank you for creating an account at FEMTEC 2012 conference. You can now
-proceed to http://femtec2012.femhub.com/account/login/ and log in.
+thank you for creating an account at FEMTEC 2013 conference. You can now
+proceed to http://femtec2013.femhub.com/account/login/ and log in.
 
 After logging in you will get detailed information about further steps,
 including abstract submission procedure, if this applies in your case.

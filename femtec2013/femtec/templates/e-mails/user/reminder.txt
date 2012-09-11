@@ -7,6 +7,6 @@ your new, auto-generated password is:
 
 For security reasons, please change it by following this link: 
 
-http://femtec2012.femhub.com/account/password/change/
+http://femtec2013.femhub.com/account/password/change/
 {% endblock %}
 

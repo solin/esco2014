@@ -4,8 +4,8 @@ Dear {{ user.get_full_name }},
 With best regards,
 
 -- 
-FEMTEC 2012 Organizing Committee
-E-mail: femtec2012-at-femhub-dot-com
+FEMTEC 2013 Organizing Committee
+E-mail: femtec2013-at-femhub-dot-com
 Phone: 1-775-848-7892
 Fax: 1-775-784-6378
  

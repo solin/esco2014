@@ -2,7 +2,7 @@
 
 {% block content %}
 thank you for submitting/updating your user profile. You have now completed
-initial registration for FEMTEC 2012. The data that we received are:
+initial registration for FEMTEC 2013. The data that we received are:
 
 Affiliation: {{ profile.affiliation }}
 Address: {{ profile.address }}
@@ -23,7 +23,7 @@ Interested in post-conference program? {% if profile.postconf %}Yes{% else %}No{
 T-shirt size: {{ profile.tshirt }}
 
 If you noticed any mistakes in the above information, please go 
-back to http://femtec2012.femhub.com/account/profile/ and modify
+back to http://femtec2013.femhub.com/account/profile/ and modify
 your profile any time (you will get another confirmation E-mail).
 {% if profile.speaker %}
 You are a presenter. Please go to http://femtec2012.femhub.com/account/abstracts/ 
