@@ -92,5 +92,5 @@ TEMPLATE_CONTEXT_PROCESSORS += (
 )
 
 AUTHENTICATION_BACKENDS = (
-    'femtec.contrib.emailauth.EmailBackend',
+    'femtec.contrib.emailauth.EmailBackend', 'django.contrib.auth.backends.ModelBackend'
 )
