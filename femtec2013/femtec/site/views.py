@@ -250,7 +250,7 @@ def account_profile_view(request, **args):
                 template = loader.get_template('e-mails/user/profile.txt')
                 body = template.render(Context({'user': request.user, 'profile': profile}))
 
-                request.user.email_user("[ESCO 2012] User Profile Confirmation", body)
+                request.user.email_user("[FEMTEC 2013] User Profile Confirmation", body)
 
             message = 'Your profile was updated successfully.'
 
