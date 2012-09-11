@@ -158,12 +158,12 @@ def account_create_view(request, **args):
                 template = loader.get_template('e-mails/user/create.txt')
                 body = template.render(Context({'user': user}))
 
-                user.email_user("[ESCO 2012] Account Creation Notification", body)
+                user.email_user("[FEMTEC 2013] Account Creation Notification", body)
 
                 template = loader.get_template('e-mails/admin/create.txt')
                 body = template.render(Context({'user': user}))
 
-                mail_admins("[ESCO 2012][ADMIN] New Account", body)
+                mail_admins("[FEMTEC 2013][ADMIN] New Account", body)
 
             return HttpResponsePermanentRedirect('/account/create/success/')
     else:
@@ -206,7 +206,7 @@ def account_password_remind_view(request, **args):
                 template = loader.get_template('e-mails/user/reminder.txt')
                 body = template.render(Context({'user': user, 'password': password}))
 
-                user.email_user("[ESCO 2012] Password Reminder Notification", body)
+                user.email_user("[FEMTEC 2013] Password Reminder Notification", body)
 
             return HttpResponsePermanentRedirect('/account/password/remind/success/')
     else:
