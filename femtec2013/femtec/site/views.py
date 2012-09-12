@@ -39,6 +39,7 @@ urlpatterns = patterns('femtec.site.views',
 
     (r'^topics/$',        '_render_template', {'template': 'content/topics.html'}),
     (r'^committees/$',    '_render_template', {'template': 'content/committees.html'}),
+    (r'^participants/$',  '_render_template', {'template': 'content/participants.html'}),
     (r'^minisymposia/$',  '_render_template', {'template': 'content/minisymposia.html'}),
     (r'^payment/$',       '_render_template', {'template': 'content/payment.html'}),
     (r'^accommodation/$', '_render_template', {'template': 'content/accommodation.html'}),
@@ -437,12 +438,12 @@ def abstracts_submit_view(request, **args):
             template = loader.get_template('e-mails/user/abstract.txt')
             body = template.render(Context({'user': request.user, 'abstract': abstract}))
 
-            request.user.email_user("[ESCO 2012] Abstract Submission Notification", body)
+            request.user.email_user("[FEMTEC 2013] Abstract Submission Notification", body)
 
             template = loader.get_template('e-mails/admin/abstract.txt')
             body = template.render(Context({'user': request.user, 'abstract': abstract}))
 
-            mail_admins("[ESCO 2012][ADMIN] New Abstract", body)
+            mail_admins("[FEMTEC 2013][ADMIN] New Abstract", body)
 
         return HttpResponsePermanentRedirect('/account/abstracts/')
     else:
