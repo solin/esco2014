@@ -26,7 +26,7 @@ If you noticed any mistakes in the above information, please go
 back to http://femtec2013.femhub.com/account/profile/ and modify
 your profile any time (you will get another confirmation E-mail).
 {% if profile.speaker %}
-You are a presenter. Please go to http://femtec2012.femhub.com/account/abstracts/ 
+You are a presenter. Please go to http://femtec2013.femhub.com/account/abstracts/ 
 to submit the abstract of your presentation.
 {% endif %}{% endblock %}
 
