@@ -15,7 +15,7 @@ except ImportError:
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('email', 'first_name', 'last_name', 'is_staff')
+    list_display = ('username', 'first_name', 'last_name', 'is_staff')
 
     actions_on_top = False
     actions_on_bottom = False
