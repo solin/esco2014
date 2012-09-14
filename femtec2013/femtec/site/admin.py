@@ -24,12 +24,17 @@ admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 
 class UserProfileAdmin(admin.ModelAdmin):
-    def full_name(obj):
-        return obj.user.get_full_name()
+    def first_name(obj):
+        return obj.user.first_name
 
-    full_name.short_description = 'Full Name'
+    def last_name(obj):
+        return obj.user.last_name
 
-    list_display = (full_name, 'affiliation', 'address', 'city', 'postal_code',
+    first_name.short_description = 'First Name'
+
+    last_name.short_description = 'Last Name'
+
+    list_display = ('user', first_name, last_name ,'affiliation', 'address', 'city', 'postal_code',
         'country', 'speaker', 'student', 'accompanying', 'vegeterian', 'arrival',
         'departure', 'postconf', 'tshirt')
 
@@ -39,8 +44,11 @@ class UserProfileAdmin(admin.ModelAdmin):
 admin.site.register(UserProfile, UserProfileAdmin)
 
 class UserAbstractAdmin(admin.ModelAdmin):
-    def full_name(obj):
-        return obj.user.get_full_name()
+    def first_name(obj):
+        return obj.user.first_name
+
+    def last_name(obj):
+        return obj.user.last_name
 
     def email(obj):
         return '<a href="mailto:%(email)s">%(email)s</a>' % {'email': obj.user.email}
@@ -57,7 +65,9 @@ class UserAbstractAdmin(admin.ModelAdmin):
     def log(obj):
         return '<a href="/account/abstracts/log/%s">LOG</a>' % obj.id
 
-    full_name.short_description = 'Full Name'
+    first_name.short_description = 'First Name'
+
+    last_name.short_description = 'Last Name'
 
     email.short_description = 'E-mail'
     email.allow_tags = True
@@ -73,7 +83,7 @@ class UserAbstractAdmin(admin.ModelAdmin):
     log.short_description = 'LOG'
     log.allow_tags = True
 
-    list_display = (full_name, email, title, 'submit_date', 'modify_date', 'compiled', 'verified', 'accepted', tex, pdf, log)
+    list_display = ('user', first_name, last_name ,email, title, 'submit_date', 'modify_date', 'compiled', 'verified', 'accepted', tex, pdf, log)
     list_editable = ('verified', 'accepted')
 
     class Media:
