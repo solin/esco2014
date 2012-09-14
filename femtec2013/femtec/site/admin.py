@@ -86,15 +86,16 @@ class UserAbstractAdmin(admin.ModelAdmin):
     actions_on_top = False
     actions_on_bottom = False
 
+    # not working correctly in Home/Site/User abstracts
     def save_model(self, request, obj, form, change):
         if request.method == 'POST' and change == True:
-            data = json.loads(form.cleaned_data['data'])
-            data['title'] = titlecase(data['title'])
-            data = json.dumps(data)
-            date = datetime.datetime.today()
-            
-            obj.data = data
+            #data = json.loads(form.cleaned_data['data'])
+            #data['title'] = titlecase(data['title'])
+            #data = json.dumps(data)
+                        
+            #obj.data = data
 
+            date = datetime.datetime.today()            
             obj.modify_date = date
             obj.save()
 
