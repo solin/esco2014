@@ -28,16 +28,17 @@ class UserProfileAdmin(admin.ModelAdmin):
         return obj.user.first_name
 
     def last_name(obj):
-        return obj.user.last_name
+        return '<a href="mailto:%(email)s">%(last)s</a>' % {'email': obj.user.email, 'last': obj.user.last_name }
 
     first_name.short_description = 'First Name'
 
     last_name.short_description = 'Last Name'
+    last_name.allow_tags = True
 
-    list_display = ('user', first_name, last_name ,'affiliation', 'address', 'city', 'postal_code',
+    list_display = ('user', last_name, first_name, 'affiliation', 'address', 'city', 'postal_code',
         'country', 'speaker', 'student', 'accompanying', 'vegeterian', 'arrival',
         'departure', 'postconf', 'tshirt')
-
+    #list_editable = ['payment']
     actions_on_top = False
     actions_on_bottom = False
 
@@ -48,10 +49,7 @@ class UserAbstractAdmin(admin.ModelAdmin):
         return obj.user.first_name
 
     def last_name(obj):
-        return obj.user.last_name
-
-    def email(obj):
-        return '<a href="mailto:%(email)s">%(email)s</a>' % {'email': obj.user.email}
+        return '<a href="mailto:%(email)s">%(last)s</a>' % {'email': obj.user.email, 'last': obj.user.last_name }
 
     def title(obj):
         return obj.to_cls().title
@@ -68,9 +66,7 @@ class UserAbstractAdmin(admin.ModelAdmin):
     first_name.short_description = 'First Name'
 
     last_name.short_description = 'Last Name'
-
-    email.short_description = 'E-mail'
-    email.allow_tags = True
+    last_name.allow_tags = True
 
     title.short_description = 'Title'
 
@@ -83,7 +79,7 @@ class UserAbstractAdmin(admin.ModelAdmin):
     log.short_description = 'LOG'
     log.allow_tags = True
 
-    list_display = ('user', first_name, last_name ,email, title, 'submit_date', 'modify_date', 'compiled', 'verified', 'accepted', tex, pdf, log)
+    list_display = ('user', last_name, first_name, title, 'submit_date', 'modify_date', 'compiled', 'verified', 'accepted', tex, pdf, log)
     list_editable = ('verified', 'accepted')
 
     class Media:
