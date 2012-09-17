@@ -39,7 +39,7 @@ urlpatterns = patterns('femtec.site.views',
 
     (r'^topics/$',        '_render_template', {'template': 'content/topics.html'}),
     (r'^committees/$',    '_render_template', {'template': 'content/committees.html'}),
-    (r'^participants/$',  '_render_template', {'template': 'content/participants.html'}),
+    (r'^participants/$',  'participants'),
     (r'^minisymposia/$',  '_render_template', {'template': 'content/minisymposia.html'}),
     (r'^payment/$',       '_render_template', {'template': 'content/payment.html'}),
     (r'^accommodation/$', '_render_template', {'template': 'content/accommodation.html'}),
@@ -96,6 +96,11 @@ def handler500(request):
 
 def index_view(request, **args):
     return _render_to_response('base.html', request, args)
+
+def participants(request, **args):
+    userprofile_list = UserProfile.objects.all().order_by('user')
+    return _render_to_response('content/participants.html', request, {'userprofile_list': userprofile_list})
+    
 
 def account_login_view(request, **args):
     next = request.REQUEST.get('next', '/account/')
