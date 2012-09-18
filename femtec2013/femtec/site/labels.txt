@@ -1,0 +1,31 @@
+%\documentstyle[oneside, 11pt]{book}
+\documentstyle[12pt]{book}
+
+\textwidth 190mm
+\textheight 290mm
+\oddsidemargin -15mm
+\evensidemargin -15mm
+\topmargin -30mm
+\itemindent 0mm
+\parindent 0mm
+
+\newcommand{\card}[4]
+{
+	\begin{tabular}{|p{90mm}|}
+		\hline\centering\vspace{10pt}
+		{\large FEMTEC 2013}\\
+		{\footnotesize 3rd International Conference on}\\
+		{\footnotesize Computational Methods in Engineering and Science}\\
+		\vspace{10pt}\rule[15pt]{175pt}{0.5pt}\\
+		{\LARGE \sc \bf #1}\\
+		\vspace{15pt}
+		{\footnotesize #2}\\
+		{\footnotesize #3}\\
+		\vspace{5pt}
+	\end{tabular}
+}
+
+\begin{document}
+\pagestyle{empty}
+\card{Christopher Baker}{Oak Ridge National Laboratories}{Oak Ridge, USA}
+

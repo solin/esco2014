@@ -68,6 +68,8 @@ urlpatterns = patterns('femtec.site.views',
 
     (r'^account/profile/$', 'account_profile_view'),
 
+    (r'^account/labels/$', 'labels'),
+
     (r'^account/abstracts/$', 'abstracts_view'),
     (r'^account/abstracts/book/$', 'abstracts_book'),
     (r'^account/abstracts/submit/$', 'abstracts_submit_view'),
@@ -324,6 +326,26 @@ def abstracts_view(request, **args):
         has_profile = True
 
     return _render_to_response('abstracts/abstracts.html', request, {'abstracts': abstracts, 'has_profile': has_profile})
+
+@login_required
+def labels(request, **args):
+    str_list = []
+    f = open(os.path.join(os.path.dirname(__file__), 'labels.txt'))
+    str_list.append(f.read())
+    f.close()
+
+    # continue here
+
+
+    str_list.append('\\end{document}')
+    output = ''.join(str_list)
+
+    response = HttpResponse(output, mimetype='text/plain')
+    response['Content-Type'] = 'application/octet-stream'
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=labels.tex'
+
+    return response
 
 @login_required
 def abstracts_book(request, **args):
