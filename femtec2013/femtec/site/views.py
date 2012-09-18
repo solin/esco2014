@@ -20,6 +20,7 @@ from femtec.site.forms import UserProfileForm
 
 from django.conf import settings
 from femtec.settings import MIN_PASSWORD_LEN
+from django.core.exceptions import ObjectDoesNotExist
 
 try:
     import json
@@ -100,7 +101,7 @@ def index_view(request, **args):
     return _render_to_response('base.html', request, args)
 
 def participants(request, **args):
-    userprofile_list = UserProfile.objects.all().order_by('user')
+    userprofile_list = User.objects.all().order_by('last_name')
     return _render_to_response('content/participants.html', request, {'userprofile_list': userprofile_list})
     
 
@@ -333,21 +334,28 @@ def labels(request, **args):
     f = open(os.path.join(os.path.dirname(__file__), 'labels.txt'))
     str_list.append(f.read())
     f.close()
+    
+    # TODO
+#    for i in range(len(User.objects.all())):
+#        if ( User.objects.get(id=i+1) == ObjectDoesNotExist ):
+#            break
+#        else:
+    i = 4
 
-    name = User.objects.get(id=4).get_full_name()
-    country = User.objects.get(id=4).get_profile().country
-    affiliation = User.objects.get(id=4).get_profile().affiliation
-    city = User.objects.get(id=4).get_profile().city
- 
+    name = UserProfile.objects.get(id=(i+1)).user.get_full_name()
+    country = UserProfile.objects.get(id=(i+1)).country
+    affiliation = UserProfile.objects.get(id=(i+1)).affiliation
+    city = UserProfile.objects.get(id=i+1).city
     str_list.append('\\card{%(name)s}{%(affiliation)s}{%(city)s, %(country)s}\n' % {'name': name, 'affiliation': affiliation, 'city': city, 'country': country })
 
     str_list.append('\\end{document}')
     output = ''.join(str_list)
 
+    # uncomment before finish
     response = HttpResponse(output, mimetype='text/plain')
-    response['Content-Type'] = 'application/octet-stream'
-    response['Cache-Control'] = 'must-revalidate'
-    response['Content-Disposition'] = 'inline; filename=labels.tex'
+    #response['Content-Type'] = 'application/octet-stream'
+    #response['Cache-Control'] = 'must-revalidate'
+    #response['Content-Disposition'] = 'inline; filename=labels.tex'
 
     return response
 

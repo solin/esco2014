@@ -3,14 +3,11 @@
 {% block content %}
     <h2>Preliminary List of Participants</h2>
     <ul>
-
     {% for user in userprofile_list %}
         <li>
-        <b> {{user.user.last_name}} {{user.user.first_name}}</b> ( {{ user.affiliation }}, {{ user.country }}  )
+        <b> {{ user.last_name }} {{user.first_name}}</b> ( {{ user.get_profile.affiliation }}, {{ user.get_profile.country }}  )
         </li>
     {% endfor %}
-
-
     </ul>
 {% endblock %}
 
