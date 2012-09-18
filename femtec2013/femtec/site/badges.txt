@@ -9,11 +9,11 @@
 \itemindent 0mm
 \parindent 0mm
 
-\newcommand{\card}[4]
+\newcommand{\card}[3]
 {
-	\begin{tabular}{|p{90mm}|}
+	\begin{tabular}{|p{90mm}}
 		\hline\centering\vspace{10pt}
-		{\large FEMTEC 2013}\\
+		{\large ESCO 2012}\\
 		{\footnotesize 3rd International Conference on}\\
 		{\footnotesize Computational Methods in Engineering and Science}\\
 		\vspace{10pt}\rule[15pt]{175pt}{0.5pt}\\
@@ -27,6 +27,3 @@
 
 \begin{document}
 \pagestyle{empty}
-
-\card{Christopher Baker}{Oak Ridge National Laboratories}{Oak Ridge, USA}
-
