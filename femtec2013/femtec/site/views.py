@@ -334,8 +334,12 @@ def labels(request, **args):
     str_list.append(f.read())
     f.close()
 
-    # continue here
-
+    name = User.objects.get(id=4).get_full_name()
+    country = User.objects.get(id=4).get_profile().country
+    affiliation = User.objects.get(id=4).get_profile().affiliation
+    city = User.objects.get(id=4).get_profile().city
+ 
+    str_list.append('\\card{%(name)s}{%(affiliation)s}{%(city)s, %(country)s}\n' % {'name': name, 'affiliation': affiliation, 'city': city, 'country': country })
 
     str_list.append('\\end{document}')
     output = ''.join(str_list)

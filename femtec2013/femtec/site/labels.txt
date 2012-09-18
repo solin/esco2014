@@ -27,5 +27,6 @@
 
 \begin{document}
 \pagestyle{empty}
+
 \card{Christopher Baker}{Oak Ridge National Laboratories}{Oak Ridge, USA}
 
