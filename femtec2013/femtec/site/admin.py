@@ -24,32 +24,38 @@ admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 
 class UserProfileAdmin(admin.ModelAdmin):
-    def first_name(obj):
-        return obj.user.first_name
+    def first_name(self, profile):
+        return profile.user.first_name
 
-    def last_name(obj):
-        return '<a href="mailto:%(email)s">%(last)s</a>' % {'email': obj.user.email, 'last': obj.user.last_name }
+    def last_name(self, profile):
+        return '<a href="mailto:%(email)s">%(last)s</a>' % {'email': profile.user.email, 'last': profile.user.last_name }
 
+    first_name.admin_order_field = 'user__first_name'
     first_name.short_description = 'First Name'
 
+    last_name.admin_order_field = 'user__last_name'
     last_name.short_description = 'Last Name'
     last_name.allow_tags = True
 
-    list_display = ('user', last_name, first_name, 'affiliation', 'address', 'city', 'postal_code',
+    #list_select_related = True
+
+    list_display = ('user', 'last_name', 'first_name', 'affiliation', 'address', 'city', 'postal_code',
         'country', 'speaker', 'student', 'accompanying', 'vegeterian', 'arrival',
         'departure', 'postconf', 'tshirt')
-    #list_editable = ['payment']
+
+    #list_editable = ['payment'] # prepared for receipts
+
     actions_on_top = False
     actions_on_bottom = False
 
 admin.site.register(UserProfile, UserProfileAdmin)
 
 class UserAbstractAdmin(admin.ModelAdmin):
-    def first_name(obj):
-        return obj.user.first_name
+    def first_name(self, profile):
+        return profile.user.first_name
 
-    def last_name(obj):
-        return '<a href="mailto:%(email)s">%(last)s</a>' % {'email': obj.user.email, 'last': obj.user.last_name }
+    def last_name(self, profile):
+        return '<a href="mailto:%(email)s">%(last)s</a>' % {'email': profile.user.email, 'last': profile.user.last_name }
 
     def title(obj):
         return obj.to_cls().title
@@ -63,8 +69,10 @@ class UserAbstractAdmin(admin.ModelAdmin):
     def log(obj):
         return '<a href="/account/abstracts/log/%s">LOG</a>' % obj.id
 
+    first_name.admin_order_field = 'user__first_name'
     first_name.short_description = 'First Name'
 
+    last_name.admin_order_field = 'user__last_name'
     last_name.short_description = 'Last Name'
     last_name.allow_tags = True
 
@@ -79,7 +87,9 @@ class UserAbstractAdmin(admin.ModelAdmin):
     log.short_description = 'LOG'
     log.allow_tags = True
 
-    list_display = ('user', last_name, first_name, title, 'submit_date', 'modify_date', 'compiled', 'verified', 'accepted', tex, pdf, log)
+    #list_select_related = True
+
+    list_display = ('user', 'last_name', 'first_name', title, 'submit_date', 'modify_date', 'compiled', 'verified', 'accepted', tex, pdf, log)
     list_editable = ('verified', 'accepted')
 
     class Media:
