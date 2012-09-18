@@ -40,8 +40,8 @@ class UserProfileAdmin(admin.ModelAdmin):
     #list_select_related = True
 
     list_display = ('user', 'last_name', 'first_name', 'affiliation', 'address', 'city', 'postal_code',
-        'country', 'speaker', 'student', 'accompanying', 'vegeterian', 'arrival',
-        'departure', 'postconf', 'tshirt')
+        'country', 'speaker', 'student', 'postconf', 'vegeterian', 'arrival',
+        'departure', 'accompanying', 'tshirt')
 
     #list_editable = ['payment'] # prepared for receipts
 
