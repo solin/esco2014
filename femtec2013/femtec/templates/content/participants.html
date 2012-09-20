@@ -5,7 +5,7 @@
     <ul>
     {% for user in userprofile_list %}
         <li>
-        <b> {{ user.last_name }} {{user.first_name}}</b> ( {{ user.get_profile.affiliation }}, {{ user.get_profile.country }}  )
+        <b> {{ user.last_name }} {{ user.first_name }}</b> ({{ user.get_profile.affiliation }}, {{ user.get_profile.country }})
         </li>
     {% endfor %}
     </ul>
