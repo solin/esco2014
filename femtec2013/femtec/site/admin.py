@@ -41,9 +41,9 @@ class UserProfileAdmin(admin.ModelAdmin):
 
     list_display = ('user', 'last_name', 'first_name', 'affiliation', 'address', 'city', 'postal_code',
         'country', 'speaker', 'student', 'postconf', 'vegeterian', 'arrival',
-        'departure', 'accompanying', 'tshirt')
+        'departure', 'accompanying', 'tshirt', 'payment')
 
-    #list_editable = ['payment'] # prepared for receipts
+    #list_editable = ['payment']
 
     actions_on_top = False
     actions_on_bottom = False
