@@ -352,6 +352,9 @@ class UserProfileForm(forms.Form):
             ('S', 'S (small)'),
             ('M', 'M (medium)'),
             ('L', 'L (large)'),
+            ('XL', 'XL (extra large)'),
+            ('XXL', 'XXL (double extra large)'),
         ],
         initial   = 'M',
     )
+

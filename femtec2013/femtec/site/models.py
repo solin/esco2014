@@ -24,17 +24,17 @@ class UserProfile(models.Model):
     postal_code = models.CharField(max_length=50)
     country = models.CharField(max_length=50)
 
-    speaker = models.CharField(max_length=3)
-    student = models.CharField(max_length=3)
-
-    accompanying = models.IntegerField()
-    vegeterian = models.CharField(max_length=3)
+    speaker = models.CharField(max_length=1)
+    student = models.CharField(max_length=1)
+    postconf = models.CharField(max_length=1)
+    vegeterian = models.CharField(max_length=1)
 
     arrival = models.DateField()
     departure = models.DateField()
 
-    postconf = models.CharField(max_length=3)
-    tshirt = models.CharField(max_length=1)
+    accompanying = models.IntegerField()
+
+    tshirt = models.CharField(max_length=3)
 
     def __unicode__(self):
         return u"Profile for %s" % self.user.get_full_name()
