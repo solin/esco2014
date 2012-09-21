@@ -45,7 +45,9 @@
                 {% else %}
                     <a href="{{ root_path }}logout/">
                 {% endif %}
-                {% trans 'Log out' %}</a>
+                {% trans 'Log out' %}</a> /
+                    <a href="/">
+                {% trans 'Web page' %}</a>
             {% endblock %}
         </div>
         {% endif %}
