@@ -85,6 +85,7 @@ urlpatterns = patterns('femtec.site.views',
     (r'^admin/site/userabstract/(\d+)/log/$', 'abstracts_log_view'),
 )
 
+
 def _render_to_response(page, request, args=None):
     return render_to_response(page, RequestContext(request, args))
 
@@ -335,13 +336,13 @@ def badges(request, **args):
     str_list.append(f.read())
     f.close()
     
-    user_list = User.objects.all().order_by('last_name')
+    user_list = UserProfile.objects.all().order_by('id')
 
-    for i in range(len(User.objects.all())):
-        name = user_list[i].get_full_name()
-        affiliation = user_list[i].get_profile().affiliation
-        city = user_list[i].get_profile().city
-        country = user_list[i].get_profile().country
+    for i in range(len(UserProfile.objects.all())):
+        name = user_list[i].user.get_full_name()
+        affiliation = user_list[i].affiliation
+        city = user_list[i].city
+        country = user_list[i].country
         str_list.append('\\card{%(name)s}{%(affiliation)s}{%(city)s, %(country)s}\n' % {'name': name, 'affiliation': affiliation, 'city': city, 'country': country })
         str_list.append('\\card{%(name)s}{%(affiliation)s}{%(city)s, %(country)s}\n' % {'name': name, 'affiliation': affiliation, 'city': city, 'country': country })
 
