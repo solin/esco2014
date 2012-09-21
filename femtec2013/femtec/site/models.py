@@ -36,7 +36,8 @@ class UserProfile(models.Model):
 
     tshirt = models.CharField(max_length=3)
 
-    payment = models.CharField(max_length=30)
+    payment = models.CharField(max_length=30, blank=True)
+    remark = models.CharField(max_length=100, blank=True)
 
     def __unicode__(self):
         return u"Profile for %s" % self.user.get_full_name()
