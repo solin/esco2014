@@ -55,7 +55,8 @@ function addBibitemField(event, after, initial) {
             return arr.join(", ");
         }
 
-        el.find("[name='bibitem_bibid']").val(initial.bibid);
+        //el.find("[name='bibitem_bibid']").val(initial.bibid);
+        el.find("[name='bibitem_bibid']");
         el.find("[name='bibitem_authors']").val(bibitemAuthorsToString(initial.authors));
         el.find("[name='bibitem_title']").val(initial.title);
         el.find("[name='bibitem_other']").val(initial.other);

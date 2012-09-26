@@ -374,6 +374,7 @@ class Abstract(Latexible):
                 toc_author.append(TocAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting))
         self.presenting = PresentingAuthors(temp_presenting)
         self.tocauthors = TocAuthors(toc_author)
+        self.abstract = abstract.replace('\cite{', '\cite{%(title)s_' % {'title': title })
 
     def to_latex(self):
         return self._template % dict(
