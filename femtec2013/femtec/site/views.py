@@ -47,6 +47,7 @@ urlpatterns = patterns('femtec.site.views',
     (r'^venue/$',        '_render_template', {'template': 'content/venue.html'}),
     (r'^postconf/$',      '_render_template', {'template': 'content/postconf.html'}),
     (r'^contact/$',       '_render_template', {'template': 'content/contact.html'}),
+    (r'^sponsorship/$',       '_render_template', {'template': 'content/sponsorship.html'}),
     (r'^sponsors/$',       '_render_template', {'template': 'content/sponsors.html'}),
 
     (r'^account/$',       '_render_template', {'template': 'account/account.html'}),
