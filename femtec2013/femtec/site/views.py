@@ -21,6 +21,9 @@ from femtec.site.forms import UserProfileForm
 from django.conf import settings
 from femtec.settings import MIN_PASSWORD_LEN
 
+from femtec.settings import MEDIA_ROOT
+
+import subprocess
 
 try:
     import json
@@ -350,6 +353,22 @@ def badges(request, **args):
 
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
+
+    with open(os.path.join(MEDIA_ROOT, 'badges.tex'), 'wb') as f:
+        f.write(output.encode('utf-8'))
+    f.close()
+
+    cmd = ['pdflatex', '-halt-on-error', 'badges.tex']
+    pipe = subprocess.PIPE
+
+    for i in xrange(3):
+        proc = subprocess.Popen(cmd, cwd=MEDIA_ROOT, stdout=pipe, stderr=pipe)
+        output, errors = proc.communicate()
+
+        if proc.returncode:
+            break
+
+        return proc.returncode == 0
 
     response = HttpResponse(output, mimetype='text/plain')
     response['Content-Type'] = 'application/octet-stream'
