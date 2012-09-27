@@ -1,6 +1,7 @@
 *.py[co]
 *.swp
 *~
+texput.log
 
 femtec*/femtec/media/admin
 femtec*/femtec/media/captchas
