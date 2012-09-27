@@ -74,7 +74,9 @@ urlpatterns = patterns('femtec.site.views',
 
     (r'^account/profile/$', 'account_profile_view'),
 
-    (r'^account/badges/$', 'badges'),
+    (r'^account/badges/tex/$', 'badges_tex'),
+    (r'^account/badges/pdf/$', 'badges_pdf'),
+
 
     (r'^account/abstracts/$', 'abstracts_view'),
     (r'^account/abstracts/book/$', 'abstracts_book'),
@@ -335,7 +337,7 @@ def abstracts_view(request, **args):
     return _render_to_response('abstracts/abstracts.html', request, {'abstracts': abstracts, 'has_profile': has_profile})
 
 @login_required
-def badges(request, **args):
+def badges_tex(request, **args):
     str_list = []
     f = open(os.path.join(os.path.dirname(__file__), 'badges.txt'), 'r')
     str_list.append(f.read())
@@ -367,10 +369,45 @@ def badges(request, **args):
         proc = subprocess.Popen(cmd, cwd=latex_output, stdout=pipe, stderr=pipe)
         outputs, errors = proc.communicate()  
 
-#    response = HttpResponse(output, mimetype='text/plain')
-#    response['Content-Type'] = 'application/octet-stream'
-#    response['Cache-Control'] = 'must-revalidate'
-#    response['Content-Disposition'] = 'inline; filename=badges.tex'
+    response = HttpResponse(output, mimetype='text/plain')
+    response['Content-Type'] = 'application/octet-stream'
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=badges.tex'
+
+    return response
+
+@login_required
+def badges_pdf(request, **args):
+    str_list = []
+    f = open(os.path.join(os.path.dirname(__file__), 'badges.txt'), 'r')
+    str_list.append(f.read())
+    f.close()
+    
+    user_list = UserProfile.objects.all().order_by('id')
+
+    for i in range(len(UserProfile.objects.all())):
+        name = user_list[i].user.get_full_name()
+        affiliation = user_list[i].affiliation
+        city = user_list[i].city
+        country = user_list[i].country
+        str_list.append('\\card{%(name)s}{%(affiliation)s}{%(city)s, %(country)s}\n' % {'name': name, 'affiliation': affiliation, 'city': city, 'country': country })
+        str_list.append('\\card{%(name)s}{%(affiliation)s}{%(city)s, %(country)s}\n' % {'name': name, 'affiliation': affiliation, 'city': city, 'country': country })
+
+    str_list.append('\\end{document}' )
+    output = ''.join(str_list)
+
+    latex_output = ABSTRACTS_PATH
+
+    with open(os.path.join(latex_output, 'badges.tex'), 'wb') as f:
+        f.write(output.encode('utf-8'))
+    f.close()
+
+    cmd = ['pdflatex', '-halt-on-error', 'badges.tex']
+    pipe = subprocess.PIPE
+
+    for i in xrange(3):
+        proc = subprocess.Popen(cmd, cwd=latex_output, stdout=pipe, stderr=pipe)
+        outputs, errors = proc.communicate()  
 
     f = open(os.path.join(latex_output, 'badges.pdf'), 'r')
 
@@ -379,8 +416,6 @@ def badges(request, **args):
     response['Content-Disposition'] = 'inline; filename=badges.pdf'
 
     return response
-
-
 
 @login_required
 def abstracts_book(request, **args):
