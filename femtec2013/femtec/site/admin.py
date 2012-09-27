@@ -11,15 +11,19 @@ from femtec.site.models import UserProfile, UserAbstract2 as UserAbstract
 
 import datetime
 
+from django.contrib.sites.models import Site
+
 try:
     import json
 except ImportError:
     import simplejson as json
 
+admin.site.unregister(Site)
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'first_name', 'last_name', 'is_staff')
-
+    
+    actions = None
     actions_on_top = False
     actions_on_bottom = False
 
@@ -48,6 +52,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 
     list_editable = ['remark']
 
+    actions = None
     actions_on_top = False
     actions_on_bottom = False
 
@@ -102,6 +107,7 @@ class UserAbstractAdmin(admin.ModelAdmin):
 
         js = ('js/jquery/jquery.js', 'js/admin.js')
 
+    actions = None
     actions_on_top = False
     actions_on_bottom = False
 

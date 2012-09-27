@@ -24,6 +24,8 @@ from femtec.settings import MIN_PASSWORD_LEN
 from femtec.settings import MEDIA_ROOT, ABSTRACTS_PATH
 
 import subprocess
+import os
+import shutil
 
 try:
     import json
@@ -356,18 +358,16 @@ def badges_tex(request, **args):
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
 
-    latex_output = ABSTRACTS_PATH
+    latex_output = os.path.join(ABSTRACTS_PATH, 'badges')
+
+    if os.path.exists(latex_output):
+        shutil.rmtree(latex_output, True)
+
+    os.mkdir(latex_output)
 
     with open(os.path.join(latex_output, 'badges.tex'), 'wb') as f:
         f.write(output.encode('utf-8'))
     f.close()
-
-    cmd = ['pdflatex', '-halt-on-error', 'badges.tex']
-    pipe = subprocess.PIPE
-
-    for i in xrange(3):
-        proc = subprocess.Popen(cmd, cwd=latex_output, stdout=pipe, stderr=pipe)
-        outputs, errors = proc.communicate()  
 
     response = HttpResponse(output, mimetype='text/plain')
     response['Content-Type'] = 'application/octet-stream'
@@ -396,7 +396,12 @@ def badges_pdf(request, **args):
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
 
-    latex_output = ABSTRACTS_PATH
+    latex_output = os.path.join(ABSTRACTS_PATH, 'badges')
+
+    if os.path.exists(latex_output):
+        shutil.rmtree(latex_output, True)
+
+    os.mkdir(latex_output)
 
     with open(os.path.join(latex_output, 'badges.tex'), 'wb') as f:
         f.write(output.encode('utf-8'))
@@ -434,15 +439,17 @@ def abstracts_book(request, **args):
 
     #output = render_to_string('abstracts/book.html', RequestContext(request, {'abstracts': compiled_abstracts, 'authors' : compiled_authors}))
     str_list = []
-    f = open(os.path.join(os.path.dirname(__file__), 'boa.txt'))
+    f = open(os.path.join(os.path.dirname(__file__), 'boa.txt'), 'r')
     str_list.append(f.read())
     f.close()
+
     for a in abstract_keys:
         str_list.append(compiled_abstracts[a])
     str_list.append('\\newpage\n')
     str_list.append('\\part{List of Participants}\n')
     for a in abstract_keys:
         str_list.append(compiled_authors[a])
+
     str_list.append('\\end{document}')
     output = ''.join(str_list)
     output = output.replace('&amp;','&')
