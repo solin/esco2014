@@ -7,7 +7,7 @@ from django.template import Context, loader
 
 from django.contrib.auth.models import User
 from femtec.site.models import UserProfile, UserAbstract2 as UserAbstract
-from titlecase import titlecase
+#from titlecase import titlecase
 
 import datetime
 

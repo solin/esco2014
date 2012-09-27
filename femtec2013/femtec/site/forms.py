@@ -68,6 +68,7 @@ _digit = set(map(chr, range(48, 58)))
 _upper = set(map(chr, range(65, 91)))
 _lower = set(map(chr, range(97,123)))
 
+
 class RegistrationForm(forms.Form):
     """Form for creating new users. """
 
@@ -97,13 +98,48 @@ class RegistrationForm(forms.Form):
     first_name = forms.CharField(
         required   = True,
         label      = "First Name",
-        help_text  = "Enter your first name.",
+        help_text  = "Enter your first name + middle name.",
     )
+
+    def clean_first_name(self):
+        first_name = self.cleaned_data['first_name']
+        
+        all_symbols = set(first_name)
+        first_symbol = set(first_name[0])
+        
+        if ( first_symbol & _lower):
+            raise forms.ValidationError('First letter must be Upper.')
+
+        elif not ( all_symbols & _lower ):
+            raise forms.ValidationError('Only CAPITALS are not allowed.')
+
+        elif ( all_symbols & _digit ):
+            raise forms.ValidationError('Digits are not allowed in first name.')
+
+        return first_name
+
     last_name = forms.CharField(
         required   = True,
         label      = "Last Name",
         help_text  = "Enter your last name.",
     )
+
+    def clean_last_name(self):
+        last_name = self.cleaned_data['last_name']
+        
+        all_symbols = set(last_name)
+        first_symbol = set(last_name[0])
+        
+        if ( first_symbol & _lower):
+            raise forms.ValidationError('First letter must be Upper.')
+                 
+        elif not ( all_symbols & _lower ):
+            raise forms.ValidationError('Only CAPITALS are not allowed.')
+
+        elif ( all_symbols & _digit ):
+            raise forms.ValidationError('Digits are not allowed in last name.')
+
+        return last_name
 
     captcha = CaptchaField(
         required   = True,
@@ -216,8 +252,25 @@ class UserProfileForm(forms.Form):
     first_name = forms.CharField(
         required  = True,
         label     = "First Name",
-        help_text = "Enter your first name.",
+        help_text = "Enter your first name + middle names.",
     )
+
+    def clean_first_name(self):
+        first_name = self.cleaned_data['first_name']
+        
+        all_symbols = set(first_name)
+        first_symbol = set(first_name[0])
+        
+        if ( first_symbol & _lower):
+            raise forms.ValidationError('First letter must be Upper.')
+
+        elif not ( all_symbols & _lower ):
+            raise forms.ValidationError('Only CAPITALS are not allowed.')
+
+        elif ( all_symbols & _digit ):
+            raise forms.ValidationError('Digits are not allowed in first name.')
+
+        return first_name
 
     last_name = forms.CharField(
         required  = True,
@@ -225,11 +278,42 @@ class UserProfileForm(forms.Form):
         help_text = "Enter your last name.",
     )
 
+    def clean_last_name(self):
+        last_name = self.cleaned_data['last_name']
+        
+        all_symbols = set(last_name)
+        first_symbol = set(last_name[0])
+        
+        if ( first_symbol & _lower):
+            raise forms.ValidationError('First letter must be Upper.')
+                 
+        elif not ( all_symbols & _lower ):
+            raise forms.ValidationError('Only CAPITALS are not allowed.')
+
+        elif ( all_symbols & _digit ):
+            raise forms.ValidationError('Digits are not allowed in last name.')
+
+        return last_name
+
     affiliation = forms.CharField(
         required  = True,
         label     = "Affiliation",
         help_text = "Your institution, in English (for example: Technical University of Munich)",
     )
+
+    def clean_affiliation(self):
+        affiliation = self.cleaned_data['affiliation']
+        
+        all_symbols = set(affiliation)
+        first_symbol = set(affiliation[0])
+        
+        if ( first_symbol & _lower):
+            raise forms.ValidationError('First letter must be Upper.')
+                 
+        elif ( all_symbols & _digit ):
+            raise forms.ValidationError('Digits are not allowed in last name.')
+
+        return affiliation
 
     address = forms.CharField(
         required  = True,
@@ -237,11 +321,39 @@ class UserProfileForm(forms.Form):
         help_text = "",
     )
 
+    def clean_address(self):
+        address = self.cleaned_data['address']
+        
+        all_symbols = set(address)
+        first_symbol = set(address[0])
+        
+        if ( first_symbol & _lower):
+            raise forms.ValidationError('First letter must be Upper.')
+                 
+        elif not ( (all_symbols & _lower) or (all_symbols & _digit) ):
+            raise forms.ValidationError('Only CAPITALS are not allowed.')
+
+        return address
+
     city = forms.CharField(
         required  = True,
         label     = "City",
         help_text = "",
     )
+
+    def clean_city(self):
+        city = self.cleaned_data['city']
+        
+        all_symbols = set(city)
+        first_symbol = set(city[0])
+        
+        if ( first_symbol & _lower):
+            raise forms.ValidationError('First letter must be Upper.')
+                 
+        elif not ( (all_symbols & _lower) or (all_symbols & _digit) ):
+            raise forms.ValidationError('Only CAPITALS are not allowed.')
+
+        return city
 
     postal_code = forms.CharField(
         required  = True,
@@ -255,6 +367,20 @@ class UserProfileForm(forms.Form):
         help_text = "Enter the name of your country in English.",
     )
 
+    def clean_country(self):
+        country = self.cleaned_data['country']
+        
+        all_symbols = set(country)
+        first_symbol = set(country[0])
+        
+        if ( first_symbol & _lower):
+            raise forms.ValidationError('First letter must be Upper.')
+                 
+        elif ( all_symbols & _digit ):
+            raise forms.ValidationError('Digits are not allowed in country field.')
+
+        return country
+
     speaker = forms.ChoiceField(
         required  = True,
         label     = "Are you going to present a paper?",
@@ -266,9 +392,6 @@ class UserProfileForm(forms.Form):
         initial   = 0,
     )
 
-    def clean_speaker(self):
-        return int(self.cleaned_data['speaker'])
-
     student = forms.ChoiceField(
         required  = True,
         label     = "Are you a student?",
@@ -277,17 +400,6 @@ class UserProfileForm(forms.Form):
             (1, 'Yes'),
             (0, 'No'),
         ],
-        initial   = 0,
-    )
-
-    def clean_student(self):
-        return int(self.cleaned_data['student'])
-
-    accompanying = forms.IntegerField(
-        required  = True,
-        label     = "Number of accompanying persons",
-        help_text = "",
-        min_value = 0,
         initial   = 0,
     )
 
@@ -302,8 +414,16 @@ class UserProfileForm(forms.Form):
         initial   = 0,
     )
 
-    def clean_vegeterian(self):
-        return int(self.cleaned_data['vegeterian'])
+    postconf = forms.ChoiceField(
+        required  = True,
+        label     = "Interested in post-conference program?",
+        help_text = "",
+        choices   = [
+            (1, 'Yes'),
+            (0, 'No'),
+        ],
+        initial   = 0,
+    )
 
     arrival = forms.DateField(
         required  = True,
@@ -330,19 +450,13 @@ class UserProfileForm(forms.Form):
         },
     )
 
-    postconf = forms.ChoiceField(
+    accompanying = forms.IntegerField(
         required  = True,
-        label     = "Interested in post-conference program?",
+        label     = "Number of accompanying persons",
         help_text = "",
-        choices   = [
-            (1, 'Yes'),
-            (0, 'No'),
-        ],
+        min_value = 0,
         initial   = 0,
     )
-
-    def clean_postconf(self):
-        return int(self.cleaned_data['postconf'])
 
     tshirt = forms.ChoiceField(
         required  = True,
