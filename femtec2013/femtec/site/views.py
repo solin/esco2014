@@ -78,10 +78,11 @@ urlpatterns = patterns('femtec.site.views',
 
     (r'^account/badges/tex/$', 'badges_tex'),
     (r'^account/badges/pdf/$', 'badges_pdf'),
-
+    (r'^account/certificates/tex/$', 'certificates_tex'),
 
     (r'^account/abstracts/$', 'abstracts_view'),
-    (r'^account/abstracts/book/$', 'abstracts_book'),
+    (r'^account/abstracts/book/tex/$', 'abstracts_book_tex'),
+    (r'^account/abstracts/book/pdf/$', 'abstracts_book_pdf'),
     (r'^account/abstracts/submit/$', 'abstracts_submit_view'),
     (r'^account/abstracts/modify/(\d+)/$', 'abstracts_modify_view'),
     (r'^account/abstracts/delete/(\d+)/$', 'abstracts_delete_view'),
@@ -424,7 +425,15 @@ def badges_pdf(request, **args):
     return response
 
 @login_required
-def abstracts_book(request, **args):
+def abstracts_book_tex(request, **args):
+    tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
+    tex_output_path = os.path.join(ABSTRACTS_PATH, 'abstracts_book')
+
+    str_list = []
+    f = open(os.path.join(tex_template_path, 'boa_template.tex'), 'r')
+    str_list.append(f.read())
+    f.close()
+
     abstracts = UserAbstract.objects.order_by("id")
 
     compiled_abstracts = {}
@@ -437,12 +446,6 @@ def abstracts_book(request, **args):
 
     abstract_keys = compiled_abstracts.keys()
     abstract_keys.sort()
-
-    #output = render_to_string('abstracts/book.html', RequestContext(request, {'abstracts': compiled_abstracts, 'authors' : compiled_authors}))
-    str_list = []
-    f = open(os.path.join(os.path.dirname(__file__), 'boa.txt'), 'r')
-    str_list.append(f.read())
-    f.close()
 
     for a in abstract_keys:
         str_list.append(compiled_abstracts[a])
@@ -461,10 +464,150 @@ def abstracts_book(request, **args):
     output = output.replace('&#','&\#')
     output = output.replace('displaystyleK','displaystyle')
 
-    response = HttpResponse(output, mimetype='text/plain')
-    response['Content-Type'] = 'application/octet-stream'
+    if os.path.exists(tex_output_path):
+        shutil.rmtree(tex_output_path, True)
+
+    os.mkdir(tex_output_path)
+
+    shutil.copy(
+        os.path.join(tex_template_path, 'llncs.cls'),
+        os.path.join(tex_output_path, 'llncs.cls'))
+
+    with open(os.path.join(tex_output_path, 'boa.tex'), 'wb') as f:
+        f.write(output.encode('utf-8'))
+    f.close()
+
+
+    cmd = ['zip', 'boa', 'boa.tex', 'llncs.cls']
+    pipe = subprocess.PIPE
+
+    proc = subprocess.Popen(cmd, cwd=tex_output_path, stdout=pipe, stderr=pipe)
+    outputs, errors = proc.communicate()  
+
+    f = open(os.path.join(tex_output_path, 'boa.zip'), 'r')
+
+    response = HttpResponse(f.read(), mimetype='application/zip')
     response['Cache-Control'] = 'must-revalidate'
-    response['Content-Disposition'] = 'inline; filename=boa.tex'
+    response['Content-Disposition'] = 'inline; filename=boa.zip'
+
+    return response
+
+@login_required
+def abstracts_book_pdf(request, **args):
+    tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
+    tex_output_path = os.path.join(ABSTRACTS_PATH, 'abstracts_book')
+
+    str_list = []
+    f = open(os.path.join(tex_template_path, 'boa_template.tex'), 'r')
+    str_list.append(f.read())
+    f.close()
+
+    abstracts = UserAbstract.objects.order_by("id")
+
+    compiled_abstracts = {}
+    compiled_authors = {}
+
+    for abstract in abstracts:
+        cls = abstract.to_cls()
+        compiled_abstracts[cls.title] = cls.build_raw()
+        compiled_authors[cls.title] = cls.build_presenting()
+
+    abstract_keys = compiled_abstracts.keys()
+    abstract_keys.sort()
+
+    for a in abstract_keys:
+        str_list.append(compiled_abstracts[a])
+    str_list.append('\\newpage\n')
+    str_list.append('\\part{List of Participants}\n')
+    for a in abstract_keys:
+        str_list.append(compiled_authors[a])
+
+    str_list.append('\\end{document}')
+    output = ''.join(str_list)
+    output = output.replace('&amp;','&')
+    output = output.replace('&lt;','<')
+    output = output.replace('&gt;','>')
+    output = output.replace('&quot;','"')
+    output = output.replace('&#39;',"'")
+    output = output.replace('&#','&\#')
+    output = output.replace('displaystyleK','displaystyle')
+
+    if os.path.exists(tex_output_path):
+        shutil.rmtree(tex_output_path, True)
+
+    os.mkdir(tex_output_path)
+
+    shutil.copy(
+        os.path.join(tex_template_path, 'llncs.cls'),
+        os.path.join(tex_output_path, 'llncs.cls'))
+
+    with open(os.path.join(tex_output_path, 'boa.tex'), 'wb') as f:
+        f.write(output.encode('utf-8'))
+    f.close()
+
+    cmd = ['pdflatex', '-halt-on-error', 'boa.tex']
+    pipe = subprocess.PIPE
+
+    for i in xrange(3):
+        proc = subprocess.Popen(cmd, cwd=tex_output_path, stdout=pipe, stderr=pipe)
+        outputs, errors = proc.communicate()  
+
+    f = open(os.path.join(tex_output_path, 'boa.pdf'), 'r')
+
+    response = HttpResponse(f.read(), mimetype='application/pdf')
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=boa.pdf'
+
+    return response
+
+@login_required
+def certificates_tex(request, **args):
+    tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
+    tex_output_path = os.path.join(ABSTRACTS_PATH, 'certificates')
+
+    str_list = []
+    f = open(os.path.join(tex_template_path, 'certificates_template.tex'), 'r')
+    str_list.append(f.read())
+    f.close()
+    
+    user_list = UserProfile.objects.all().order_by('id')
+
+    for i in range(len(UserProfile.objects.all())):
+        name = user_list[i].user.get_full_name()
+        affiliation = user_list[i].affiliation
+        address = user_list[i].address
+        postal_code = user_list[i].postal_code
+        city = user_list[i].city
+        country = user_list[i].country
+        str_list.append('\\certificate{%(name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}\n' % {'name': name, 'affiliation': affiliation,'address': address, 'postal_code' : postal_code , 'city': city, 'country': country })
+
+    str_list.append('\\end{document}' )
+    output = ''.join(str_list)
+
+    if os.path.exists(tex_output_path):
+        shutil.rmtree(tex_output_path, True)
+
+    os.mkdir(tex_output_path)
+
+    shutil.copy(
+        os.path.join(tex_template_path, 'femhub_logo.png'),
+        os.path.join(tex_output_path, 'femhub_logo.png'))
+
+    with open(os.path.join(tex_output_path, 'certificates.tex'), 'wb') as f:
+        f.write(output.encode('utf-8'))
+    f.close()
+
+    cmd = ['zip', 'certificates', 'certificates.tex', 'femhub_logo.png']
+    pipe = subprocess.PIPE
+
+    proc = subprocess.Popen(cmd, cwd=tex_output_path, stdout=pipe, stderr=pipe)
+    outputs, errors = proc.communicate()  
+
+    f = open(os.path.join(tex_output_path, 'certificates.zip'), 'r')
+
+    response = HttpResponse(f.read(), mimetype='application/zip')
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=certificates.zip'
 
     return response
 
