@@ -337,7 +337,7 @@ def abstracts_view(request, **args):
 @login_required
 def badges(request, **args):
     str_list = []
-    f = open(os.path.join(os.path.dirname(__file__), 'badges.txt'))
+    f = open(os.path.join(os.path.dirname(__file__), 'badges.txt'), 'r')
     str_list.append(f.read())
     f.close()
     
@@ -365,14 +365,22 @@ def badges(request, **args):
 
     for i in xrange(3):
         proc = subprocess.Popen(cmd, cwd=latex_output, stdout=pipe, stderr=pipe)
-        output, errors = proc.communicate()
+        outputs, errors = proc.communicate()  
 
-    response = HttpResponse(output, mimetype='text/plain')
-    response['Content-Type'] = 'application/octet-stream'
+#    response = HttpResponse(output, mimetype='text/plain')
+#    response['Content-Type'] = 'application/octet-stream'
+#    response['Cache-Control'] = 'must-revalidate'
+#    response['Content-Disposition'] = 'inline; filename=badges.tex'
+
+    f = open(os.path.join(latex_output, 'badges.pdf'), 'r')
+
+    response = HttpResponse(f.read(), mimetype='application/pdf')
     response['Cache-Control'] = 'must-revalidate'
-    response['Content-Disposition'] = 'inline; filename=badges.tex'
+    response['Content-Disposition'] = 'inline; filename=badges.pdf'
 
     return response
+
+
 
 @login_required
 def abstracts_book(request, **args):
