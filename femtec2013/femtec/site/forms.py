@@ -108,7 +108,7 @@ class RegistrationForm(forms.Form):
         first_symbol = set(first_name[0])
         
         if ( first_symbol & _lower):
-            raise forms.ValidationError('First letter must be Upper.')
+            raise forms.ValidationError('First letter must be Uppercase.')
 
         elif not ( all_symbols & _lower ):
             raise forms.ValidationError('Only CAPITALS are not allowed.')
@@ -131,7 +131,7 @@ class RegistrationForm(forms.Form):
         first_symbol = set(last_name[0])
         
         if ( first_symbol & _lower):
-            raise forms.ValidationError('First letter must be Upper.')
+            raise forms.ValidationError('First letter must be Uppercase.')
                  
         elif not ( all_symbols & _lower ):
             raise forms.ValidationError('Only CAPITALS are not allowed.')
@@ -262,7 +262,7 @@ class UserProfileForm(forms.Form):
         first_symbol = set(first_name[0])
         
         if ( first_symbol & _lower):
-            raise forms.ValidationError('First letter must be Upper.')
+            raise forms.ValidationError('First letter must be Uppercase.')
 
         elif not ( all_symbols & _lower ):
             raise forms.ValidationError('Only CAPITALS are not allowed.')
@@ -285,7 +285,7 @@ class UserProfileForm(forms.Form):
         first_symbol = set(last_name[0])
         
         if ( first_symbol & _lower):
-            raise forms.ValidationError('First letter must be Upper.')
+            raise forms.ValidationError('First letter must be Uppercase.')
                  
         elif not ( all_symbols & _lower ):
             raise forms.ValidationError('Only CAPITALS are not allowed.')
@@ -308,7 +308,7 @@ class UserProfileForm(forms.Form):
         first_symbol = set(affiliation[0])
         
         if ( first_symbol & _lower):
-            raise forms.ValidationError('First letter must be Upper.')
+            raise forms.ValidationError('First letter must be Uppercase.')
                  
         elif ( all_symbols & _digit ):
             raise forms.ValidationError('Digits are not allowed in last name.')
@@ -328,7 +328,7 @@ class UserProfileForm(forms.Form):
         first_symbol = set(address[0])
         
         if ( first_symbol & _lower):
-            raise forms.ValidationError('First letter must be Upper.')
+            raise forms.ValidationError('First letter must be Uppercase.')
                  
         elif not ( (all_symbols & _lower) or (all_symbols & _digit) ):
             raise forms.ValidationError('Only CAPITALS are not allowed.')
@@ -348,7 +348,7 @@ class UserProfileForm(forms.Form):
         first_symbol = set(city[0])
         
         if ( first_symbol & _lower):
-            raise forms.ValidationError('First letter must be Upper.')
+            raise forms.ValidationError('First letter must be Uppercase.')
                  
         elif not ( (all_symbols & _lower) or (all_symbols & _digit) ):
             raise forms.ValidationError('Only CAPITALS are not allowed.')
@@ -374,7 +374,7 @@ class UserProfileForm(forms.Form):
         first_symbol = set(country[0])
         
         if ( first_symbol & _lower):
-            raise forms.ValidationError('First letter must be Upper.')
+            raise forms.ValidationError('First letter must be Uppercase.')
                  
         elif ( all_symbols & _digit ):
             raise forms.ValidationError('Digits are not allowed in country field.')
