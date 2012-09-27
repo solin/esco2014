@@ -340,8 +340,11 @@ def abstracts_view(request, **args):
 
 @login_required
 def badges_tex(request, **args):
+    tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
+    tex_output_path = os.path.join(ABSTRACTS_PATH, 'badges')
+
     str_list = []
-    f = open(os.path.join(os.path.dirname(__file__), 'badges.txt'), 'r')
+    f = open(os.path.join(tex_template_path, 'badges_template.tex'), 'r')
     str_list.append(f.read())
     f.close()
     
@@ -358,14 +361,12 @@ def badges_tex(request, **args):
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
 
-    latex_output = os.path.join(ABSTRACTS_PATH, 'badges')
+    if os.path.exists(tex_output_path):
+        shutil.rmtree(tex_output_path, True)
 
-    if os.path.exists(latex_output):
-        shutil.rmtree(latex_output, True)
+    os.mkdir(tex_output_path)
 
-    os.mkdir(latex_output)
-
-    with open(os.path.join(latex_output, 'badges.tex'), 'wb') as f:
+    with open(os.path.join(tex_output_path, 'badges.tex'), 'wb') as f:
         f.write(output.encode('utf-8'))
     f.close()
 
@@ -378,8 +379,11 @@ def badges_tex(request, **args):
 
 @login_required
 def badges_pdf(request, **args):
+    tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
+    tex_output_path = os.path.join(ABSTRACTS_PATH, 'badges')
+
     str_list = []
-    f = open(os.path.join(os.path.dirname(__file__), 'badges.txt'), 'r')
+    f = open(os.path.join(tex_template_path, 'badges_template.tex'), 'r')
     str_list.append(f.read())
     f.close()
     
@@ -396,14 +400,11 @@ def badges_pdf(request, **args):
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
 
-    latex_output = os.path.join(ABSTRACTS_PATH, 'badges')
+    if os.path.exists(tex_output_path):
+        shutil.rmtree(tex_output_path, True)
+    os.mkdir(tex_output_path)
 
-    if os.path.exists(latex_output):
-        shutil.rmtree(latex_output, True)
-
-    os.mkdir(latex_output)
-
-    with open(os.path.join(latex_output, 'badges.tex'), 'wb') as f:
+    with open(os.path.join(tex_output_path, 'badges.tex'), 'wb') as f:
         f.write(output.encode('utf-8'))
     f.close()
 
@@ -411,10 +412,10 @@ def badges_pdf(request, **args):
     pipe = subprocess.PIPE
 
     for i in xrange(3):
-        proc = subprocess.Popen(cmd, cwd=latex_output, stdout=pipe, stderr=pipe)
+        proc = subprocess.Popen(cmd, cwd=tex_output_path, stdout=pipe, stderr=pipe)
         outputs, errors = proc.communicate()  
 
-    f = open(os.path.join(latex_output, 'badges.pdf'), 'r')
+    f = open(os.path.join(tex_output_path, 'badges.pdf'), 'r')
 
     response = HttpResponse(f.read(), mimetype='application/pdf')
     response['Cache-Control'] = 'must-revalidate'
