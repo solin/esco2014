@@ -357,8 +357,8 @@ def badges_tex(request, **args):
         affiliation = user_list[i].affiliation
         city = user_list[i].city
         country = user_list[i].country
-        str_list.append('\\card{%(name)s}{%(affiliation)s}{%(city)s, %(country)s}\n' % {'name': name, 'affiliation': affiliation, 'city': city, 'country': country })
-        str_list.append('\\card{%(name)s}{%(affiliation)s}{%(city)s, %(country)s}\n' % {'name': name, 'affiliation': affiliation, 'city': city, 'country': country })
+        str_list.append('\\card{%(name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'name': name, 'affiliation': affiliation, 'city': city, 'country': country })
+        str_list.append('\\card{%(name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'name': name, 'affiliation': affiliation, 'city': city, 'country': country })
 
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
@@ -396,8 +396,8 @@ def badges_pdf(request, **args):
         affiliation = user_list[i].affiliation
         city = user_list[i].city
         country = user_list[i].country
-        str_list.append('\\card{%(name)s}{%(affiliation)s}{%(city)s, %(country)s}\n' % {'name': name, 'affiliation': affiliation, 'city': city, 'country': country })
-        str_list.append('\\card{%(name)s}{%(affiliation)s}{%(city)s, %(country)s}\n' % {'name': name, 'affiliation': affiliation, 'city': city, 'country': country })
+        str_list.append('\\card{%(name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'name': name, 'affiliation': affiliation, 'city': city, 'country': country })
+        str_list.append('\\card{%(name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'name': name, 'affiliation': affiliation, 'city': city, 'country': country })
 
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
