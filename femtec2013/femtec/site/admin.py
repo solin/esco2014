@@ -23,7 +23,7 @@ admin.site.unregister(Group)
 admin.site.unregister(Site)
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'last_name', 'first_name', 'email', 'is_active', 'is_staff', 'is_superuser')
+    list_display = ('username', 'last_name', 'first_name', 'is_active', 'is_staff', 'is_superuser')
     
     list_editable = ['last_name', 'first_name']
 
