@@ -161,6 +161,16 @@ class UserAbstractAdmin(admin.ModelAdmin):
                 if settings.SEND_EMAIL:
                     obj.user.email_user("Abstract Status Update", body)
 
+        if 'accepted' in form.changed_data:
+            accepted = form.cleaned_data['accepted']
+
+            if accepted is True:
+                template = loader.get_template('e-mails/user/accepted.txt')
+                body = template.render(Context({'user': obj.user}))
+
+                if settings.SEND_EMAIL:
+                    obj.user.email_user("Abstract Status Update", body)
+
         super(UserAbstractAdmin, self).save_model(request, obj, form, change)
 
 admin.site.register(UserAbstract, UserAbstractAdmin)

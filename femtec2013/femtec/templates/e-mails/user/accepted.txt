@@ -1,0 +1,5 @@
+{% extends "e-mails/user/base.txt" %}
+
+{% block content %}
+your abstract was accepted. 
+{% endblock %}
