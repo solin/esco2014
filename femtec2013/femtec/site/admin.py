@@ -23,8 +23,9 @@ admin.site.unregister(Group)
 admin.site.unregister(Site)
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'first_name', 'last_name', 'is_staff')
-    
+    list_display = ('username', 'last_name', 'first_name', 'email', 'is_active', 'is_staff', 'is_superuser')
+    list_editable = ['last_name', 'first_name']
+
     actions = None
     actions_on_top = False
     actions_on_bottom = False
@@ -70,7 +71,10 @@ class UserAbstractAdmin(admin.ModelAdmin):
         return profile.user.first_name
 
     def last_name(self, profile):
-        return '<a href="mailto:%(email)s">%(last)s</a>' % {'email': profile.user.email, 'last': profile.user.last_name }
+        return profile.user.last_name
+
+    def email(self, profile):
+        return '<a href="mailto:%(email)s">%(email)s</a>' % {'email': profile.user.email }
 
     def title(obj):
         return obj.to_cls().title
@@ -89,7 +93,9 @@ class UserAbstractAdmin(admin.ModelAdmin):
 
     last_name.admin_order_field = 'user__last_name'
     last_name.short_description = 'Last Name'
-    last_name.allow_tags = True
+
+    email.admin_order_field = 'user__email'
+    email.allow_tags = True
 
     title.short_description = 'Title'
 
@@ -104,7 +110,7 @@ class UserAbstractAdmin(admin.ModelAdmin):
 
     #list_select_related = True
 
-    list_display = ('user', 'last_name', 'first_name', title, 'submit_date', 'modify_date', 'compiled', 'verified', 'accepted', tex, pdf, log)
+    list_display = ('last_name', 'first_name', 'email', title, 'submit_date', 'modify_date', 'compiled', 'verified', 'accepted', tex, pdf, log)
     list_editable = ('verified', 'accepted')
 
     class Media:
