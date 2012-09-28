@@ -675,23 +675,25 @@ def certificates_pdf(request, **args):
 @login_required
 def receipts_tex(request, **args):
     tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
-    tex_output_path = os.path.join(ABSTRACTS_PATH, 'certificates')
+    tex_output_path = os.path.join(ABSTRACTS_PATH, 'receipts')
 
     str_list = []
-    f = open(os.path.join(tex_template_path, 'certificates_template.tex'), 'r')
+    f = open(os.path.join(tex_template_path, 'receipts_template.tex'), 'r')
     str_list.append(f.read())
     f.close()
     
     user_list = UserProfile.objects.all().order_by('id')
 
     for i in range(len(UserProfile.objects.all())):
-        name = user_list[i].user.get_full_name()
-        affiliation = user_list[i].affiliation
-        address = user_list[i].address
-        postal_code = user_list[i].postal_code
-        city = user_list[i].city
-        country = user_list[i].country
-        str_list.append('\\certificate{%(name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}\n' % {'name': name, 'affiliation': affiliation,'address': address, 'postal_code' : postal_code , 'city': city, 'country': country })
+        if not (user_list[i].payment == ''):
+            name = user_list[i].user.get_full_name()
+            affiliation = user_list[i].affiliation
+            address = user_list[i].address
+            postal_code = user_list[i].postal_code
+            city = user_list[i].city
+            country = user_list[i].country
+            payment = user_list[i].payment
+            str_list.append('\\receipt{%(name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'name': name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
 
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
@@ -708,44 +710,46 @@ def receipts_tex(request, **args):
         os.path.join(tex_template_path, 'femhub_footer.png'),
         os.path.join(tex_output_path, 'femhub_footer.png'))
 
-    with open(os.path.join(tex_output_path, 'certificates.tex'), 'wb') as f:
+    with open(os.path.join(tex_output_path, 'receipts.tex'), 'wb') as f:
         f.write(output.encode('utf-8'))
     f.close()
 
-    cmd = ['zip', 'certificates', 'certificates.tex', 'femhub_logo.png', 'femhub_footer.png']
+    cmd = ['zip', 'receipts', 'receipts.tex', 'femhub_logo.png', 'femhub_footer.png']
     pipe = subprocess.PIPE
 
     proc = subprocess.Popen(cmd, cwd=tex_output_path, stdout=pipe, stderr=pipe)
     outputs, errors = proc.communicate()  
 
-    f = open(os.path.join(tex_output_path, 'certificates.zip'), 'r')
+    f = open(os.path.join(tex_output_path, 'receipts.zip'), 'r')
 
     response = HttpResponse(f.read(), mimetype='application/zip')
     response['Cache-Control'] = 'must-revalidate'
-    response['Content-Disposition'] = 'inline; filename=certificates.zip'
+    response['Content-Disposition'] = 'inline; filename=receipts.zip'
 
     return response
 
 @login_required
 def receipts_pdf(request, **args):
     tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
-    tex_output_path = os.path.join(ABSTRACTS_PATH, 'certificates')
+    tex_output_path = os.path.join(ABSTRACTS_PATH, 'receipts')
 
     str_list = []
-    f = open(os.path.join(tex_template_path, 'certificates_template.tex'), 'r')
+    f = open(os.path.join(tex_template_path, 'receipts_template.tex'), 'r')
     str_list.append(f.read())
     f.close()
     
     user_list = UserProfile.objects.all().order_by('id')
 
     for i in range(len(UserProfile.objects.all())):
-        name = user_list[i].user.get_full_name()
-        affiliation = user_list[i].affiliation
-        address = user_list[i].address
-        postal_code = user_list[i].postal_code
-        city = user_list[i].city
-        country = user_list[i].country
-        str_list.append('\\certificate{%(name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}\n' % {'name': name, 'affiliation': affiliation,'address': address, 'postal_code' : postal_code , 'city': city, 'country': country })
+        if not (user_list[i].payment == ''):
+            name = user_list[i].user.get_full_name()
+            affiliation = user_list[i].affiliation
+            address = user_list[i].address
+            postal_code = user_list[i].postal_code
+            city = user_list[i].city
+            country = user_list[i].country
+            payment = user_list[i].payment
+            str_list.append('\\receipt{%(name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'name': name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
 
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
@@ -762,22 +766,22 @@ def receipts_pdf(request, **args):
         os.path.join(tex_template_path, 'femhub_footer.png'),
         os.path.join(tex_output_path, 'femhub_footer.png'))
 
-    with open(os.path.join(tex_output_path, 'certificates.tex'), 'wb') as f:
+    with open(os.path.join(tex_output_path, 'receipts.tex'), 'wb') as f:
         f.write(output.encode('utf-8'))
     f.close()
 
-    cmd = ['pdflatex', '-halt-on-error', 'certificates.tex']
+    cmd = ['pdflatex', '-halt-on-error', 'receipts.tex']
     pipe = subprocess.PIPE
 
     for i in xrange(3):
         proc = subprocess.Popen(cmd, cwd=tex_output_path, stdout=pipe, stderr=pipe)
         outputs, errors = proc.communicate()  
 
-    f = open(os.path.join(tex_output_path, 'certificates.pdf'), 'r')
+    f = open(os.path.join(tex_output_path, 'receipts.pdf'), 'r')
 
     response = HttpResponse(f.read(), mimetype='application/pdf')
     response['Cache-Control'] = 'must-revalidate'
-    response['Content-Disposition'] = 'inline; filename=certificates.pdf'
+    response['Content-Disposition'] = 'inline; filename=receipts.pdf'
 
     return response
 
