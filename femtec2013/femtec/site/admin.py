@@ -37,18 +37,23 @@ class UserProfileAdmin(admin.ModelAdmin):
         return profile.user.first_name
 
     def last_name(self, profile):
-        return '<a href="mailto:%(email)s">%(last)s</a>' % {'email': profile.user.email, 'last': profile.user.last_name }
+        return profile.user.last_name
+
+    def email(self, profile):
+        return '<a href="mailto:%(email)s">%(email)s</a>' % {'email': profile.user.email }
 
     first_name.admin_order_field = 'user__first_name'
     first_name.short_description = 'First Name'
 
     last_name.admin_order_field = 'user__last_name'
     last_name.short_description = 'Last Name'
-    last_name.allow_tags = True
+
+    email.admin_order_field = 'user__email'
+    email.allow_tags = True
 
     #list_select_related = True
 
-    list_display = ('user', 'last_name', 'first_name', 'affiliation', 'address', 'city', 'postal_code',
+    list_display = ('last_name', 'first_name', 'email', 'affiliation', 'address', 'city', 'postal_code',
         'country', 'speaker', 'student', 'postconf', 'vegeterian', 'arrival',
         'departure', 'accompanying', 'tshirt', 'payment', 'remark' )
 
