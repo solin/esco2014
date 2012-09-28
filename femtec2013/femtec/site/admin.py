@@ -24,6 +24,7 @@ admin.site.unregister(Site)
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'last_name', 'first_name', 'email', 'is_active', 'is_staff', 'is_superuser')
+    
     list_editable = ['last_name', 'first_name']
 
     actions = None
@@ -54,9 +55,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 
     #list_select_related = True
 
-    list_display = ('last_name', 'first_name', 'email', 'affiliation', 'address', 'city', 'postal_code',
-        'country', 'speaker', 'student', 'postconf', 'vegeterian', 'arrival',
-        'departure', 'accompanying', 'tshirt', 'payment', 'remark' )
+    list_display = ('last_name', 'first_name', 'email', 'affiliation', 'address', 'city', 'postal_code', 'country', 'speaker', 'student', 'postconf', 'vegeterian', 'arrival', 'departure', 'accompanying', 'tshirt', 'payment', 'remark' )
 
     list_editable = ['remark']
 
@@ -111,6 +110,7 @@ class UserAbstractAdmin(admin.ModelAdmin):
     #list_select_related = True
 
     list_display = ('last_name', 'first_name', 'email', title, 'submit_date', 'modify_date', 'compiled', 'verified', 'accepted', tex, pdf, log)
+
     list_editable = ('verified', 'accepted')
 
     class Media:
