@@ -143,7 +143,17 @@ class UserAbstractAdmin(admin.ModelAdmin):
             obj.compiled = True
             obj.save()
 
-        if 'verified' in form.changed_data:
+        if ('accepted' in form.changed_data) and ('verified' in form.changed_data):
+            accepted = form.cleaned_data['accepted']
+
+            if accepted is True:
+                template = loader.get_template('e-mails/user/accepted.txt')
+                body = template.render(Context({'user': obj.user}))
+
+                if settings.SEND_EMAIL:
+                    obj.user.email_user("Abstract Status Update", body)
+
+        elif 'verified' in form.changed_data:
             verified = form.cleaned_data['verified']
 
             if verified is True:
@@ -161,7 +171,7 @@ class UserAbstractAdmin(admin.ModelAdmin):
                 if settings.SEND_EMAIL:
                     obj.user.email_user("Abstract Status Update", body)
 
-        if 'accepted' in form.changed_data:
+        elif 'accepted' in form.changed_data:
             accepted = form.cleaned_data['accepted']
 
             if accepted is True:
