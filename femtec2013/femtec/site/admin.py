@@ -11,6 +11,7 @@ from femtec.site.models import UserProfile, UserAbstract2 as UserAbstract
 
 import datetime
 
+from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
 
 try:
@@ -18,6 +19,7 @@ try:
 except ImportError:
     import simplejson as json
 
+admin.site.unregister(Group)
 admin.site.unregister(Site)
 
 class UserAdmin(admin.ModelAdmin):
