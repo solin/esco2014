@@ -357,6 +357,9 @@ class Abstract(Latexible):
     def __init__(self, title, authors, abstract, bibitems):
         self.title = title.replace('\n', '').replace('\r', '').replace('&quot;', '')
         self.title = self.title.replace('"', '')
+        self.title = self.title.replace('%', '\%')
+        self.title = self.title.replace('&', '\&')
+        self.title = self.title.replace('#', '\#')
         self.title = self.title.replace('$hp$', 'hp')
         self.title = "".join([x for x in self.title if ord(x) < 128])
         self.title = self.title.strip()
@@ -365,7 +368,7 @@ class Abstract(Latexible):
         self.abstract = self.abstract.replace('%', '\%')
         self.abstract = self.abstract.replace('&', '\&')
         self.abstract = self.abstract.replace('#', '\#')
-        self.abstract = self.abstract.replace('\cite{', '\cite{%(title)s_' % {'title': title })
+        #self.abstract = self.abstract.replace('\cite{', '\cite{%(title)s_' % {'title': title })
         self.bibitems = bibitems
         toc_author = []
         temp_presenting = {}
