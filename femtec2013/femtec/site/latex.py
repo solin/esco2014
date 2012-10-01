@@ -364,7 +364,6 @@ class Abstract(Latexible):
         self.abstract = abstract.replace('\n', '').replace('\r', '')
         self.abstract = self.abstract.replace('%', '\%')
         self.abstract = self.abstract.replace('&', '\&')
-        self.abstract = self.abstract.replace('$', '\$')
         self.abstract = self.abstract.replace('#', '\#')
         self.abstract = self.abstract.replace('_', '\_')
         self.abstract = self.abstract.replace('\cite{', '\cite{%(title)s_' % {'title': title })
