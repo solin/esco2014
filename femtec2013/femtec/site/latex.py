@@ -365,7 +365,6 @@ class Abstract(Latexible):
         self.abstract = self.abstract.replace('%', '\%')
         self.abstract = self.abstract.replace('&', '\&')
         self.abstract = self.abstract.replace('#', '\#')
-        self.abstract = self.abstract.replace('_', '\_')
         self.abstract = self.abstract.replace('\cite{', '\cite{%(title)s_' % {'title': title })
         self.bibitems = bibitems
         toc_author = []
