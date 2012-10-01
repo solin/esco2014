@@ -3,6 +3,7 @@
 *~
 texput.log
 
-femtec*/femtec/media/admin
+femtec*/femtec/media/admin/media
+femtec*/femtec/media/admin/__init__.pyc
 femtec*/femtec/media/captchas
 
