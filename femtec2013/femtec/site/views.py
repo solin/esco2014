@@ -82,6 +82,8 @@ urlpatterns = patterns('femtec.site.views',
     (r'^account/certificates/pdf/$', 'certificates_pdf'),
     (r'^account/receipts/tex/$', 'receipts_tex'),
     (r'^account/receipts/pdf/$', 'receipts_pdf'),
+    (r'^account/registration/tex/$', 'registration_tex'),
+    (r'^account/registration/pdf/$', 'registration_pdf'),
 
     (r'^account/abstracts/$', 'abstracts_view'),
     (r'^account/abstracts/book/tex/$', 'abstracts_book_tex'),
@@ -782,6 +784,119 @@ def receipts_pdf(request, **args):
     response = HttpResponse(f.read(), mimetype='application/pdf')
     response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=receipts.pdf'
+
+    return response
+
+@login_required
+def registration_tex(request, **args):
+    tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
+    tex_output_path = os.path.join(ABSTRACTS_PATH, 'registration')
+
+    str_list = []
+    f = open(os.path.join(tex_template_path, 'receipts_template.tex'), 'r')
+    str_list.append(f.read())
+    f.close()
+    
+    user_list = UserProfile.objects.all().order_by('id')
+
+    for i in range(len(UserProfile.objects.all())):
+        if not (user_list[i].payment == ''):
+            name = user_list[i].user.get_full_name()
+            affiliation = user_list[i].affiliation
+            address = user_list[i].address
+            postal_code = user_list[i].postal_code
+            city = user_list[i].city
+            country = user_list[i].country
+            payment = user_list[i].payment
+            str_list.append('\\receipt{%(name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'name': name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
+
+    str_list.append('\\end{document}' )
+    output = ''.join(str_list)
+
+    if os.path.exists(tex_output_path):
+        shutil.rmtree(tex_output_path, True)
+
+    os.mkdir(tex_output_path)
+
+    shutil.copy(
+        os.path.join(tex_template_path, 'femhub_logo.png'),
+        os.path.join(tex_output_path, 'femhub_logo.png'))
+    shutil.copy(
+        os.path.join(tex_template_path, 'femhub_footer.png'),
+        os.path.join(tex_output_path, 'femhub_footer.png'))
+
+    with open(os.path.join(tex_output_path, 'registration.tex'), 'wb') as f:
+        f.write(output.encode('utf-8'))
+    f.close()
+
+    cmd = ['zip', 'receipts', 'registration.tex', 'femhub_logo.png', 'femhub_footer.png']
+    pipe = subprocess.PIPE
+
+    proc = subprocess.Popen(cmd, cwd=tex_output_path, stdout=pipe, stderr=pipe)
+    outputs, errors = proc.communicate()  
+
+    f = open(os.path.join(tex_output_path, 'registration.zip'), 'r')
+
+    response = HttpResponse(f.read(), mimetype='application/zip')
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=registration.zip'
+
+    return response
+
+@login_required
+def registration_pdf(request, **args):
+    tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
+    tex_output_path = os.path.join(ABSTRACTS_PATH, 'registration')
+
+    str_list = []
+    f = open(os.path.join(tex_template_path, 'receipts_template.tex'), 'r')
+    str_list.append(f.read())
+    f.close()
+    
+    user_list = UserProfile.objects.all().order_by('id')
+
+    for i in range(len(UserProfile.objects.all())):
+        if not (user_list[i].payment == ''):
+            name = user_list[i].user.get_full_name()
+            affiliation = user_list[i].affiliation
+            address = user_list[i].address
+            postal_code = user_list[i].postal_code
+            city = user_list[i].city
+            country = user_list[i].country
+            payment = user_list[i].payment
+            str_list.append('\\receipt{%(name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'name': name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
+
+    str_list.append('\\end{document}' )
+    output = ''.join(str_list)
+
+    if os.path.exists(tex_output_path):
+        shutil.rmtree(tex_output_path, True)
+
+    os.mkdir(tex_output_path)
+
+    shutil.copy(
+        os.path.join(tex_template_path, 'femhub_logo.png'),
+        os.path.join(tex_output_path, 'femhub_logo.png'))
+    shutil.copy(
+        os.path.join(tex_template_path, 'femhub_footer.png'),
+        os.path.join(tex_output_path, 'femhub_footer.png'))
+
+    with open(os.path.join(tex_output_path, 'registration.tex'), 'wb') as f:
+        f.write(output.encode('utf-8'))
+    f.close()
+
+    cmd = ['pdflatex', '-halt-on-error', 'registration.tex']
+    pipe = subprocess.PIPE
+
+    for i in xrange(3):
+        proc = subprocess.Popen(cmd, cwd=tex_output_path, stdout=pipe, stderr=pipe)
+        outputs, errors = proc.communicate()  
+
+    f = open(os.path.join(tex_output_path, 'registration.pdf'), 'r')
+
+    response = HttpResponse(f.read(), mimetype='application/pdf')
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=registration.pdf'
 
     return response
 
