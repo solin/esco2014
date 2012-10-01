@@ -800,7 +800,7 @@ def get_submit_form_data(post, user):
     bibitems_other = post.getlist('bibitem_other')
 
     for i, (first_name, last_name) in enumerate(zip(first_names, last_names)):
-        if first_name == user.first_name and last_name == user.last_name:
+        if (first_name == user.first_name and last_name == user.last_name):
             presentings[i] = 'yes'
             break
 

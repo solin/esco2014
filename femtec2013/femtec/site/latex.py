@@ -374,9 +374,9 @@ class Abstract(Latexible):
         temp_presenting = {}
         for author in self.authors.authors:
             temp_presenting[author.last_name + " " + author.first_name]=PresentingAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting)
-            if len(toc_author) == 0:
-                toc_author.append(TocAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting))
             if author.presenting == 'yes':
+                toc_author.append(TocAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting))
+            elif len(toc_author) == 0:
                 toc_author.append(TocAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting))
         self.presenting = PresentingAuthors(temp_presenting)
         self.tocauthors = TocAuthors(toc_author)
