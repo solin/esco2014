@@ -79,7 +79,9 @@
                     </div>
                     {% endif %}
                     <div class="box">
+                        {% if not user.is_authenticated %}
                         <img src="{{ MEDIA_URL }}img/current/img-1.png" />
+                        {% endif %}
                         <img src="{{ MEDIA_URL }}img/current/img-2.png" />
                         <img src="{{ MEDIA_URL }}img/current/img-3.png" />
                         <img src="{{ MEDIA_URL }}img/current/img-4.png" />
@@ -109,6 +111,11 @@
                             <li><a href="http://hpfem.org/events/femtec-2011/">FEMTEC 2011</a></li>
                         </ul>
                     </div>
+                    {% if user.is_authenticated %}
+                        <div style="height: 50px"></div>
+                    {% else %}
+                        <div style="height: 33px"></div>
+                    {% endif %}
                     <div class="box">
                         <!-- <img src="{{ MEDIA_URL }}img/current/img-7.png" vspace="4"  />   -->
                         <img src="{{ MEDIA_URL }}img/current/img-8.png" vspace="8" />
