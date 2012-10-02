@@ -684,18 +684,21 @@ def receipts_tex(request, **args):
     str_list.append(f.read())
     f.close()
     
-    user_list = UserProfile.objects.all().order_by('id')
+    user_list = User.objects.all().order_by('last_name')
 
-    for i in range(len(UserProfile.objects.all())):
-        if not (user_list[i].payment == ''):
-            name = user_list[i].user.get_full_name()
-            affiliation = user_list[i].affiliation
-            address = user_list[i].address
-            postal_code = user_list[i].postal_code
-            city = user_list[i].city
-            country = user_list[i].country
-            payment = user_list[i].payment
-            str_list.append('\\receipt{%(name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'name': name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
+    for i in range(len(User.objects.all())):
+        try:
+            if not (user_list[i].get_profile().payment == ''):
+                name = user_list[i].get_full_name()
+                affiliation = user_list[i].get_profile().affiliation
+                address = user_list[i].get_profile().address
+                postal_code = user_list[i].get_profile().postal_code
+                city = user_list[i].get_profile().city
+                country = user_list[i].get_profile().country
+                payment = user_list[i].get_profile().payment
+                str_list.append('\\receipt{%(name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'name': name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
+        except UserProfile.DoesNotExist:
+            continue
 
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
@@ -739,19 +742,22 @@ def receipts_pdf(request, **args):
     f = open(os.path.join(tex_template_path, 'receipts_template.tex'), 'r')
     str_list.append(f.read())
     f.close()
-    
-    user_list = UserProfile.objects.all().order_by('id')
+  
+    user_list = User.objects.all().order_by('last_name')
 
-    for i in range(len(UserProfile.objects.all())):
-        if not (user_list[i].payment == ''):
-            name = user_list[i].user.get_full_name()
-            affiliation = user_list[i].affiliation
-            address = user_list[i].address
-            postal_code = user_list[i].postal_code
-            city = user_list[i].city
-            country = user_list[i].country
-            payment = user_list[i].payment
-            str_list.append('\\receipt{%(name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'name': name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
+    for i in range(len(User.objects.all())):
+        try:
+            if not (user_list[i].get_profile().payment == ''):
+                name = user_list[i].get_full_name()
+                affiliation = user_list[i].get_profile().affiliation
+                address = user_list[i].get_profile().address
+                postal_code = user_list[i].get_profile().postal_code
+                city = user_list[i].get_profile().city
+                country = user_list[i].get_profile().country
+                payment = user_list[i].get_profile().payment
+                str_list.append('\\receipt{%(name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'name': name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
+        except UserProfile.DoesNotExist:
+            continue
 
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
