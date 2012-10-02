@@ -1,0 +1,40 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[czech]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry} 
+\usepackage{longtable}
+\usepackage{pdflscape}
+
+\textwidth 170mm
+\topmargin 0mm
+
+
+\newcommand{\registration}[5]
+{	 
+	{#1} & {#2} & {\small #3} &	{#4} & {\small #5} & & & & & & \\
+	\hline
+}
+
+\begin{document}
+\begin{landscape}
+\pagestyle{empty}
+\begin{longtable}[l]{|l|l|l|c|c|p{30pt}|p{40pt}|p{40pt}|p{40pt}|p{40pt}|p{60pt}|}
+\multicolumn{11}{c}{\bf \large FEMTEC 2013}\\
+\hline
+Last name & First name & Affinilation & T-shirt & \multicolumn{2}{c|}{Departure} & {\small Welcome} & {\small Farewell} & {\small SW aft.} & {\small Postconf} & {\small Remark} \\
+\hline
+\hline
+\endfirsthead
+\hline
+Last name & First name & Affinilation & T-shirt & \multicolumn{2}{c|}{Departure} & Welcome & Farewell & SW aft. & Postconf & Remark \\
+\hline
+\hline
+\endhead
+\hline 
+\multicolumn{11}{r}{\footnotesize continue to the next side \dots}\\
+\endfoot
+\hline 
+\multicolumn{11}{r}{\footnotesize End of registration form}\\
+\endlastfoot
+
