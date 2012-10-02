@@ -250,30 +250,32 @@ class BibAuthors(Latexible):
 class BibItem(Latexible):
 
     _template = u"""
-\\bibitem{%(bibid)s}
+\\bibitem{%(title)s}
 {\\sc %(authors)s}. {%(title)s}. %(other)s.
 """
 
-    def __init__(self, bibid, authors, title, other):
-        self.bibid = bibid
+    def __init__(self, authors, title, other):
+    #def __init__(self, bibid, authors, title, other):
+        #self.bibid = bibid
         self.authors = authors
         self.title = title.replace('&quot;', '')
         self.other = other
 
     def to_latex(self):
         return self._template % dict(
-            bibid=self.bibid,
+            #bibid=self.bibid,
             authors=self.authors.to_latex(),
             title=self.title,
             other=self.other)
 
     @classmethod
     def from_json(cls, data):
-        bibid = data['bibid']
+        #bibid = 'bibid'
         authors = BibAuthors.from_json(data['authors'])
         title = data['title']
         other = data['other']
-        return cls(bibid, authors, title, other)
+        #return cls(bibid, authors, title, other)
+        return cls(authors, title, other)
 
 class BibItems(Latexible):
 

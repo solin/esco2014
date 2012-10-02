@@ -55,7 +55,7 @@ function addBibitemField(event, after, initial) {
             return arr.join(", ");
         }
 
-        el.find("[name='bibitem_bibid']").val(initial.bibid);
+        //el.find("[name='bibitem_bibid']").val(initial.bibid);
         //el.find("[name='bibitem_bibid']");
         el.find("[name='bibitem_authors']").val(bibitemAuthorsToString(initial.authors));
         el.find("[name='bibitem_title']").val(initial.title);
@@ -78,7 +78,7 @@ function validateForm() {
     var last_names = $("form [name='last_name']");
     var addresses = $("form [name='address']");
     var emails = $("form [name='email']");
-    var bibitems_bibid = $("form [name='bibitem_bibid']");
+    //var bibitems_bibid = $("form [name='bibitem_bibid']");
     var bibitems_authors = $("form [name='bibitem_authors']");
     var bibitems_title = $("form [name='bibitem_title']");
     var bibitems_other = $("form [name='bibitem_other']");
@@ -301,10 +301,10 @@ $(document).ready(function() {
         <li class="bibitem">
             <label>Bibliography item:</label>
             <br />
-            <span class="block">
+            <!-- <span class="block">
                 <input type="text" name="bibitem_bibid"></input>
                 <span>Label for eventual cross-referencing, e.g., "smith-taylor-1".</span>
-            </span>
+            </span> -->
             <br />
             <span class="block">
                 <input type="text" name="bibitem_authors"></input>

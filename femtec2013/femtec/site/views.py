@@ -911,7 +911,7 @@ def get_submit_form_data(post, user):
     addresses = post.getlist('address')
     emails = post.getlist('email')
     presentings = ['no']*len(first_names)
-    bibitems_bibid = post.getlist('bibitem_bibid')
+    #bibitems_bibid = post.getlist('bibitem_bibid')
     bibitems_authors = post.getlist('bibitem_authors')
     bibitems_title = post.getlist('bibitem_title')
     bibitems_other = post.getlist('bibitem_other')
@@ -936,8 +936,10 @@ def get_submit_form_data(post, user):
     #for i, bibitem_bibid in enumerate(bibitems_bibid):
     #    bibitems_bibid[i] = title +'_' + bibitems_bibid[i]
 
-    bibitems = zip(bibitems_bibid, bibitems_authors, bibitems_title, bibitems_other)
-    fields = ('bibid', 'authors', 'title', 'other')
+    #bibitems = zip(bibitems_bibid, bibitems_authors, bibitems_title, bibitems_other)
+    #fields = ('bibid', 'authors', 'title', 'other')
+    bibitems = zip(bibitems_authors, bibitems_title, bibitems_other)
+    fields = ('authors', 'title', 'other')
 
     for i, bibitem in enumerate(bibitems):
         bibitem = dict(zip(fields, bibitem))
