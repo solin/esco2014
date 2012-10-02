@@ -797,15 +797,18 @@ def registration_tex(request, **args):
     str_list.append(f.read())
     f.close()
     
-    user_list = UserProfile.objects.all().order_by('id')
+    user_list = User.objects.all().order_by('last_name')
 
-    for i in range(len(UserProfile.objects.all())):
-        last_name = user_list[i].user.last_name
-        first_name = user_list[i].user.first_name
-        affiliation = user_list[i].affiliation
-        tshirt = user_list[i].tshirt
-        departure = user_list[i].departure
-        str_list.append('\\registration{%(last_name)s}{%(first_name)s}{%(affiliation)s}{%(tshirt)s}{%(departure)s}\n' % {'last_name': last_name, 'first_name': first_name, 'affiliation': affiliation,'tshirt': tshirt, 'departure': departure})
+    for i in range(len(User.objects.all())):
+        try:
+            last_name = user_list[i].last_name
+            first_name = user_list[i].first_name
+            affiliation = user_list[i].get_profile().affiliation
+            tshirt = user_list[i].get_profile().tshirt
+            departure = user_list[i].get_profile().departure
+            str_list.append('\\registration{%(last_name)s}{%(first_name)s}{%(affiliation)s}{%(tshirt)s}{%(departure)s}\n' % {'last_name': last_name, 'first_name': first_name, 'affiliation': affiliation,'tshirt': tshirt, 'departure': departure})
+        except UserProfile.DoesNotExist:
+            continue
 
     str_list.append('\\end{longtable}' )
     str_list.append('\\end{landscape}' )
@@ -839,15 +842,18 @@ def registration_pdf(request, **args):
     str_list.append(f.read())
     f.close()
     
-    user_list = UserProfile.objects.all().order_by('id')
+    user_list = User.objects.all().order_by('last_name')
 
-    for i in range(len(UserProfile.objects.all())):
-        last_name = user_list[i].user.last_name
-        first_name = user_list[i].user.first_name
-        affiliation = user_list[i].affiliation
-        tshirt = user_list[i].tshirt
-        departure = user_list[i].departure
-        str_list.append('\\registration{%(last_name)s}{%(first_name)s}{%(affiliation)s}{%(tshirt)s}{%(departure)s}\n' % {'last_name': last_name, 'first_name': first_name, 'affiliation': affiliation,'tshirt': tshirt, 'departure': departure})
+    for i in range(len(User.objects.all())):
+        try:
+            last_name = user_list[i].last_name
+            first_name = user_list[i].first_name
+            affiliation = user_list[i].get_profile().affiliation
+            tshirt = user_list[i].get_profile().tshirt
+            departure = user_list[i].get_profile().departure
+            str_list.append('\\registration{%(last_name)s}{%(first_name)s}{%(affiliation)s}{%(tshirt)s}{%(departure)s}\n' % {'last_name': last_name, 'first_name': first_name, 'affiliation': affiliation,'tshirt': tshirt, 'departure': departure})
+        except UserProfile.DoesNotExist:
+            continue
 
     str_list.append('\\end{longtable}' )
     str_list.append('\\end{landscape}' )
