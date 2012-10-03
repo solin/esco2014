@@ -114,7 +114,7 @@ def handler500(request):
     return _render_to_response('errors/500.html', request)
 
 def index_view(request, **args):
-    args = {'conf_name': settings.CONF_NAME, 'year': settings.YEAR}
+    args = {'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_year': settings.CONF_YEAR}
     return _render_to_response('base.html', request, args)
 
 def participants(request, **args):
@@ -275,8 +275,9 @@ def account_profile_view(request, **args):
             if settings.SEND_EMAIL:
                 template = loader.get_template('e-mails/user/profile.txt')
                 body = template.render(Context({'user': request.user, 'profile': profile}))
-
-                request.user.email_user("[FEMTEC 2013] User Profile Confirmation", body)
+                conf_name_upper = settings.CONF_NAME_UPPER
+                conf_year = settings.CONF_YEAR
+                request.user.email_user("[%(conf_name_upper)s %(conf_year)s] User Profile Confirmation" % {'conf_name_upper': conf_name_upper, 'conf_year': conf_year }, body)
 
             message = 'Your profile was updated successfully.'
 
