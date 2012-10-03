@@ -114,6 +114,7 @@ def handler500(request):
     return _render_to_response('errors/500.html', request)
 
 def index_view(request, **args):
+    args = {'conf_name': settings.CONF_NAME, 'year': settings.YEAR}
     return _render_to_response('base.html', request, args)
 
 def participants(request, **args):
