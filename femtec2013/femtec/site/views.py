@@ -144,7 +144,7 @@ def account_login_view(request, **args):
 
     request.session.set_test_cookie()
 
-    local_args = {'form': form, 'next': next}
+    local_args = {'form': form, 'next': next, 'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_name_lower': settings.CONF_NAME_LOWER, 'conf_year': settings.CONF_YEAR, 'conf_email': settings.CONF_EMAIL,'conf_web': settings.CONF_WEB}
     local_args.update(args)
 
     return _render_to_response('account/login.html', request, local_args)
@@ -971,6 +971,7 @@ def get_submit_form_data(post, user):
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_submit_view(request, **args):
+    conf_settings = {'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_name_lower': settings.CONF_NAME_LOWER, 'conf_year': settings.CONF_YEAR, 'conf_email': settings.CONF_EMAIL,'conf_web': settings.CONF_WEB}
     if request.method == 'POST':
         post = request.POST
 
@@ -1008,7 +1009,7 @@ def abstracts_submit_view(request, **args):
 
         return HttpResponsePermanentRedirect('/account/abstracts/')
     else:
-        return _render_to_response('abstracts/submit.html', request)
+        return _render_to_response('abstracts/submit.html', request, conf_settings)
 
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
