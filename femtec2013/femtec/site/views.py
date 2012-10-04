@@ -105,7 +105,8 @@ def _render_to_response(page, request, args=None):
     return render_to_response(page, RequestContext(request, args))
 
 def _render_template(request, **args):
-    return _render_to_response(args.get('template'), request)
+    conf_settings = {'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_name_lower': settings.CONF_NAME_LOWER, 'conf_year': settings.CONF_YEAR, 'conf_email': settings.CONF_EMAIL,'conf_web': settings.CONF_WEB}
+    return _render_to_response(args.get('template'), request, conf_settings)
 
 def handler404(request):
     return _render_to_response('errors/404.html', request)
@@ -114,13 +115,13 @@ def handler500(request):
     return _render_to_response('errors/500.html', request)
 
 def index_view(request, **args):
-    args = {'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_year': settings.CONF_YEAR, 'conf_email': settings.CONF_EMAIL}
-    return _render_to_response('base.html', request, args)
+    conf_settings = {'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_name_lower': settings.CONF_NAME_LOWER, 'conf_year': settings.CONF_YEAR, 'conf_email': settings.CONF_EMAIL,'conf_web': settings.CONF_WEB}
+    return _render_to_response('base.html', request, conf_settings)
 
 def participants(request, **args):
     userprofile_list = User.objects.all().order_by('last_name')
-    return _render_to_response('content/participants.html', request, {'userprofile_list': userprofile_list})
-    
+    participants = {'userprofile_list': userprofile_list}
+    return _render_to_response('content/participants.html', request, participants)  
 
 def account_login_view(request, **args):
     next = request.REQUEST.get('next', '/account/')
