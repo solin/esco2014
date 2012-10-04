@@ -97,18 +97,18 @@
                             <li class="tail">Abstract submission deadline.</li>
                             <li class="head">December 15, 2012</li>
                             <li class="tail">Minisymposia proposals.</li>
-                            <li class="head">January 15, 2013</li>
+                            <li class="head">January 15, {{ conf_year }}</li>
                             <li class="tail">Notification of acceptance.</li>
-                            <li class="head">March 15, 2013</li>
+                            <li class="head">March 15, {{ conf_year }}</li>
                             <li class="tail">Early registration fee payment.</li>
-                            <li class="head">September 30, 2013</li>
+                            <li class="head">September 30, {{ conf_year }}</li>
                             <li class="tail">Paper submission.</li>
                         </ul>
                     </div>
                     <div class="box">
                         <div class="title">Previous Conference</div>
                         <ul class="menu">
-                            <li><a href="http://hpfem.org/events/femtec-2011/">FEMTEC 2011</a></li>
+                            <li><a href="http://hpfem.org/events/femtec-2011/">{{ conf_name_upper }} 2011</a></li>
                         </ul>
                     </div>
                     {% if user.is_authenticated %}
@@ -142,7 +142,7 @@
                             <br>on Computational Engineering and Sciences
                         </h3>
                         <h3>
-                            Las Vegas, May 19 - 24, 2013  
+                            Las Vegas, May 19 - 24, {{ conf_year }}  
                         </h3>
                         <hr>
                         <p>
@@ -212,7 +212,7 @@
                         </p>
 <!--                        <h3>Organizers</h3>
                         <p>
-                            FEMTEC 2013 is organized by <a href="http://femhub.com">FEMhub Inc.</a> along with
+                            {{ conf_name_upper }} {{ conf_year }} is organized by <a href="http://femhub.com">FEMhub Inc.</a> along with
                             collaborators from <a href="http://www.sandia.gov">Sandia National Laboratories</a>, <a href="http://www.zcu.cz/en/">University of West Bohemia</a>,
                             <a href="http://www.cvut.cz/en?set_language=en">Czech Technical University</a>, <a href="http://www.tu-darmstadt.de/index.en.jsp">Technical University of Darmstadt</a>, and
                             <a href="http://www.uni-erlangen.org/">University of Erlangen-Nuernberg</a>.
@@ -223,7 +223,7 @@
             </div>
             <div id="clearer"></div>
             <div id="footer">
-                Copyright &copy; 2012-2013 <a href="http://femhub.com">FEMhub Inc.</a> All Rights Reserved.
+                Copyright &copy; 2012-{{ conf_year }} <a href="http://femhub.com">FEMhub Inc.</a> All Rights Reserved.
             </div>
         </div>
     </body>
