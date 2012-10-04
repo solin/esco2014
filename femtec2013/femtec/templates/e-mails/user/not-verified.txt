@@ -1,7 +1,7 @@
 {% extends "e-mails/user/base.txt" %}
 
 {% block content %}
-thank you for submitting an abstract for FEMTEC 2013. Your 
+thank you for submitting an abstract for {{ conf_name_upper }} {{ conf_year }}. Your 
 abstract needs some formatting improvements in order to 
 pass the format compliance check. Usual formatting flaws
 include the abstract being longer than one page, missing 

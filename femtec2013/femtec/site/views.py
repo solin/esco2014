@@ -182,15 +182,19 @@ def account_create_view(request, **args):
             user.save()
 
             if settings.SEND_EMAIL:
-                template = loader.get_template('e-mails/user/create.txt')
-                body = template.render(Context({'user': user}))
+                conf_name_upper = settings.CONF_NAME_UPPER
+                conf_year = settings.CONF_YEAR
+                conf_web = settings.CONF_WEB
 
-                user.email_user("[FEMTEC 2013] Account Creation Notification", body)
+                template = loader.get_template('e-mails/user/create.txt')
+                body = template.render(Context({'user': user, 'conf_name_upper': conf_name_upper, 'conf_year': conf_year, 'conf_web': conf_web }))
+
+                user.email_user("[%(conf_name_upper)s %(conf_year)s] Account Creation Notification" % {'conf_name_upper': conf_name_upper, 'conf_year': conf_year }, body)
 
                 template = loader.get_template('e-mails/admin/create.txt')
                 body = template.render(Context({'user': user}))
 
-                mail_admins("[FEMTEC 2013][ADMIN] New Account", body)
+                mail_admins("[%(conf_name_upper)s %(conf_year)s][ADMIN] New Account" % {'conf_name_upper': conf_name_upper, 'conf_year': conf_year }, body)
 
             return HttpResponsePermanentRedirect('/account/create/success/')
     else:
@@ -230,10 +234,14 @@ def account_password_remind_view(request, **args):
             user.save()
 
             if settings.SEND_EMAIL:
-                template = loader.get_template('e-mails/user/reminder.txt')
-                body = template.render(Context({'user': user, 'password': password}))
+                conf_name_upper = settings.CONF_NAME_UPPER
+                conf_year = settings.CONF_YEAR
+                conf_web = settings.CONF_WEB
 
-                user.email_user("[FEMTEC 2013] Password Reminder Notification", body)
+                template = loader.get_template('e-mails/user/reminder.txt')
+                body = template.render(Context({'user': user, 'password': password, 'conf_web': conf_web}))
+
+                user.email_user("[%(conf_name_upper)s %(conf_year)s] Password Reminder Notification" % {'conf_name_upper': conf_name_upper, 'conf_year': conf_year }, body)
 
             return HttpResponsePermanentRedirect('/account/password/remind/success/')
     else:
@@ -274,10 +282,13 @@ def account_profile_view(request, **args):
             profile.save()
 
             if settings.SEND_EMAIL:
-                template = loader.get_template('e-mails/user/profile.txt')
-                body = template.render(Context({'user': request.user, 'profile': profile}))
                 conf_name_upper = settings.CONF_NAME_UPPER
                 conf_year = settings.CONF_YEAR
+                conf_web = settings.CONF_WEB
+
+                template = loader.get_template('e-mails/user/profile.txt')
+                body = template.render(Context({'user': request.user, 'profile': profile, 'conf_name_upper': conf_name_upper, 'conf_year': conf_year, 'conf_web': conf_web}))
+
                 request.user.email_user("[%(conf_name_upper)s %(conf_year)s] User Profile Confirmation" % {'conf_name_upper': conf_name_upper, 'conf_year': conf_year }, body)
 
             message = 'Your profile was updated successfully.'
@@ -982,15 +993,18 @@ def abstracts_submit_view(request, **args):
         abstract.save()
 
         if settings.SEND_EMAIL:
+            conf_name_upper = settings.CONF_NAME_UPPER
+            conf_year = settings.CONF_YEAR
+            
             template = loader.get_template('e-mails/user/abstract.txt')
-            body = template.render(Context({'user': request.user, 'abstract': abstract}))
+            body = template.render(Context({'user': request.user, 'abstract': abstract, 'conf_name_upper': conf_name_upper, 'conf_year': conf_year}))
 
-            request.user.email_user("[FEMTEC 2013] Abstract Submission Notification", body)
+            request.user.email_user("[%(conf_name_upper)s %(conf_year)s] Abstract Submission Notification" % {'conf_name_upper': conf_name_upper, 'conf_year': conf_year }, body)
 
             template = loader.get_template('e-mails/admin/abstract.txt')
             body = template.render(Context({'user': request.user, 'abstract': abstract}))
 
-            mail_admins("[FEMTEC 2013][ADMIN] New Abstract", body)
+            mail_admins("[%(conf_name_upper)s %(conf_year)s][ADMIN] New Abstract" % {'conf_name_upper': conf_name_upper, 'conf_year': conf_year }, body)
 
         return HttpResponsePermanentRedirect('/account/abstracts/')
     else:

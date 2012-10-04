@@ -1,7 +1,7 @@
 {% extends "e-mails/user/base.txt" %}
 
 {% block content %}
-thank you for submitting an abstract for FEMTEC 2013.
+thank you for submitting an abstract for {{ conf_name_upper }} {{ conf_year }}.
 
 Your abstract is identified by the following data:
 
