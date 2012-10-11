@@ -8,5 +8,7 @@ first name: {{ user.first_name }}
 last name: {{ user.last_name }}
 
 affiliation: {{ user.get_profile.affiliation }}
+
+compilation : {{ abstract.compiled }}
 {% endblock %}
 
