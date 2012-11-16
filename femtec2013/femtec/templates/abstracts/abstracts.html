@@ -20,6 +20,10 @@ function getPdf(id) {
     window.open('/account/abstracts/pdf/' + id, '_blank');
 }
 
+function pdfNotFound() {
+    alert("ERROR - No PDF file.\nPlease check the compilation log by pressing the LOG button.\nYou will probably find an error message at the end.");
+}
+
 function getLog(id) {
     window.open('/account/abstracts/log/' + id, '_blank');
 }
@@ -45,7 +49,7 @@ function getLog(id) {
                         {% for abstract in abstracts %}
                             <tr>
                                 <th>ID:</th>
-                                <td>{{ abstract.id }}</td>
+                                <td>{{ abstract.id }}{{ abstract.compiled }} </td>
                             </tr>
                             <tr>
                                 <th>Title:</th>
@@ -81,7 +85,9 @@ function getLog(id) {
                                     <button class="button" onclick="deleteAbstract('{{ abstract.id }}')"
                                         {% if abstract.accepted != None %} disabled="disabled" {% endif %}>Delete</button>
                                     <button class="button" onclick="getTex('{{ abstract.id }}')">TeX</button>
-                                    <button class="button" onclick="getPdf('{{ abstract.id }}')">PDF</button>
+				    <button class="button" 
+					{% if abstract.compiled %} onclick="getPdf('{{ abstract.id }}')" 
+					{% endif %} onclick="pdfNotFound()">PDF</button>
                                     <button class="button" onclick="getLog('{{ abstract.id }}')">Log</button>
                                 </td>
                             </tr>
