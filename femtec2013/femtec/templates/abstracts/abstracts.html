@@ -49,7 +49,7 @@ function getLog(id) {
                         {% for abstract in abstracts %}
                             <tr>
                                 <th>ID:</th>
-                                <td>{{ abstract.id }}{{ abstract.compiled }} </td>
+                                <td>{{ abstract.id }} </td>
                             </tr>
                             <tr>
                                 <th>Title:</th>
@@ -57,7 +57,7 @@ function getLog(id) {
                             </tr>
                             <tr>
                                 <th>Build Status:</th>
-                                <td>{{ abstract.compiled|yesno:"Success (compilation succeeded),Failure (see log for details),Pending (compilation in progress)" }}</td>
+                                <td>{{ abstract.compiled|yesno:"Success (compilation succeeded),FAILURE - No PDF file created! (see log for details),Pending (compilation in progress)" }}</td>
                             </tr>
                             <tr>
                                 <th>Format Check:</th>
