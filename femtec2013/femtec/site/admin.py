@@ -7,7 +7,6 @@ from django.template import Context, loader
 
 from django.contrib.auth.models import User
 from femtec.site.models import UserProfile, UserAbstract2 as UserAbstract
-#from titlecase import titlecase
 
 import datetime
 
@@ -124,15 +123,8 @@ class UserAbstractAdmin(admin.ModelAdmin):
     actions_on_top = False
     actions_on_bottom = False
 
-    # not working correctly in Home/Site/User abstracts
     def save_model(self, request, obj, form, change):
         if request.method == 'POST' and change == True:
-            #data = json.loads(form.cleaned_data['data'])
-            #data['title'] = titlecase(data['title'])
-            #data = json.dumps(data)
-                        
-            #obj.data = data
-
             date = datetime.datetime.today()            
             obj.modify_date = date
             obj.save()

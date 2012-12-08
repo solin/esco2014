@@ -7,7 +7,7 @@ import shutil
 import subprocess
 
 from femtec.settings import MEDIA_ROOT
-
+from titlecase import titlecase
 
 class Latexible(object):
     def __unicode__(self):
@@ -404,7 +404,7 @@ class Abstract(Latexible):
 
     @classmethod
     def from_json(cls, data):
-        title = data['title']
+        title = titlecase(data['title'])
         authors = Authors.from_json(data['authors'])
         abstract = data['abstract']
         bibitems = BibItems.from_json(data['bibitems'])
