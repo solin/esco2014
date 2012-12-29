@@ -29,6 +29,7 @@ class UserAdmin(admin.ModelAdmin):
     actions = None
     actions_on_top = False
     actions_on_bottom = False
+    save_on_top = True
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
@@ -61,6 +62,7 @@ class UserProfileAdmin(admin.ModelAdmin):
     actions = None
     actions_on_top = False
     actions_on_bottom = False
+    save_on_top = True
 
 admin.site.register(UserProfile, UserProfileAdmin)
 
@@ -122,6 +124,7 @@ class UserAbstractAdmin(admin.ModelAdmin):
     actions = None
     actions_on_top = False
     actions_on_bottom = False
+    save_on_top = True
 
     def save_model(self, request, obj, form, change):
         if request.method == 'POST' and change == True:
