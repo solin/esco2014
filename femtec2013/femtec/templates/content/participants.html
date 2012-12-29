@@ -4,10 +4,11 @@
     <h2>Preliminary List of Participants</h2>
     <ul>
     {% for user in userprofile_list %}
-        <li>
-        <b> {{ user.last_name }} {{ user.first_name }}</b> ({{ user.get_profile.affiliation }}, {{ user.get_profile.city }}, {{ user.get_profile.country }})
-        </li>
+	{% if user.get_profile.affiliation and user.get_profile.city and user.get_profile.country %}
+		<li>
+        	<b> {{ user.last_name }} {{ user.first_name }}</b> ({{ user.get_profile.affiliation }}, {{ user.get_profile.city }}, {{ user.get_profile.country }})
+        	</li>
+	{% endif %}
     {% endfor %}
     </ul>
 {% endblock %}
-
