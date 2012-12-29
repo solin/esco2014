@@ -75,7 +75,26 @@
     </div>
     <!-- END Content -->
 
-    {% block footer %}<div id="footer"></div>{% endblock %}
+    {% block footer %}
+    <div id="footer">
+    <table>
+    <tr>
+    <td style="border-bottom: 0px"><input type="button" value="{% trans 'BoA TeX' %}" ONCLICK="window.location.href='/account/abstracts/book/tex/'" /></td>
+    <td style="border-bottom: 0px"><input type="button" value="{% trans 'Badges TeX' %}" ONCLICK="window.location.href='/account/badges/tex/'" /></td>
+    <td style="border-bottom: 0px"><input type="button" value="{% trans 'Certificates TeX' %}" ONCLICK="window.location.href='/account/certificates/tex/'" /></td>
+    <td style="border-bottom: 0px"><input type="button" value="{% trans 'Receipts TeX' %}" ONCLICK="window.location.href='/account/receipts/tex/'" /></td>
+    <td style="border-bottom: 0px"><input type="button" value="{% trans 'Registration TeX' %}" ONCLICK="window.location.href='/account/registration/tex/'" /></td>
+    </tr>
+    <tr>
+    <td style="border-bottom: 0px"><input type="button" value="{% trans 'BoA PDF' %}" ONCLICK="window.location.href='/account/abstracts/book/pdf/'" /></td>
+    <td style="border-bottom: 0px"><input type="button" value="{% trans 'Badges PDF' %}" ONCLICK="window.location.href='/account/badges/pdf/'" /></td>
+    <td style="border-bottom: 0px"><input type="button" value="{% trans 'Certificates PDF' %}" ONCLICK="window.location.href='/account/certificates/pdf/'" /></td>
+    <td style="border-bottom: 0px"><input type="button" value="{% trans 'Receipts PDF' %}" ONCLICK="window.location.href='/account/receipts/pdf/'" /></td>
+    <td style="border-bottom: 0px"><input type="button" value="{% trans 'Registration PDF' %}" ONCLICK="window.location.href='/account/registration/pdf/'" /></td>
+    </tr>
+    </table>
+    </div>
+    {% endblock %}
 </div>
 <!-- END Container -->
 
