@@ -250,20 +250,21 @@ class BibAuthors(Latexible):
 class BibItem(Latexible):
 
     _template = u"""
-\\bibitem{%(title)s}
+\\bibitem{%(bibid)s}
 {\\sc %(authors)s}. {%(title)s}. %(other)s.
 """
 
-    def __init__(self, authors, title, other):
-    #def __init__(self, bibid, authors, title, other):
-        #self.bibid = bibid
+    #def __init__(self, authors, title, other):
+    def __init__(self, bibid, authors, title, other):
+        self.bibid = bibid
+        self.bibid = "".join([x for x in self.bibid if ord(x) < 128])
         self.authors = authors
         self.title = title.replace('&quot;', '')
-        self.other = other
+	self.other = other
 
     def to_latex(self):
         return self._template % dict(
-            #bibid=self.bibid,
+            bibid=self.bibid,
             authors=self.authors.to_latex(),
             title=self.title,
             other=self.other)
@@ -271,11 +272,12 @@ class BibItem(Latexible):
     @classmethod
     def from_json(cls, data):
         #bibid = 'bibid'
+        bibid = data['title']
         authors = BibAuthors.from_json(data['authors'])
         title = data['title']
         other = data['other']
-        #return cls(bibid, authors, title, other)
-        return cls(authors, title, other)
+        return cls(bibid, authors, title, other)
+        #return cls(authors, title, other)
 
 class BibItems(Latexible):
 
@@ -315,7 +317,8 @@ class Abstract(Latexible):
 
     _template = u"""
 \\documentclass[article,A4,11pt]{llncs}
-\\usepackage[T1]{fontenc}
+\\usepackage[czech]{babel}
+\\usepackage[utf8]{inputenc}
 \\usepackage{amsmath}
 \\usepackage{amssymb}
 \\usepackage{epsf,times}
@@ -363,7 +366,7 @@ class Abstract(Latexible):
         self.title = self.title.replace('&', '\&')
         self.title = self.title.replace('#', '\#')
         self.title = self.title.replace('$hp$', 'hp')
-        self.title = "".join([x for x in self.title if ord(x) < 128])
+        #self.title = "".join([x for x in self.title if ord(x) < 128])
         self.title = self.title.strip()
         self.authors = authors
         self.abstract = abstract.replace('\n', '').replace('\r', '')
