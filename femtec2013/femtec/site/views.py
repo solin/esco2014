@@ -1057,6 +1057,7 @@ def abstracts_tex_view(request, abstract_id, **args):
     tex = abstract.get_data_or_404("tex")
 
     response = HttpResponse(tex, mimetype='text/plain')
+    response['Content-Type'] = 'application/octet-stream'
     response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=abstract.tex'
 
