@@ -922,9 +922,11 @@ def get_submit_form_data(post, user):
 
     first_names = post.getlist('first_name')
     last_names = post.getlist('last_name')
+    full_names = ['']*len(first_names)
     affiliations = post.getlist('affiliation')
     emails = post.getlist('email')
     presentings = ['no']*len(first_names)
+
     #bibitems_bibid = post.getlist('bibitem_bibid')
     bibitems_authors = post.getlist('bibitem_authors')
     bibitems_title = post.getlist('bibitem_title')
@@ -935,23 +937,22 @@ def get_submit_form_data(post, user):
             presentings[i] = 'yes'
             break
 
-    authors = zip(first_names, last_names, affiliations, emails, presentings)
-    fields = ('first_name', 'last_name', 'affiliation', 'email', 'presenting')
+    for i, (first_name, last_name) in enumerate(zip(first_names, last_names)):
+        full_names[i] = first_names[i] + ' ' + last_names[i]
+
+    authors = zip(first_names, last_names, full_names, affiliations, emails, presentings)
+    fields = ('first_name', 'last_name', 'full_name', 'affiliation', 'email', 'presenting')
 
     for i, author in enumerate(authors):
         author = dict(zip(fields, author))
         authors[i] = author
 
-    fields = ('first_name', 'last_name')
-
     bibitems_authors = [ [ dict(zip(fields, re.split("\s+", author, 1)))
         for author in re.split("\s*,\s*", bibitem_authors) ] for bibitem_authors in bibitems_authors ]
 
-    #for i, bibitem_bibid in enumerate(bibitems_bibid):
-    #    bibitems_bibid[i] = title +'_' + bibitems_bibid[i]
-
     #bibitems = zip(bibitems_bibid, bibitems_authors, bibitems_title, bibitems_other)
     #fields = ('bibid', 'authors', 'title', 'other')
+    
     bibitems = zip(bibitems_authors, bibitems_title, bibitems_other)
     fields = ('authors', 'title', 'other')
 
