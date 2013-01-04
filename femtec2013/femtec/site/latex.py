@@ -82,12 +82,11 @@ class PresentingAuthor(Latexible):
     %(person)s
     %(affiliation)s\\\\
     """
-    _presenting_person = u"{\\bf %(first_name)s %(last_name)s}\\\\"
-    _nonpresenting_person = u"{\\bf %(first_name)s %(last_name)s}\\\\"
+    _presenting_person = u"{\\bf %(full_name)s}\\\\"
+    _nonpresenting_person = u"{\\bf %(full_name)s}\\\\"
 
-    def __init__(self, first_name, last_name, affiliation, email, presenting):
-        self.first_name = first_name.strip()
-        self.last_name = last_name.strip()
+    def __init__(self, full_name, affiliation, email, presenting):
+        self.full_name = full_name.strip()
         self.affiliation = affiliation.strip()
         self.email = email
         self.presenting = presenting
@@ -99,8 +98,7 @@ class PresentingAuthor(Latexible):
             person_template = self._nonpresenting_person
 
         person = person_template % dict(
-            first_name=self.first_name,
-            last_name=self.last_name)
+            full_name=self.full_name)
 
         return self._template % dict(
             person=person,
@@ -109,23 +107,21 @@ class PresentingAuthor(Latexible):
 
     @classmethod
     def from_json(cls, data):
-        first_name = data.get('first_name', "")
-        last_name = data.get('last_name', "")
+        full_name = data.get('full_name', "")
         affiliation = data.get('affiliation', "")
         email = data.get('email', "")
         presenting = data['presenting']
-        return cls(first_name, last_name, affiliation, email, presenting)
+        return cls(full_name, affiliation, email, presenting)
 
 
 class TocAuthor(Latexible):
 
     _template = u"%(person)s"
-    _presenting_person = u"%(first_name)s %(last_name)s"
-    _nonpresenting_person = u"%(first_name)s %(last_name)s"
+    _presenting_person = u"%(full_name)s"
+    _nonpresenting_person = u"%(full_name)s"
 
-    def __init__(self, first_name, last_name, affiliation, email, presenting):
-        self.first_name = first_name
-        self.last_name = last_name
+    def __init__(self, full_name, affiliation, email, presenting):
+        self.full_name = full_name
         self.affiliation = affiliation
         self.email = email
         self.presenting = presenting
@@ -137,8 +133,7 @@ class TocAuthor(Latexible):
             person_template = self._nonpresenting_person
 
         person = person_template % dict(
-            first_name=self.first_name,
-            last_name=self.last_name)
+            full_name=self.full_name)
 
         return self._template % dict(
             person=person,
@@ -147,12 +142,11 @@ class TocAuthor(Latexible):
 
     @classmethod
     def from_json(cls, data):
-        first_name = data.get('first_name', "")
-        last_name = data.get('last_name', "")
+        full_name = data.get('full_name', "")
         affiliation = data.get('affiliation', "")
         email = data.get('email', "")
         presenting = data['presenting']
-        return cls(first_name, last_name, affiliation, email, presenting)
+        return cls(full_name, affiliation, email, presenting)
 
 
 class Author(Latexible):
@@ -162,12 +156,11 @@ class Author(Latexible):
 %(affiliation)s\\\\
 {\\tt %(email)s}
 """
-    _presenting_person = u"\\underline{%(first_name)s %(last_name)s}"
-    _nonpresenting_person = u"%(first_name)s %(last_name)s"
+    _presenting_person = u"\\underline{%(full_name)s"
+    _nonpresenting_person = u"%(full_name)s"
 
-    def __init__(self, first_name, last_name, affiliation, email, presenting):
-        self.first_name = first_name
-        self.last_name = last_name
+    def __init__(self, full_name, affiliation, email, presenting):
+        self.full_name = full_name
         self.affiliation = affiliation
         self.email = email.replace('_', '\_')
         self.presenting = presenting
@@ -179,8 +172,7 @@ class Author(Latexible):
             person_template = self._nonpresenting_person
 
         person = person_template % dict(
-            first_name=self.first_name,
-            last_name=self.last_name)
+            full_name=self.full_name)
 
         return self._template % dict(
             person=person,
@@ -189,12 +181,11 @@ class Author(Latexible):
 
     @classmethod
     def from_json(cls, data):
-        first_name = data.get('first_name', "")
-        last_name = data.get('last_name', "")
+        full_name = data.get('full_name', "")
         affiliation = data.get('affiliation', "")
         email = data.get('email', "")
         presenting = data['presenting']
-        return cls(first_name, last_name, affiliation, email, presenting)
+        return cls(full_name, affiliation, email, presenting)
 
 class Authors(Latexible):
 
@@ -211,87 +202,87 @@ class Authors(Latexible):
     def from_json(cls, data):
         return cls(*[ Author.from_json(author) for author in data ])
 
-class BibAuthor(Latexible):
+#class BibAuthor(Latexible):
 
-    _template = u"%(first_name)s %(last_name)s"
+#    _template = u"%(first_name)s %(last_name)s"
 
-    def __init__(self, first_name, last_name):
-        self.first_name = first_name
-        self.last_name = last_name
+#    def __init__(self, first_name, last_name):
+#        self.first_name = first_name
+#        self.last_name = last_name
 
-    def to_latex(self):
-        return self._template % dict(
-            first_name=self.first_name,
-            last_name=self.last_name)
+#    def to_latex(self):
+#        return self._template % dict(
+#            first_name=self.first_name,
+#            last_name=self.last_name)
 
-    @classmethod
-    def from_json(cls, data):
-        first_name = data['first_name']
-        try:
-            last_name = data['last_name']
-        except KeyError:
-            last_name = ""
-        return cls(first_name, last_name)
+#    @classmethod
+#    def from_json(cls, data):
+#        first_name = data['first_name']
+#        try:
+#            last_name = data['last_name']
+#        except KeyError:
+#            last_name = ""
+#        return cls(first_name, last_name)
 
-class BibAuthors(Latexible):
+#class BibAuthors(Latexible):
 
-    _template = u" and "
+#    _template = u" and "
 
-    def __init__(self, *authors):
-        self.authors = authors
+#    def __init__(self, *authors):
+#        self.authors = authors
 
-    def to_latex(self):
-        return self._template.join([ author.to_latex() for author in self.authors ])
+#    def to_latex(self):
+#        return self._template.join([ author.to_latex() for author in self.authors ])
 
-    @classmethod
-    def from_json(cls, data):
-        return cls(*[ BibAuthor.from_json(author) for author in data ])
+#    @classmethod
+#    def from_json(cls, data):
+#       return cls(*[ BibAuthor.from_json(author) for author in data ])
 
 class BibItem(Latexible):
 
     _template = u"""
 \\bibitem{%(bibid)s}
-{\\sc %(authors)s}. {%(title)s}. %(other)s.
+{\\sc %(bibauthor)s}. {%(bibtitle)s}. %(bibother)s.
 """
 
     #def __init__(self, authors, title, other):
-    def __init__(self, bibid, authors, title, other):
+    def __init__(self, bibid, bibauthor, bibtitle, bibother):
         self.bibid = bibid
         self.bibid = "".join([x for x in self.bibid if ord(x) < 128])
-        self.authors = authors
-        self.title = title.replace('&quot;', '')
-	self.other = other
+        self.bibauthor = bibauthor
+        self.bibtitle = bibtitle.replace('&quot;', '')
+	self.bibother = bibother
 
     def to_latex(self):
         return self._template % dict(
             bibid=self.bibid,
-            authors=self.authors.to_latex(),
-            title=self.title,
-            other=self.other)
+            bibauthor=self.bibauthor,
+            bibtitle=self.bibtitle,
+            bibother=self.bibother)
 
     @classmethod
     def from_json(cls, data):
         #bibid = 'bibid'
-        bibid = data['title']
-        authors = BibAuthors.from_json(data['authors'])
-        title = data['title']
-        other = data['other']
-        return cls(bibid, authors, title, other)
-        #return cls(authors, title, other)
+        bibid = data.get('bibitem_title', "")
+        bibauthor = data.get('bibitem_author', "")
+        bibtitle = data.get('bibitem_title', "")
+        bibother = data.get('bibitem_other', "")
+        return cls(bibid, bibauthor, bibtitle, bibother)
 
 class BibItems(Latexible):
 
-    _template = u"\n\n"
+    _template = u"\n"
 
     def __init__(self, *bibitems):
         self.bibitems = bibitems
 
     def to_latex(self):
-        return self._template.join([ bibitem.to_latex() for bibitem in self.bibitems ])
+        return self._template.join([bibitem.to_latex() for bibitem in self.bibitems])
 
     @classmethod
     def from_json(cls, data):
         return cls(*[ BibItem.from_json(bibitem) for bibitem in data ])
+
 
 class Abstract(Latexible):
 
@@ -377,11 +368,11 @@ class Abstract(Latexible):
         toc_author = []
         temp_presenting = {}
         for author in self.authors.authors:
-            temp_presenting[author.last_name + " " + author.first_name]=PresentingAuthor(author.first_name, author.last_name, author.affiliation, author.email, author.presenting)
+            temp_presenting[author.full_name]=PresentingAuthor(author.full_name, author.affiliation, author.email, author.presenting)
             if author.presenting == 'yes':
-                toc_author.append(TocAuthor(author.first_name, author.last_name, author.affiliation, author.email, author.presenting))
+                toc_author.append(TocAuthor(author.full_name, author.affiliation, author.email, author.presenting))
             elif len(toc_author) == 0:
-                toc_author.append(TocAuthor(author.first_name, author.last_name, author.affiliation, author.email, author.presenting))
+                toc_author.append(TocAuthor(author.full_name, author.affiliation, author.email, author.presenting))
         self.presenting = PresentingAuthors(temp_presenting)
         self.tocauthors = TocAuthors(toc_author)
 

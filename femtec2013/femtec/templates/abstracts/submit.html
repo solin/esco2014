@@ -41,25 +41,25 @@ function addBibitemField(event, after, initial) {
     if (initial) {
         el = el.next();
 
-        function bibitemAuthorToString(author) {
-            return author.first_name + " " + author.last_name;
-        }
+        //function bibitemAuthorToString(author) {
+        //    return author.first_name + " " + author.last_name;
+        //}
 
-        function bibitemAuthorsToString(authors) {
-            var arr = [];
+        //function bibitemAuthorsToString(authors) {
+        //    var arr = [];
 
-            $.each(authors, function(i, author) {
-                arr.push(bibitemAuthorToString(author));
-            });
+        //    $.each(authors, function(i, author) {
+        //        arr.push(bibitemAuthorToString(author));
+        //    });
 
-            return arr.join(", ");
-        }
+        //    return arr.join(", ");
+        //}
 
         //el.find("[name='bibitem_bibid']").val(initial.bibid);
         //el.find("[name='bibitem_bibid']");
-        el.find("[name='bibitem_authors']").val(bibitemAuthorsToString(initial.authors));
-        el.find("[name='bibitem_title']").val(initial.title);
-        el.find("[name='bibitem_other']").val(initial.other);
+        el.find("[name='bibitem_author']").val(initial.bibitem_author);
+        el.find("[name='bibitem_title']").val(initial.bibitem_title);
+        el.find("[name='bibitem_other']").val(initial.bibitem_other);
     }
 }
 
@@ -79,7 +79,7 @@ function validateForm() {
     var affiliations = $("form [name='affiliation']");
     var emails = $("form [name='email']");
     //var bibitems_bibid = $("form [name='bibitem_bibid']");
-    var bibitems_authors = $("form [name='bibitem_authors']");
+    var bibitems_author = $("form [name='bibitem_author']");
     var bibitems_title = $("form [name='bibitem_title']");
     var bibitems_other = $("form [name='bibitem_other']");
 
@@ -133,7 +133,7 @@ function validateForm() {
         validateEls(affiliations, "Missing or invalid author's affiliation.");
         validateEls(emails, "Missing or invalid author's E-mail.");
         //validateEls(bibitems_bibid, "Missing or invalid bibliography item's id.");
-        validateEls(bibitems_authors, "Missing or invalid bibliography item's authors.", [spaceValidator]);
+        validateEls(bibitems_authors, "Missing or invalid bibliography item's authors.");
         validateEls(bibitems_title, "Missing or invalid bibliography item's title.");
         validateEls(bibitems_other, "Missing or invalid bibliography item's other data.");
     } catch (exc) {
@@ -307,7 +307,7 @@ $(document).ready(function() {
             </span> -->
             <br />
             <span class="block">
-                <input type="text" name="bibitem_authors"></input>
+                <input type="text" name="bibitem_author"></input>
                 <span>Authors, e.g., "J. Smith, M. Taylor".</span>
             </span>
             <br />
