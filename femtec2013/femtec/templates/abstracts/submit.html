@@ -16,7 +16,7 @@ function addAuthorField(event, after, initial) {
 
         el.find("[name='first_name']").val(initial.first_name);
         el.find("[name='last_name']").val(initial.last_name);
-        el.find("[name='address']").val(initial.address);
+        el.find("[name='affiliation']").val(initial.affiliation);
         el.find("[name='email']").val(initial.email);
     }
 }
@@ -76,7 +76,7 @@ function validateForm() {
     var content = $("form [name='abstract']");
     var first_names = $("form [name='first_name']");
     var last_names = $("form [name='last_name']");
-    var addresses = $("form [name='address']");
+    var affiliations = $("form [name='affiliation']");
     var emails = $("form [name='email']");
     //var bibitems_bibid = $("form [name='bibitem_bibid']");
     var bibitems_authors = $("form [name='bibitem_authors']");
@@ -130,7 +130,7 @@ function validateForm() {
     try {
         validateEls(first_names, "Missing or invalid author's first name.");
         validateEls(last_names, "Missing or invalid author's last name.");
-        validateEls(addresses, "Missing or invalid author's address.");
+        validateEls(affiliations, "Missing or invalid author's affiliation.");
         validateEls(emails, "Missing or invalid author's E-mail.");
         //validateEls(bibitems_bibid, "Missing or invalid bibliography item's id.");
         validateEls(bibitems_authors, "Missing or invalid bibliography item's authors.", [spaceValidator]);
@@ -278,8 +278,8 @@ $(document).ready(function() {
                 <span>Last name</span>
             </span>
             <br />
-            <span class="block address">
-                <input type="text" name="address"></input>
+            <span class="block affiliation">
+                <input type="text" name="affiliation"></input>
                 <span>Affiliation</span>
             </span>
             <br />

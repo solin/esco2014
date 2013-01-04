@@ -80,15 +80,15 @@ class PresentingAuthor(Latexible):
     _template = u"""
     \\noindent
     %(person)s
-    %(address)s\\\\
+    %(affiliation)s\\\\
     """
     _presenting_person = u"{\\bf %(first_name)s %(last_name)s}\\\\"
     _nonpresenting_person = u"{\\bf %(first_name)s %(last_name)s}\\\\"
 
-    def __init__(self, first_name, last_name, address, email, presenting):
+    def __init__(self, first_name, last_name, affiliation, email, presenting):
         self.first_name = first_name.strip()
         self.last_name = last_name.strip()
-        self.address = address.strip()
+        self.affiliation = affiliation.strip()
         self.email = email
         self.presenting = presenting
 
@@ -104,17 +104,17 @@ class PresentingAuthor(Latexible):
 
         return self._template % dict(
             person=person,
-            address=self.address,
+            affiliation=self.affiliation,
             email=self.email)
 
     @classmethod
     def from_json(cls, data):
         first_name = data.get('first_name', "")
         last_name = data.get('last_name', "")
-        address = data.get('address', "")
+        affiliation = data.get('affiliation', "")
         email = data.get('email', "")
         presenting = data['presenting']
-        return cls(first_name, last_name, address, email, presenting)
+        return cls(first_name, last_name, affiliation, email, presenting)
 
 
 class TocAuthor(Latexible):
@@ -123,10 +123,10 @@ class TocAuthor(Latexible):
     _presenting_person = u"%(first_name)s %(last_name)s"
     _nonpresenting_person = u"%(first_name)s %(last_name)s"
 
-    def __init__(self, first_name, last_name, address, email, presenting):
+    def __init__(self, first_name, last_name, affiliation, email, presenting):
         self.first_name = first_name
         self.last_name = last_name
-        self.address = address
+        self.affiliation = affiliation
         self.email = email
         self.presenting = presenting
 
@@ -142,33 +142,33 @@ class TocAuthor(Latexible):
 
         return self._template % dict(
             person=person,
-            address=self.address,
+            affiliation=self.affiliation,
             email=self.email)
 
     @classmethod
     def from_json(cls, data):
         first_name = data.get('first_name', "")
         last_name = data.get('last_name', "")
-        address = data.get('address', "")
+        affiliation = data.get('affiliation', "")
         email = data.get('email', "")
         presenting = data['presenting']
-        return cls(first_name, last_name, address, email, presenting)
+        return cls(first_name, last_name, affiliation, email, presenting)
 
 
 class Author(Latexible):
 
     _template = u"""\
 {\\large %(person)s}\\\\
-%(address)s\\\\
+%(affiliation)s\\\\
 {\\tt %(email)s}
 """
     _presenting_person = u"\\underline{%(first_name)s %(last_name)s}"
     _nonpresenting_person = u"%(first_name)s %(last_name)s"
 
-    def __init__(self, first_name, last_name, address, email, presenting):
+    def __init__(self, first_name, last_name, affiliation, email, presenting):
         self.first_name = first_name
         self.last_name = last_name
-        self.address = address
+        self.affiliation = affiliation
         self.email = email.replace('_', '\_')
         self.presenting = presenting
 
@@ -184,17 +184,17 @@ class Author(Latexible):
 
         return self._template % dict(
             person=person,
-            address=self.address,
+            affiliation=self.affiliation,
             email=self.email)
 
     @classmethod
     def from_json(cls, data):
         first_name = data.get('first_name', "")
         last_name = data.get('last_name', "")
-        address = data.get('address', "")
+        affiliation = data.get('affiliation', "")
         email = data.get('email', "")
         presenting = data['presenting']
-        return cls(first_name, last_name, address, email, presenting)
+        return cls(first_name, last_name, affiliation, email, presenting)
 
 class Authors(Latexible):
 
@@ -377,11 +377,11 @@ class Abstract(Latexible):
         toc_author = []
         temp_presenting = {}
         for author in self.authors.authors:
-            temp_presenting[author.last_name + " " + author.first_name]=PresentingAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting)
+            temp_presenting[author.last_name + " " + author.first_name]=PresentingAuthor(author.first_name, author.last_name, author.affiliation, author.email, author.presenting)
             if author.presenting == 'yes':
-                toc_author.append(TocAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting))
+                toc_author.append(TocAuthor(author.first_name, author.last_name, author.affiliation, author.email, author.presenting))
             elif len(toc_author) == 0:
-                toc_author.append(TocAuthor(author.first_name, author.last_name, author.address, author.email, author.presenting))
+                toc_author.append(TocAuthor(author.first_name, author.last_name, author.affiliation, author.email, author.presenting))
         self.presenting = PresentingAuthors(temp_presenting)
         self.tocauthors = TocAuthors(toc_author)
 
