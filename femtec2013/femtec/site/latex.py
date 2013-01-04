@@ -317,7 +317,6 @@ class Abstract(Latexible):
 
     _template = u"""
 \\documentclass[article,A4,11pt]{llncs}
-\\usepackage[czech]{babel}
 \\usepackage[utf8]{inputenc}
 \\usepackage{amsmath}
 \\usepackage{amssymb}
