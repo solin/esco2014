@@ -23,6 +23,8 @@ from femtec.settings import MIN_PASSWORD_LEN
 
 from femtec.settings import MEDIA_ROOT, ABSTRACTS_PATH
 
+from collections import OrderedDict
+
 import subprocess
 import os
 import shutil
@@ -940,9 +942,6 @@ def get_submit_form_data(post, user):
     for i, (first_name, last_name) in enumerate(zip(first_names, last_names)):
         full_names[i] = first_names[i] + ' ' + last_names[i]
 
-    #for i in enumerate(full_names):
-     #   full_names[i] = full_names[i] + full_names[i]
-
     authors = zip(first_names, last_names, full_names, affiliations, emails, presentings)
     fields = ('first_name', 'last_name', 'full_name', 'affiliation', 'email', 'presenting')
 
@@ -963,11 +962,40 @@ def get_submit_form_data(post, user):
         bibitem = dict(zip(fields, bibitem))
         bibitems[i] = bibitem
 
+    group_input1 = zip(full_names, emails, presentings)
+    fields = ('full_name', 'email', 'presenting')
+
+    for i, group_author in enumerate(group_input1):
+        group_author = dict(zip(fields, group_author))
+        group_input1[i] = group_author
+  
+    group_input = zip(group_input1, affiliations)
+#    group_input = zip(full_names, affiliations)
+#
+#    res = OrderedDict()
+#    for v, k in group_input:
+#        if k in res:
+#            res[k].append(v)
+#        else:
+#            res[k] = [v]
+
+#    group_authors = [{'full_name':v, 'affinilation':k} for k,v in res.items()]
+
+    res = OrderedDict()
+    for v, k in group_input:
+        if k in res:
+            res[k].append(v)
+        else:
+            res[k] = [v]
+
+    group_authors = [{'authors':v, 'affinilation':k,} for k,v in res.items()]
+
     data = {
         'title': title,
         'abstract': abstract,
         'authors': authors,
         'bibitems': bibitems,
+        'group_authors' : group_authors,
     }
 
     return json.dumps(data)
