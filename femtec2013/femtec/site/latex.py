@@ -77,7 +77,7 @@ class PresentingAuthors(Latexible):
 
 class PresentingAuthor(Latexible):
 
-    _template = u"""
+    _template = u"""\
     \\noindent
     %(person)s
     %(affiliation)s\\\\
@@ -154,9 +154,9 @@ class Author(Latexible):
     _template = u"""\
 {\\large %(person)s}\\\\
 %(affiliation)s\\\\
-{\\tt %(email)s}
-"""
-    _presenting_person = u"\\underline{%(full_name)s"
+{\\tt %(email)s}"""
+
+    _presenting_person = u"\\underline{%(full_name)s}"
     _nonpresenting_person = u"%(full_name)s"
 
     def __init__(self, full_name, affiliation, email, presenting):
@@ -189,7 +189,7 @@ class Author(Latexible):
 
 class Authors(Latexible):
 
-    _template = u"\\\\ \\vspace{4mm}"
+    _template = u"\n\\\\ \\vspace{4mm}\n"
 
     def __init__(self, *authors):
         self.authors = authors
@@ -240,10 +240,9 @@ class Authors(Latexible):
 
 class BibItem(Latexible):
 
-    _template = u"""
+    _template = u"""\
 \\bibitem{%(bibid)s}
-{\\sc %(bibauthor)s}. {%(bibtitle)s}. %(bibother)s.
-"""
+{\\sc %(bibauthor)s}. {%(bibtitle)s}. %(bibother)s."""
 
     #def __init__(self, authors, title, other):
     def __init__(self, bibid, bibauthor, bibtitle, bibother):
@@ -271,7 +270,7 @@ class BibItem(Latexible):
 
 class BibItems(Latexible):
 
-    _template = u"\n"
+    _template = u"\n\n"
 
     def __init__(self, *bibitems):
         self.bibitems = bibitems
@@ -286,7 +285,7 @@ class BibItems(Latexible):
 
 class Abstract(Latexible):
 
-    _template_abstracts = u"""
+    _template_abstracts = u"""\
 \\title{%(title)s}
 \\tocauthor{%(tocauthors)s} \\author{} \\institute{}
 \\maketitle
@@ -306,7 +305,7 @@ class Abstract(Latexible):
 
     _template_presenting = u"%(authors)s"
 
-    _template = u"""
+    _template = u"""\
 \\documentclass[article,A4,11pt]{llncs}
 \\usepackage[utf8]{inputenc}
 \\usepackage{amsmath}
@@ -331,8 +330,11 @@ class Abstract(Latexible):
 \\begin{document}
 
 \\title{%(title)s}
-\\author{} \\tocauthor{%(tocauthors)s} \\institute{}
+\\author{} 
+\\tocauthor{%(tocauthors)s} 
+\\institute{}
 \\maketitle
+
 \\begin{center}
 %(authors)s
 \end{center}
