@@ -202,71 +202,69 @@ class Authors(Latexible):
     def from_json(cls, data):
         return cls(*[ Author.from_json(author) for author in data ])
 
-#class BibAuthor(Latexible):
+class BibAuthor(Latexible):
 
-#    _template = u"%(first_name)s %(last_name)s"
+    _template = u"%(first_name)s %(last_name)s"
 
-#    def __init__(self, first_name, last_name):
-#        self.first_name = first_name
-#        self.last_name = last_name
+    def __init__(self, first_name, last_name):
+        self.first_name = first_name
+        self.last_name = last_name
 
-#    def to_latex(self):
-#        return self._template % dict(
-#            first_name=self.first_name,
-#            last_name=self.last_name)
+    def to_latex(self):
+        return self._template % dict(
+            first_name=self.first_name,
+            last_name=self.last_name)
 
-#    @classmethod
-#    def from_json(cls, data):
-#        first_name = data['first_name']
-#        try:
-#            last_name = data['last_name']
-#        except KeyError:
-#            last_name = ""
-#        return cls(first_name, last_name)
+    @classmethod
+    def from_json(cls, data):
+        first_name = data['first_name']
+        try:
+            last_name = data['last_name']
+        except KeyError:
+            last_name = ""
+        return cls(first_name, last_name)
 
-#class BibAuthors(Latexible):
+class BibAuthors(Latexible):
 
-#    _template = u" and "
+    _template = u" and "
 
-#    def __init__(self, *authors):
-#        self.authors = authors
+    def __init__(self, *authors):
+        self.authors = authors
 
-#    def to_latex(self):
-#        return self._template.join([ author.to_latex() for author in self.authors ])
+    def to_latex(self):
+        return self._template.join([ author.to_latex() for author in self.authors ])
 
-#    @classmethod
-#    def from_json(cls, data):
-#       return cls(*[ BibAuthor.from_json(author) for author in data ])
+    @classmethod
+    def from_json(cls, data):
+       return cls(*[ BibAuthor.from_json(author) for author in data ])
 
 class BibItem(Latexible):
 
     _template = u"""\
 \\bibitem{%(bibid)s}
-{\\sc %(bibauthor)s}. {%(bibtitle)s}. %(bibother)s."""
+{\\sc %(bibauthors)s}. {%(bibtitle)s}. %(bibother)s."""
 
-    #def __init__(self, authors, title, other):
-    def __init__(self, bibid, bibauthor, bibtitle, bibother):
+    def __init__(self, bibid, bibauthors, bibtitle, bibother):
         self.bibid = bibid
         self.bibid = "".join([x for x in self.bibid if ord(x) < 128])
-        self.bibauthor = bibauthor
+        self.bibauthors = bibauthors
         self.bibtitle = bibtitle.replace('&quot;', '')
 	self.bibother = bibother
 
     def to_latex(self):
         return self._template % dict(
             bibid=self.bibid,
-            bibauthor=self.bibauthor,
+            bibauthors=self.bibauthors.to_latex(),
             bibtitle=self.bibtitle,
             bibother=self.bibother)
 
     @classmethod
     def from_json(cls, data):
-        #bibid = 'bibid'
-        bibid = data.get('bibitem_title', "")
-        bibauthor = data.get('bibitem_author', "")
-        bibtitle = data.get('bibitem_title', "")
-        bibother = data.get('bibitem_other', "")
-        return cls(bibid, bibauthor, bibtitle, bibother)
+        bibid = data['bibitem_title']
+        bibauthors = BibAuthors.from_json(data['bibitem_authors'])
+        bibtitle = data['bibitem_title']
+        bibother = data['bibitem_other']
+        return cls(bibid, bibauthors, bibtitle, bibother)
 
 class BibItems(Latexible):
 
@@ -365,7 +363,6 @@ class Abstract(Latexible):
         self.abstract = self.abstract.replace('%', '\%')
         self.abstract = self.abstract.replace('&', '\&')
         self.abstract = self.abstract.replace('#', '\#')
-        #self.abstract = self.abstract.replace('\cite{', '\cite{%(title)s_' % {'title': title })
         self.bibitems = bibitems
         toc_author = []
         temp_presenting = {}

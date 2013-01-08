@@ -930,7 +930,7 @@ def get_submit_form_data(post, user):
     presentings = ['no']*len(first_names)
 
     #bibitems_bibid = post.getlist('bibitem_bibid')
-    bibitems_authors = post.getlist('bibitem_author')
+    bibitems_authors = post.getlist('bibitem_authors')
     bibitems_title = post.getlist('bibitem_title')
     bibitems_other = post.getlist('bibitem_other')
 
@@ -949,37 +949,27 @@ def get_submit_form_data(post, user):
         author = dict(zip(fields, author))
         authors[i] = author
 
-    #bibitems_authors = [ [ dict(zip(fields, re.split("\s+", author, 1)))
-    #    for author in re.split("\s*,\s*", bibitem_authors) ] for bibitem_authors in bibitems_authors ]
+    bibitems_authors = [ [ dict(zip(fields, re.split("\s+", author, 1)))
+        for author in re.split("\s*,\s*", bibitem_authors) ] for bibitem_authors in bibitems_authors ]
 
     #bibitems = zip(bibitems_bibid, bibitems_authors, bibitems_title, bibitems_other)
     #fields = ('bibid', 'authors', 'title', 'other')
     
     bibitems = zip(bibitems_authors, bibitems_title, bibitems_other)
-    fields = ('bibitem_author', 'bibitem_title', 'bibitem_other')
+    fields = ('bibitem_authors', 'bibitem_title', 'bibitem_other')
 
     for i, bibitem in enumerate(bibitems):
         bibitem = dict(zip(fields, bibitem))
         bibitems[i] = bibitem
 
-    group_input1 = zip(full_names, emails, presentings)
-    fields = ('full_name', 'email', 'presenting')
+    group_input_authors = zip(full_names, emails, presentings)
+    fields = ('gfull_name', 'gemail', 'gpresenting')
 
-    for i, group_author in enumerate(group_input1):
+    for i, group_author in enumerate(group_input_authors):
         group_author = dict(zip(fields, group_author))
-        group_input1[i] = group_author
+        group_input_authors[i] = group_author
   
-    group_input = zip(group_input1, affiliations)
-#    group_input = zip(full_names, affiliations)
-#
-#    res = OrderedDict()
-#    for v, k in group_input:
-#        if k in res:
-#            res[k].append(v)
-#        else:
-#            res[k] = [v]
-
-#    group_authors = [{'full_name':v, 'affinilation':k} for k,v in res.items()]
+    group_input = zip(group_input_authors, affiliations)
 
     res = OrderedDict()
     for v, k in group_input:
@@ -988,14 +978,14 @@ def get_submit_form_data(post, user):
         else:
             res[k] = [v]
 
-    group_authors = [{'authors':v, 'affinilation':k,} for k,v in res.items()]
+    group_authors = [{'gauthor':v, 'gaffiliation':k,} for k,v in res.items()]
 
     data = {
         'title': title,
         'abstract': abstract,
         'authors': authors,
         'bibitems': bibitems,
-        'group_authors' : group_authors,
+        'gauthors' : group_authors,
     }
 
     return json.dumps(data)
