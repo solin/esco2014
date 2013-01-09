@@ -201,7 +201,71 @@ class Authors(Latexible):
     @classmethod
     def from_json(cls, data):
         return cls(*[ Author.from_json(author) for author in data ])
+###
+class gAuthor(Latexible):
 
+    _template = u"%(gfull_name)s "
+
+    def __init__(self, gfull_name):
+        self.gfull_name = gfull_name
+
+    def to_latex(self):
+        return self._template % dict(
+            gfull_name=self.gfull_name)
+
+    @classmethod
+    def from_json(cls, data):
+        gfull_name = data['gfull_name']
+        return cls(gfull_name)
+
+class gAuthors(Latexible):
+
+    _template = u" and "
+
+    def __init__(self, *gauthors):
+        self.gauthors = gauthors
+
+    def to_latex(self):
+        return self._template.join([ gauthor.to_latex() for gauthor in self.gauthors ])
+
+    @classmethod
+    def from_json(cls, data):
+       return cls(*[ gAuthor.from_json(gauthor) for gauthor in data ])
+
+class gItem(Latexible):
+
+    _template = u"""\
+{\\sc %(gauthors)s}. {%(gaffiliation)s}.."""
+
+    def __init__(self, gauthors, gaffiliation):
+        self.gauthors = gauthors
+	self.gaffiliation = gaffiliation
+
+    def to_latex(self):
+        return self._template % dict(
+            gauthors=self.gauthors.to_latex(),
+            gaffiliation=self.gaffiliation)
+
+    @classmethod
+    def from_json(cls, data):
+        gauthors = gAuthors.from_json(data['gauthor'])
+        gaffiliation = data['gaffiliation']
+        return cls(gauthors, gaffiliation)
+
+class gItems(Latexible):
+
+    _template = u"\n\n"
+
+    def __init__(self, *gitems):
+        self.gitems = gitems
+
+    def to_latex(self):
+        return self._template.join([gitem.to_latex() for gitem in self.gitems])
+
+    @classmethod
+    def from_json(cls, data):
+        return cls(*[ gItem.from_json(gitem) for gitem in data ])
+###
 class BibAuthor(Latexible):
 
     _template = u"%(first_name)s %(last_name)s"
@@ -337,6 +401,8 @@ class Abstract(Latexible):
 %(authors)s
 \end{center}
 
+%(gitems)s
+
 \\section*{Abstract}
 
 %(abstract)s
@@ -349,7 +415,7 @@ class Abstract(Latexible):
 \\end{document}
 """
 
-    def __init__(self, title, authors, abstract, bibitems):
+    def __init__(self, title, authors, abstract, bibitems, gitems):
         self.title = title.replace('\n', '').replace('\r', '').replace('&quot;', '')
         self.title = self.title.replace('"', '')
         self.title = self.title.replace('%', '\%')
@@ -364,6 +430,7 @@ class Abstract(Latexible):
         self.abstract = self.abstract.replace('&', '\&')
         self.abstract = self.abstract.replace('#', '\#')
         self.bibitems = bibitems
+        self.gitems = gitems
         toc_author = []
         temp_presenting = {}
         for author in self.authors.authors:
@@ -381,7 +448,8 @@ class Abstract(Latexible):
             authors=self.authors.to_latex(),
             tocauthors=self.tocauthors.to_latex(),
             abstract=self.abstract,
-            bibitems=self.bibitems.to_latex())
+            bibitems=self.bibitems.to_latex(),
+            gitems=self.gitems.to_latex())
 
     def to_latex_raw(self):
         return self._template_abstracts % dict(
@@ -389,7 +457,8 @@ class Abstract(Latexible):
             authors=self.authors.to_latex(),
             tocauthors=self.tocauthors.to_latex(),
             abstract=self.abstract,
-            bibitems=self.bibitems.to_latex())
+            bibitems=self.bibitems.to_latex(),
+            gitems=self.gitems.to_latex())
 
     def to_latex_presenting(self):
         return self._template_presenting % dict(authors=self.presenting)
@@ -400,7 +469,8 @@ class Abstract(Latexible):
         authors = Authors.from_json(data['authors'])
         abstract = data['abstract']
         bibitems = BibItems.from_json(data['bibitems'])
-        return cls(title, authors, abstract, bibitems)
+        gitems = gItems.from_json(data['gitems'])
+        return cls(title, authors, abstract, bibitems, gitems)
 
     def build_raw(self):
         return self.to_latex_raw()

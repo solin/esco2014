@@ -985,7 +985,7 @@ def get_submit_form_data(post, user):
         'abstract': abstract,
         'authors': authors,
         'bibitems': bibitems,
-        'gauthors' : group_authors,
+        'gitems' : group_authors,
     }
 
     return json.dumps(data)
