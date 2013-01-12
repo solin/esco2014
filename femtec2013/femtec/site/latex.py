@@ -201,26 +201,39 @@ class Authors(Latexible):
     @classmethod
     def from_json(cls, data):
         return cls(*[ Author.from_json(author) for author in data ])
-###
+
 class gAuthor(Latexible):
 
-    _template = u"%(gfull_name)s "
+    _template = u"{\\large %(person)s}"
 
-    def __init__(self, gfull_name):
+    _presenting_person = u"\\underline{%(gfull_name)s}"
+    _nonpresenting_person = u"%(gfull_name)s"
+
+    def __init__(self, gfull_name, gpresenting):
         self.gfull_name = gfull_name
+        self.gpresenting = gpresenting
 
-    def to_latex(self):
+    def to_latex(self, single_author=False):
+        if not single_author and self.gpresenting == 'yes':
+            person_template = self._presenting_person
+        else:
+            person_template = self._nonpresenting_person
+
+        person = person_template % dict(
+            gfull_name = self.gfull_name)
+
         return self._template % dict(
-            gfull_name=self.gfull_name)
+            person = person)
 
     @classmethod
     def from_json(cls, data):
         gfull_name = data['gfull_name']
-        return cls(gfull_name)
+        gpresenting = data['gpresenting']
+        return cls(gfull_name, gpresenting)
 
 class gAuthors(Latexible):
 
-    _template = u" and "
+    _template = u", "
 
     def __init__(self, *gauthors):
         self.gauthors = gauthors
@@ -232,29 +245,64 @@ class gAuthors(Latexible):
     def from_json(cls, data):
        return cls(*[ gAuthor.from_json(gauthor) for gauthor in data ])
 
+class gEmail(Latexible):
+
+    _template = u"%(gemail)s"
+
+    def __init__(self, gemail):
+        self.gemail = gemail
+
+    def to_latex(self):
+        return self._template % dict(
+            gemail = self.gemail)
+
+    @classmethod
+    def from_json(cls, data):
+        gemail = data['gemail']
+        return cls(gemail)
+
+class gEmails(Latexible):
+
+    _template = u", "
+
+    def __init__(self, *gemails):
+        self.gemails = gemails
+
+    def to_latex(self):
+        return self._template.join([ gemail.to_latex() for gemail in self.gemails ])
+
+    @classmethod
+    def from_json(cls, data):
+       return cls(*[ gEmail.from_json(gemail) for gemail in data ])
+
 class gItem(Latexible):
 
     _template = u"""\
-{\\sc %(gauthors)s}. {%(gaffiliation)s}.."""
+{%(gauthors)s}\\\\
+%(gaffiliation)s\\\\
+{\\tt %(gemails)s}"""
 
-    def __init__(self, gauthors, gaffiliation):
+    def __init__(self, gauthors, gaffiliation, gemails):
         self.gauthors = gauthors
 	self.gaffiliation = gaffiliation
+        self.gemails = gemails
 
     def to_latex(self):
         return self._template % dict(
             gauthors=self.gauthors.to_latex(),
-            gaffiliation=self.gaffiliation)
+            gaffiliation=self.gaffiliation,
+            gemails=self.gemails.to_latex())
 
     @classmethod
     def from_json(cls, data):
         gauthors = gAuthors.from_json(data['gauthor'])
         gaffiliation = data['gaffiliation']
-        return cls(gauthors, gaffiliation)
+        gemails = gEmails.from_json(data['gauthor'])
+        return cls(gauthors, gaffiliation, gemails)
 
 class gItems(Latexible):
 
-    _template = u"\n\n"
+    _template = u"\n\\\\ \\vspace{4mm}\n"
 
     def __init__(self, *gitems):
         self.gitems = gitems
@@ -265,7 +313,7 @@ class gItems(Latexible):
     @classmethod
     def from_json(cls, data):
         return cls(*[ gItem.from_json(gitem) for gitem in data ])
-###
+
 class BibAuthor(Latexible):
 
     _template = u"%(first_name)s %(last_name)s"
@@ -401,7 +449,10 @@ class Abstract(Latexible):
 %(authors)s
 \end{center}
 
+\\begin{center}
 %(gitems)s
+\end{center}
+
 
 \\section*{Abstract}
 
