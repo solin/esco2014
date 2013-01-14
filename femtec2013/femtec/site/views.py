@@ -950,7 +950,7 @@ def get_submit_form_data(post, user):
         authors[i] = author
 
     fields = ('bibauthor_first_name', 'bibauthor_last_name')
-    bibitems_authors = [ [ dict(zip(fields, re.split("\s+", author, 1)))
+    bibitems_authors = [[ dict(zip(fields, re.split("\s+", author, 1)))
         for author in re.split("\s*,\s*", bibitem_authors) ] for bibitem_authors in bibitems_authors ]
 
     #bibitems = zip(bibitems_bibid, bibitems_authors, bibitems_title, bibitems_other)
@@ -963,30 +963,28 @@ def get_submit_form_data(post, user):
         bibitem = dict(zip(fields, bibitem))
         bibitems[i] = bibitem
 
-    group_input_authors = zip(full_names, emails, presentings)
-    fields = ('gfull_name', 'gemail', 'gpresenting')
+    authgroup_authors = zip(full_names, emails, presentings)
+    fields = ('auth_full_name', 'auth_email', 'auth_presenting')
 
-    for i, group_author in enumerate(group_input_authors):
-        group_author = dict(zip(fields, group_author))
-        group_input_authors[i] = group_author
+    for i, authgroups_author in enumerate(authgroup_authors):
+        authgroups_author = dict(zip(fields, authgroups_author))
+        authgroup_authors[i] = authgroups_author
   
-    group_input = zip(group_input_authors, affiliations)
-
     res = OrderedDict()
-    for v, k in group_input:
+    for v, k in zip(authgroup_authors, affiliations):
         if k in res:
             res[k].append(v)
         else:
             res[k] = [v]
 
-    group_authors = [{'gauthor':v, 'gaffiliation':k,} for k,v in res.items()]
+    authgroups = [{'authgroup_authors':v, 'authgroup_affiliation':k,} for k,v in res.items()]
 
     data = {
         'title': title,
         'abstract': abstract,
         'authors': authors,
         'bibitems': bibitems,
-        'gitems' : group_authors,
+        'authgroups' : authgroups,
     }
 
     return json.dumps(data)
