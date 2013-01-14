@@ -86,6 +86,7 @@ urlpatterns = patterns('femtec.site.views',
     (r'^account/receipts/pdf/$', 'receipts_pdf'),
     (r'^account/registration/tex/$', 'registration_tex'),
     (r'^account/registration/pdf/$', 'registration_pdf'),
+    (r'^account/letter/tex/(\d+)/$', 'letter_tex'),
 
     (r'^account/abstracts/$', 'abstracts_view'),
     (r'^account/abstracts/book/tex/$', 'abstracts_book_tex'),
@@ -860,7 +861,7 @@ def registration_tex(request, **args):
 
     f = open(os.path.join(tex_output_path, 'registration.tex'), 'r')
 
-    response = HttpResponse(f.read(), mimetype='application/zip')
+    response = HttpResponse(f.read(), mimetype='application/octet-stream')
     response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=registration.tex'
 
@@ -915,6 +916,66 @@ def registration_pdf(request, **args):
     response = HttpResponse(f.read(), mimetype='application/pdf')
     response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=registration.pdf'
+
+    return response
+
+
+@login_required
+def letter_tex(request, profile_id, **args):
+    tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
+    tex_letters_path = os.path.join(ABSTRACTS_PATH, 'letters')
+    tex_output_path = os.path.join(tex_letters_path, profile_id)
+
+    str_list = []
+    f = open(os.path.join(tex_template_path, 'letter_template.tex'), 'r')
+    str_list.append(f.read())
+    f.close()
+    
+    person = UserProfile.objects.get(id=profile_id)
+    full_name = person.user.get_full_name()
+    affiliation = person.affiliation
+    city = person.city
+    country = person.country
+    address = person.address
+    postal_code = person.postal_code
+
+    user_id = person.user_id
+    
+    userabstract_list = UserAbstract.objects.all()
+
+
+
+    for i in range(len(userabstract_list)+1):
+        try:
+            if user_id == UserAbstract.objects.get(id=i+1).user_id:
+                abstract_title = UserAbstract.objects.get(id=i+1).to_cls().title
+                str_list.append('%(abstract_title)s ' % {'abstract_title': abstract_title} )
+        except UserAbstract.DoesNotExist:
+            continue
+
+
+    str_list.append('%(user_id)s\n' % {'user_id': profile_id} )
+    str_list.append('%(user_id)s\n' % {'user_id': abstract_title} )
+    str_list.append('%(user_id)s\n' % {'user_id': full_name} )
+
+    str_list.append('\\end{document}' )
+    output = ''.join(str_list)
+
+    if os.path.exists(tex_output_path):
+        shutil.rmtree(tex_output_path, True)
+
+    os.mkdir(tex_output_path)
+
+    file_name = 'letter_%(user_id)s.tex' % {'user_id': full_name}
+    
+    with open(os.path.join(tex_output_path, file_name), 'wb') as f:
+        f.write(output.encode('utf-8'))
+    f.close()
+
+    response = HttpResponse(output, mimetype='text/plain')
+    response['Content-Type'] = 'application/octet-stream'
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=letter_%(user_id)s.tex' % {'user_id': full_name}
 
     return response
 
@@ -1107,3 +1168,4 @@ def abstracts_log_view(request, abstract_id, **args):
     response['Content-Disposition'] = 'inline; filename=abstract.log'
 
     return response
+

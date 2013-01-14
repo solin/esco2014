@@ -44,6 +44,9 @@ class UserProfileAdmin(admin.ModelAdmin):
     def email(self, profile):
         return '<a href="mailto:%(email)s">%(email)s</a>' % {'email': profile.user.email }
 
+    def letter(obj):
+        return '<a href="/account/letter/tex/%(obj_id)s">TeX</a>' % {'obj_id': obj.id }
+
     first_name.admin_order_field = 'user__first_name'
     first_name.short_description = 'First Name'
 
@@ -55,7 +58,10 @@ class UserProfileAdmin(admin.ModelAdmin):
 
     #list_select_related = True
 
-    list_display = ('last_name', 'first_name', 'email', 'affiliation', 'address', 'city', 'postal_code', 'country', 'speaker', 'student', 'postconf', 'vegeterian', 'arrival', 'departure', 'accompanying', 'tshirt', 'payment', 'remark' )
+    letter.short_description = 'Letter'
+    letter.allow_tags = True
+
+    list_display = ('last_name', 'first_name', 'email', 'affiliation', 'address', 'city', 'postal_code', 'country', 'speaker', 'student', 'postconf', 'vegeterian', 'arrival', 'departure', 'accompanying', 'tshirt', 'payment', 'remark', letter)
 
     list_editable = ['remark']
 
