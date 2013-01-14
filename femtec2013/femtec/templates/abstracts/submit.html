@@ -41,15 +41,15 @@ function addBibitemField(event, after, initial) {
     if (initial) {
         el = el.next();
 
-        function bibitemAuthorToString(author) {
-            return author.first_name + " " + author.last_name;
+        function bibitemAuthorToString(bibauthor) {
+            return bibauthor.bibauthor_first_name + " " + bibauthor.bibauthor_last_name;
         }
 
-        function bibitemAuthorsToString(authors) {
+        function bibitemAuthorsToString(bibauthors) {
             var arr = [];
 
-            $.each(authors, function(i, author) {
-                arr.push(bibitemAuthorToString(author));
+            $.each(bibauthors, function(i, bibauthor) {
+                arr.push(bibitemAuthorToString(bibauthor));
             });
 
             return arr.join(", ");

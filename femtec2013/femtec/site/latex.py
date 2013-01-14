@@ -331,9 +331,9 @@ class BibAuthor(Latexible):
 
     @classmethod
     def from_json(cls, data):
-        first_name = data['first_name']
+        first_name = data['bibauthor_first_name']
         try:
-            last_name = data['last_name']
+            last_name = data['bibauthor_last_name']
         except KeyError:
             last_name = ""
         return cls(first_name, last_name)
@@ -392,7 +392,7 @@ class BibItems(Latexible):
 
     @classmethod
     def from_json(cls, data):
-        return cls(*[ BibItem.from_json(bibitem) for bibitem in data ])
+        return cls(*[BibItem.from_json(bibitem) for bibitem in data ])
 
 
 class Abstract(Latexible):
