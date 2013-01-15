@@ -958,6 +958,9 @@ def letter_tex(request, profile_id, **args):
         except UserAbstract.DoesNotExist:
             continue
 
+    if counter == 0:
+        return HttpResponse('TeX file incomplete - the user has not submited the Abstract!')
+
     if (counter > 1):
         appended_s = 's'
     abstractstr = abstractstr[:-5]
@@ -1021,6 +1024,9 @@ def letter_pdf(request, profile_id, **args):
                 counter += 1
         except UserAbstract.DoesNotExist:
             continue
+
+    if counter == 0:
+        return HttpResponse('Impossible to generate PDF file - the user has not submited the Abstract!')
 
     if (counter > 1):
         appended_s = 's'
