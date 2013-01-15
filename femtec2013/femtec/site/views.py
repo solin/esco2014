@@ -376,12 +376,12 @@ def badges_tex(request, **args):
 
     for i in range(len(User.objects.all())):
         try:
-            name = user_list[i].get_full_name()
+            full_name = user_list[i].get_full_name()
             affiliation = user_list[i].get_profile().affiliation
             city = user_list[i].get_profile().city
             country = user_list[i].get_profile().country
-            str_list.append('\\card{%(name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'name': name, 'affiliation': affiliation, 'city': city, 'country': country })
-            str_list.append('\\card{%(name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'name': name, 'affiliation': affiliation, 'city': city, 'country': country })        
+            str_list.append('\\card{%(full_name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'affiliation': affiliation, 'city': city, 'country': country })
+            str_list.append('\\card{%(full_name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'affiliation': affiliation, 'city': city, 'country': country })        
         except UserProfile.DoesNotExist:
             continue
 
@@ -418,12 +418,12 @@ def badges_pdf(request, **args):
 
     for i in range(len(User.objects.all())):
         try:
-            name = user_list[i].get_full_name()
+            full_name = user_list[i].get_full_name()
             affiliation = user_list[i].get_profile().affiliation
             city = user_list[i].get_profile().city
             country = user_list[i].get_profile().country
-            str_list.append('\\card{%(name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'name': name, 'affiliation': affiliation, 'city': city, 'country': country })
-            str_list.append('\\card{%(name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'name': name, 'affiliation': affiliation, 'city': city, 'country': country })        
+            str_list.append('\\card{%(full_name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'affiliation': affiliation, 'city': city, 'country': country })
+            str_list.append('\\card{%(full_name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'affiliation': affiliation, 'city': city, 'country': country })        
         except UserProfile.DoesNotExist:
             continue
 
@@ -603,13 +603,13 @@ def certificates_tex(request, **args):
 
     for i in range(len(User.objects.all())):
         try:
-            name = user_list[i].get_full_name()
+            full_name = user_list[i].get_full_name()
             affiliation = user_list[i].get_profile().affiliation
             address = user_list[i].get_profile().address
             postal_code = user_list[i].get_profile().postal_code
             city = user_list[i].get_profile().city
             country = user_list[i].get_profile().country
-            str_list.append('\\certificate{%(name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}\n' % {'name': name, 'affiliation': affiliation,'address': address, 'postal_code' : postal_code , 'city': city, 'country': country })
+            str_list.append('\\certificate{%(full_name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'postal_code' : postal_code , 'city': city, 'country': country })
         except UserProfile.DoesNotExist:
             continue
 
@@ -660,13 +660,13 @@ def certificates_pdf(request, **args):
 
     for i in range(len(User.objects.all())):
         try:
-            name = user_list[i].get_full_name()
+            full_name = user_list[i].get_full_name()
             affiliation = user_list[i].get_profile().affiliation
             address = user_list[i].get_profile().address
             postal_code = user_list[i].get_profile().postal_code
             city = user_list[i].get_profile().city
             country = user_list[i].get_profile().country
-            str_list.append('\\certificate{%(name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}\n' % {'name': name, 'affiliation': affiliation,'address': address, 'postal_code' : postal_code , 'city': city, 'country': country })
+            str_list.append('\\certificate{%(full_name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'postal_code' : postal_code , 'city': city, 'country': country })
         except UserProfile.DoesNotExist:
             continue
 
@@ -719,14 +719,14 @@ def receipts_tex(request, **args):
     for i in range(len(User.objects.all())):
         try:
             if not (user_list[i].get_profile().payment == ''):
-                name = user_list[i].get_full_name()
+                full_name = user_list[i].get_full_name()
                 affiliation = user_list[i].get_profile().affiliation
                 address = user_list[i].get_profile().address
                 postal_code = user_list[i].get_profile().postal_code
                 city = user_list[i].get_profile().city
                 country = user_list[i].get_profile().country
                 payment = user_list[i].get_profile().payment
-                str_list.append('\\receipt{%(name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'name': name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
+                str_list.append('\\receipt{%(full_name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
         except UserProfile.DoesNotExist:
             continue
 
@@ -778,14 +778,14 @@ def receipts_pdf(request, **args):
     for i in range(len(User.objects.all())):
         try:
             if not (user_list[i].get_profile().payment == ''):
-                name = user_list[i].get_full_name()
+                full_name = user_list[i].get_full_name()
                 affiliation = user_list[i].get_profile().affiliation
                 address = user_list[i].get_profile().address
                 postal_code = user_list[i].get_profile().postal_code
                 city = user_list[i].get_profile().city
                 country = user_list[i].get_profile().country
                 payment = user_list[i].get_profile().payment
-                str_list.append('\\receipt{%(name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'name': name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
+                str_list.append('\\receipt{%(full_name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
         except UserProfile.DoesNotExist:
             continue
 
