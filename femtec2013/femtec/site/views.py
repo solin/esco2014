@@ -533,6 +533,13 @@ def abstracts_book_pdf(request, **args):
 
     abstracts = UserAbstract.objects.order_by("id")
 
+    for i in range(len(UserAbstract.objects.all())):
+        try:
+            if (abstracts[i].compiled == False):
+                return HttpResponse('Impossible to generate PDF file of Book of Abstracts - some Abstract is not correctly compiled!')
+        except UserAbstract.DoesNotExist:
+            continue
+
     compiled_abstracts = {}
     compiled_authors = {}
 
