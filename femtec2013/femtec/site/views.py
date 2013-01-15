@@ -87,6 +87,7 @@ urlpatterns = patterns('femtec.site.views',
     (r'^account/registration/tex/$', 'registration_tex'),
     (r'^account/registration/pdf/$', 'registration_pdf'),
     (r'^account/letter/tex/(\d+)/$', 'letter_tex'),
+    (r'^account/letter/pdf/(\d+)/$', 'letter_pdf'),
 
     (r'^account/abstracts/$', 'abstracts_view'),
     (r'^account/abstracts/book/tex/$', 'abstracts_book_tex'),
@@ -932,6 +933,73 @@ def letter_tex(request, profile_id, **args):
     f.close()
     
     person = UserProfile.objects.get(id=profile_id)
+    user_id = person.user_id
+    first_name = person.user.first_name
+    last_name = person.user.last_name
+    full_name = person.user.get_full_name()
+    affiliation = person.affiliation
+    city = person.city
+    country = person.country
+    address = person.address
+    postal_code = person.postal_code
+
+    
+    userabstract_list = UserAbstract.objects.all()
+
+
+    str_list.append('\\letter{%(full_name)s}{%(affiliation)s}{%(address)s}{%(city)s}{%(postal_code)s}{%(country)s}{' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'city': city, 'postal_code' : postal_code, 'country': country})
+
+    mystr = ''
+    counter = 0
+    for i in range(len(userabstract_list)+1):
+        try:
+            if user_id == UserAbstract.objects.get(id=i+1).user_id:
+                abstract_title = UserAbstract.objects.get(id=i+1).to_cls().title
+                mystr += (abstract_title.encode('utf-8') + ' and ')
+                counter += 1
+        except UserAbstract.DoesNotExist:
+            continue
+
+    appended_s = ''
+    if (counter > 1):
+        appended_s = 's'
+    mystr = mystr[:-5]
+    str_list.append('%(mystr)s}{%(appended_s)s}\n' % {'mystr': mystr, 'appended_s': appended_s} )
+
+    str_list.append('\\end{document}' )
+    output = ''.join(str_list)
+
+    if os.path.exists(tex_output_path):
+        shutil.rmtree(tex_output_path, True)
+
+    os.mkdir(tex_output_path)
+
+    file_name = 'letter_%(last_name)s_%(first_name)s.tex' % {'first_name': first_name, 'last_name': last_name}
+    
+    with open(os.path.join(tex_output_path, file_name), 'wb') as f:
+        f.write(output.encode('utf-8'))
+    f.close()
+
+    response = HttpResponse(output, mimetype='text/plain')
+    response['Content-Type'] = 'application/octet-stream'
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=letter_%(last_name)s_%(first_name)s.tex' % {'first_name': first_name, 'last_name': last_name}
+
+    return response
+@login_required
+def letter_pdf(request, profile_id, **args):
+    tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
+    tex_letters_path = os.path.join(ABSTRACTS_PATH, 'letters')
+    tex_output_path = os.path.join(tex_letters_path, profile_id)
+
+    str_list = []
+    f = open(os.path.join(tex_template_path, 'letter_template.tex'), 'r')
+    str_list.append(f.read())
+    f.close()
+    
+    person = UserProfile.objects.get(id=profile_id)
+    first_name = person.user.first_name
+    last_name = person.user.last_name
     full_name = person.user.get_full_name()
     affiliation = person.affiliation
     city = person.city
@@ -943,8 +1011,7 @@ def letter_tex(request, profile_id, **args):
     
     userabstract_list = UserAbstract.objects.all()
 
-
-
+    str_list.append('\\letter{')
     for i in range(len(userabstract_list)+1):
         try:
             if user_id == UserAbstract.objects.get(id=i+1).user_id:
@@ -952,11 +1019,9 @@ def letter_tex(request, profile_id, **args):
                 str_list.append('%(abstract_title)s ' % {'abstract_title': abstract_title} )
         except UserAbstract.DoesNotExist:
             continue
+    str_list.append('}')
 
-
-    str_list.append('%(user_id)s\n' % {'user_id': profile_id} )
-    str_list.append('%(user_id)s\n' % {'user_id': abstract_title} )
-    str_list.append('%(user_id)s\n' % {'user_id': full_name} )
+    str_list.append('%(full_name)s\n' % {'full_name': full_name} )
 
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
@@ -966,7 +1031,7 @@ def letter_tex(request, profile_id, **args):
 
     os.mkdir(tex_output_path)
 
-    file_name = 'letter_%(user_id)s.tex' % {'user_id': full_name}
+    file_name = 'letter_%(last_name)s_%(first_name)s.tex' % {'first_name': first_name, 'last_name': last_name}
     
     with open(os.path.join(tex_output_path, file_name), 'wb') as f:
         f.write(output.encode('utf-8'))
@@ -975,9 +1040,10 @@ def letter_tex(request, profile_id, **args):
     response = HttpResponse(output, mimetype='text/plain')
     response['Content-Type'] = 'application/octet-stream'
     response['Cache-Control'] = 'must-revalidate'
-    response['Content-Disposition'] = 'inline; filename=letter_%(user_id)s.tex' % {'user_id': full_name}
+    response['Content-Disposition'] = 'inline; filename=letter_%(last_name)s_%(first_name)s.tex' % {'first_name': first_name, 'last_name': last_name}
 
     return response
+
 
 def get_submit_form_data(post, user):
     title = post['title']

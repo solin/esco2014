@@ -1,31 +1,69 @@
-\documentclass[12pt]{book}
-
+\documentclass[10pt]{article}
 \usepackage[utf8]{inputenc}
+\usepackage{graphicx}
 
-\textwidth 190mm
-\textheight 290mm
-\oddsidemargin -15mm
-\evensidemargin -15mm
-\topmargin -30mm
-\itemindent 0mm
-\parindent 0mm
+\topmargin=1cm
+\leftmargin=0cm
+%\rightmargin=0cm
+%\oddsidemargin=2cm
+%\evensidemargin=2cm
+%\textwidth=15cm
+%\textheight=17.5cm
 
-\newcommand{\letter}[4]
+\newcommand{\letter}[7]
 {
-	\begin{tabular}{|p{90mm}}
-		\hline\centering\vspace{10pt}
-		{\Large FEMTEC 2013}\\
-		{\small 4th International Congress}\\
-		{\small on Computational Engineering and Sciences}\\
-		\vspace{10pt}\rule[15pt]{175pt}{0.5pt}\\
-		{\LARGE \sc \bf #1}\\
-		\vspace{15pt}
-		{\footnotesize #2}\\
-		{\footnotesize #3}, {\footnotesize #4}\\
-		\vspace{5pt}
-	\end{tabular}
+	\vbox{}
+	\vspace{-2cm}
+	\begin{figure}[!ht]
+	%\hspace{-4mm}
+	\includegraphics[width=7cm]{horizon_no_slogan.jpg}
+	%\vspace{-4mm}
+	\end{figure}
+
+	\noindent
+	To:\\
+	{#1}\\
+	{#2}\\
+	{#3}\\
+	{#4},\ {#5}\\
+	{#6}\\
+	\vspace{50pt}
+	
+    \noindent
+	\hbox{} \hfill \today\\ 
+	\hbox{} \hfill Reno, NV, USA\\ 
+	Dear {#1},\\
+	
+	\noindent
+	It is my pleasure to inform you that your presentation{#8} with the title{#8} {\em #7} was accepted for presentation at the 4\textsuperscript{th} international congress of computational engineering and sciences FEMTEC 2013. The meeting will be held at Las Vegas, NV, USA, on May 19 -- 24, 2013 (http://femtec2013.femhub.com).
+
+	Please note that you have to make your reservation at the Stratosphere hotel in Las Vegas before March 15 in order to qualify for the reduced conference rate. Therefore, it is recommended that you book your ticket well in advance.\\	
+	\\
+	\\
+	Do not hesitate to contact me with any concerns or questions at solin@unr.edu.\\
+	\\
+	\\
+	Sincerely,\\
+	\\
+	\\
+	\\
+	\\
+	\begin{figure}[!ht]
+	\hspace{-4mm}
+	%\includegraphics[width=3.5cm]{signature.pdf}
+	\vspace{-4mm}
+	\end{figure}
+
+	\noindent
+	Pavel Solin, Ph.D.\\
+	Associate professor\\
+	Department of Mathematics and Statistics\\
+	University of Nevada, Reno\\
+	1664 N Virginia Street\\
+	Reno, NV 89557\\
+	Phone: (775) 848-7892\\
+	E-mail: solin@unr.edu
 }
 
 \begin{document}
 \pagestyle{empty}
-

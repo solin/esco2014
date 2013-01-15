@@ -44,8 +44,11 @@ class UserProfileAdmin(admin.ModelAdmin):
     def email(self, profile):
         return '<a href="mailto:%(email)s">%(email)s</a>' % {'email': profile.user.email }
 
-    def letter(obj):
+    def letter_tex(obj):
         return '<a href="/account/letter/tex/%(obj_id)s">TeX</a>' % {'obj_id': obj.id }
+
+    def letter_pdf(obj):
+        return '<a href="/account/letter/pdf/%(obj_id)s">PDF</a>' % {'obj_id': obj.id }
 
     first_name.admin_order_field = 'user__first_name'
     first_name.short_description = 'First Name'
@@ -58,10 +61,13 @@ class UserProfileAdmin(admin.ModelAdmin):
 
     #list_select_related = True
 
-    letter.short_description = 'Letter'
-    letter.allow_tags = True
+    letter_tex.short_description = 'Letter'
+    letter_tex.allow_tags = True
 
-    list_display = ('last_name', 'first_name', 'email', 'affiliation', 'address', 'city', 'postal_code', 'country', 'speaker', 'student', 'postconf', 'vegeterian', 'arrival', 'departure', 'accompanying', 'tshirt', 'payment', 'remark', letter)
+    letter_pdf.short_description = 'Letter'
+    letter_pdf.allow_tags = True
+
+    list_display = ('last_name', 'first_name', 'email', 'affiliation', 'address', 'city', 'postal_code', 'country', 'speaker', 'student', 'postconf', 'vegeterian', 'arrival', 'departure', 'accompanying', 'tshirt', 'payment', 'remark', letter_tex, letter_pdf)
 
     list_editable = ['remark']
 
