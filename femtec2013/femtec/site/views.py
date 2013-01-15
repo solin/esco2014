@@ -710,6 +710,8 @@ def receipts_tex(request, **args):
     tex_output_path = os.path.join(ABSTRACTS_PATH, 'receipts')
 
     str_list = []
+    counter = 0
+
     f = open(os.path.join(tex_template_path, 'receipts_template.tex'), 'r')
     str_list.append(f.read())
     f.close()
@@ -727,8 +729,12 @@ def receipts_tex(request, **args):
                 country = user_list[i].get_profile().country
                 payment = user_list[i].get_profile().payment
                 str_list.append('\\receipt{%(full_name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
+                counter += 1
         except UserProfile.DoesNotExist:
             continue
+
+    if counter == 0:
+        return HttpResponse('TeX file incomplete - no entry in column payments!')
 
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
@@ -769,6 +775,8 @@ def receipts_pdf(request, **args):
     tex_output_path = os.path.join(ABSTRACTS_PATH, 'receipts')
 
     str_list = []
+    counter = 0
+
     f = open(os.path.join(tex_template_path, 'receipts_template.tex'), 'r')
     str_list.append(f.read())
     f.close()
@@ -786,8 +794,12 @@ def receipts_pdf(request, **args):
                 country = user_list[i].get_profile().country
                 payment = user_list[i].get_profile().payment
                 str_list.append('\\receipt{%(full_name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
+                counter += 1
         except UserProfile.DoesNotExist:
             continue
+
+    if counter == 0:
+        return HttpResponse('Impossible to generate PDF file - no entry in column payments!')
 
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
