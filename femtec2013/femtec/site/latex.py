@@ -232,7 +232,6 @@ class AuthAuthor(Latexible):
 
 class AuthAuthors(Latexible):
 
-#    _template = u"\\\\\n"
     _template = u", "
 
     def __init__(self, *auth_authors):
@@ -265,7 +264,6 @@ class AuthEmail(Latexible):
 
 class AuthEmails(Latexible):
 
-#    _template = u"\\\\\n"
     _template = u", "
 
     def __init__(self, *auth_emails):
