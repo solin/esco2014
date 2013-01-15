@@ -932,7 +932,7 @@ def letter_tex(request, profile_id, **args):
     str_list.append(f.read())
     f.close()
     
-    person = UserProfile.objects.get(id=profile_id)
+    person = UserProfile.objects.get(id = profile_id)
     user_id = person.user_id
     first_name = person.user.first_name
     last_name = person.user.last_name
@@ -943,29 +943,27 @@ def letter_tex(request, profile_id, **args):
     address = person.address
     postal_code = person.postal_code
 
-    
-    userabstract_list = UserAbstract.objects.all()
+    userabstract_list = UserAbstract.objects.all()  
 
-
-    str_list.append('\\letter{%(full_name)s}{%(affiliation)s}{%(address)s}{%(city)s}{%(postal_code)s}{%(country)s}{' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'city': city, 'postal_code' : postal_code, 'country': country})
-
-    mystr = ''
+    abstractstr = ''
+    appended_s = ''
     counter = 0
-    for i in range(len(userabstract_list)+1):
+
+    for i in range(len(userabstract_list) + 1):
         try:
-            if user_id == UserAbstract.objects.get(id=i+1).user_id:
-                abstract_title = UserAbstract.objects.get(id=i+1).to_cls().title
-                mystr += (abstract_title.encode('utf-8') + ' and ')
+            if user_id == UserAbstract.objects.get(id = i + 1).user_id:
+                abstract_title = UserAbstract.objects.get(id = i + 1).to_cls().title
+                abstractstr += (abstract_title.encode('utf-8') + ' and ')
                 counter += 1
         except UserAbstract.DoesNotExist:
             continue
 
-    appended_s = ''
     if (counter > 1):
         appended_s = 's'
-    mystr = mystr[:-5]
-    str_list.append('%(mystr)s}{%(appended_s)s}\n' % {'mystr': mystr, 'appended_s': appended_s} )
+    abstractstr = abstractstr[:-5]
 
+    str_list.append('\\letter{%(full_name)s}{%(affiliation)s}{%(address)s}{%(city)s}{%(postal_code)s}{%(country)s}{' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'city': city, 'postal_code' : postal_code, 'country': country})
+    str_list.append('%(abstractstr)s}{%(appended_s)s}\n' % {'abstractstr': abstractstr, 'appended_s': appended_s} )
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
 
@@ -974,9 +972,9 @@ def letter_tex(request, profile_id, **args):
 
     os.mkdir(tex_output_path)
 
-    file_name = 'letter_%(last_name)s_%(first_name)s.tex' % {'first_name': first_name, 'last_name': last_name}
+    filename = 'letter_%(last_name)s_%(first_name)s.tex' % {'first_name': first_name, 'last_name': last_name}
     
-    with open(os.path.join(tex_output_path, file_name), 'wb') as f:
+    with open(os.path.join(tex_output_path, filename), 'wb') as f:
         f.write(output.encode('utf-8'))
     f.close()
 
