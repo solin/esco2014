@@ -975,16 +975,29 @@ def letter_tex(request, profile_id, **args):
 
     os.mkdir(tex_output_path)
 
-    filename = 'letter_%(last_name)s_%(first_name)s.tex' % {'first_name': first_name, 'last_name': last_name}
-    
-    with open(os.path.join(tex_output_path, filename), 'wb') as f:
+    shutil.copy(
+        os.path.join(tex_template_path, 'horizon_no_slogan.jpg'),
+        os.path.join(tex_output_path, 'horizon_no_slogan.jpg'))
+
+    filename = 'letter_%(last_name)s_%(first_name)s' % {'first_name': first_name, 'last_name': last_name}  
+    filename_tex = 'letter_%(last_name)s_%(first_name)s.tex' % {'first_name': first_name, 'last_name': last_name} 
+    filename_zip = 'letter_%(last_name)s_%(first_name)s.zip' % {'first_name': first_name, 'last_name': last_name} 
+
+    with open(os.path.join(tex_output_path, filename_tex), 'wb') as f:
         f.write(output.encode('utf-8'))
     f.close()
 
-    response = HttpResponse(output, mimetype='text/plain')
-    response['Content-Type'] = 'application/octet-stream'
+    cmd = ['zip', filename, filename_tex, 'horizon_no_slogan.jpg']
+    pipe = subprocess.PIPE
+
+    proc = subprocess.Popen(cmd, cwd=tex_output_path, stdout=pipe, stderr=pipe)
+    outputs, errors = proc.communicate()  
+
+    f = open(os.path.join(tex_output_path, filename_zip), 'r')
+
+    response = HttpResponse(f.read(), mimetype='application/zip')
     response['Cache-Control'] = 'must-revalidate'
-    response['Content-Disposition'] = 'inline; filename=letter_%(last_name)s_%(first_name)s.tex' % {'first_name': first_name, 'last_name': last_name}
+    response['Content-Disposition'] = 'inline; filename=letter_%(last_name)s_%(first_name)s.zip' % {'first_name': first_name, 'last_name': last_name}
 
     return response
 
