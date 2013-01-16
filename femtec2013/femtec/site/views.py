@@ -1009,7 +1009,9 @@ def letter_tex(request, profile_id, **args):
     if os.path.exists(tex_output_path):
         shutil.rmtree(tex_output_path, True)
 
-    os.mkdir(tex_letters_path)
+    if not os.path.exists(tex_letters_path):
+        os.mkdir(tex_letters_path)
+
     os.mkdir(tex_output_path)
 
     shutil.copy(
@@ -1095,14 +1097,14 @@ def letter_pdf(request, profile_id, **args):
     if os.path.exists(tex_output_path):
         shutil.rmtree(tex_output_path, True)
 
-    os.mkdir(tex_letters_path)
+    if not os.path.exists(tex_letters_path):
+        os.mkdir(tex_letters_path)
+    
     os.mkdir(tex_output_path)
 
     shutil.copy(
         os.path.join(tex_template_path, 'horizon_no_slogan.jpg'),
         os.path.join(tex_output_path, 'horizon_no_slogan.jpg'))
-
-
 
     filename = create_filename(first_name, last_name)
     filename_pdf = create_filename(first_name, last_name) + '.pdf'
