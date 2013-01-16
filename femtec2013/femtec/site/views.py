@@ -988,7 +988,7 @@ def letter_tex(request, profile_id, **args):
     str_list.append('Debug:\n user_id = %(user_id)s\n profile_id = %(profile_id)s\n\n' % {'user_id': user_id, 'profile_id': profile_id})
 
     for i in range(len(userabstract_list)):
-        str_list.append('Debug in loop:\n i = %(i)s\n id = %(i)s\n user_id_from_abstract = %(profile_id)s\n\n' % {'i': (i+1), 'profile_id': UserAbstract.objects.get(id = i + 1).user_id})
+        str_list.append('Debug in loop:\n i = %(i)s\n id = %(i)s\n\n' % {'i': (i+1)})
         try:
             str_list.append('Debug in try:\n i = %(i)s\n id = %(i)s\n user_id_from_abstract = %(profile_id)s\n\n' % {'i': (i+1), 'profile_id': UserAbstract.objects.get(id = i + 1).user_id})
 
