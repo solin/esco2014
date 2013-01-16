@@ -23,7 +23,7 @@ from femtec.settings import MIN_PASSWORD_LEN
 
 from femtec.settings import MEDIA_ROOT, ABSTRACTS_PATH
 
-from collections import OrderedDict
+from collections import *
 
 import subprocess
 import os
