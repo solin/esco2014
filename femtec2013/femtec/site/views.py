@@ -1009,6 +1009,7 @@ def letter_tex(request, profile_id, **args):
     if os.path.exists(tex_output_path):
         shutil.rmtree(tex_output_path, True)
 
+    os.mkdir(tex_letters_path)
     os.mkdir(tex_output_path)
 
     shutil.copy(
@@ -1094,6 +1095,7 @@ def letter_pdf(request, profile_id, **args):
     if os.path.exists(tex_output_path):
         shutil.rmtree(tex_output_path, True)
 
+    os.mkdir(tex_letters_path)
     os.mkdir(tex_output_path)
 
     shutil.copy(
