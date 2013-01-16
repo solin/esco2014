@@ -985,7 +985,7 @@ def letter_tex(request, profile_id, **args):
     appended_s = ''
     counter = 0
 
-    for i in range(len(userabstract_list) + 1):
+    for i in range(len(userabstract_list)):
         try:
             if user_id == UserAbstract.objects.get(id = i + 1).user_id:
                 abstract_title = UserAbstract.objects.get(id = i + 1).to_cls().title
@@ -994,15 +994,15 @@ def letter_tex(request, profile_id, **args):
         except UserAbstract.DoesNotExist:
             continue
 
-    if counter == 0:
-        return HttpResponse('TeX file incomplete - the user has not submited the Abstract!')
+    #if counter == 0:
+    #    return HttpResponse('TeX file incomplete - the user has not submited the Abstract!')
 
-    if (counter > 1):
-        appended_s = 's'
-    abstractstr = abstractstr[:-5]
+    #if (counter > 1):
+    #    appended_s = 's'
+    #abstractstr = abstractstr[:-5]
 
     str_list.append('\\letter{%(full_name)s}{%(affiliation)s}{%(address)s}{%(city)s}{%(postal_code)s}{%(country)s}{' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'city': city, 'postal_code' : postal_code, 'country': country})
-    str_list.append('%(abstractstr)s}{%(appended_s)s}\n' % {'abstractstr': abstractstr, 'appended_s': appended_s} )
+    str_list.append('%(abstractstr)s}{%(appended_s)s}\n' % {'abstractstr': abstractstr, 'appended_s':counter} )
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
 
@@ -1073,7 +1073,7 @@ def letter_pdf(request, profile_id, **args):
     appended_s = ''
     counter = 0
 
-    for i in range(len(userabstract_list) + 1):
+    for i in range(len(userabstract_list)):
         try:
             if user_id == UserAbstract.objects.get(id = i + 1).user_id:
                 abstract_title = UserAbstract.objects.get(id = i + 1).to_cls().title
