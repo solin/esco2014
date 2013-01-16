@@ -940,6 +940,16 @@ def registration_pdf(request, **args):
 
     return response
 
+def create_filename(user_first_name, user_last_name):
+    prefix = 'letter_'
+    first = user_first_name
+    last = user_last_name
+    
+    first = first.encode('ascii','ignore')
+    last = last.encode('ascii','ignore')
+    filename = prefix + last + '_' + first
+        
+    return filename
 
 @login_required
 def letter_tex(request, profile_id, **args):
@@ -952,18 +962,24 @@ def letter_tex(request, profile_id, **args):
     str_list.append(f.read())
     f.close()
     
-    person = UserProfile.objects.get(id = profile_id)
-    user_id = person.user_id
-    first_name = person.user.first_name
-    last_name = person.user.last_name
-    full_name = person.user.get_full_name()
-    affiliation = person.affiliation
-    city = person.city
-    country = person.country
-    address = person.address
-    postal_code = person.postal_code
+    try:
+        person = UserProfile.objects.get(id = profile_id)
+        user_id = person.user_id
+        first_name = person.user.first_name
+        last_name = person.user.last_name
+        full_name = person.user.get_full_name()
+        affiliation = person.affiliation
+        city = person.city
+        country = person.country
+        address = person.address
+        postal_code = person.postal_code
+    except UserProfile.DoesNotExist:
+        pass
 
-    userabstract_list = UserAbstract.objects.all()  
+    try:
+        userabstract_list = UserAbstract.objects.all()  
+    except UserAbstract.DoesNotExist:
+        pass
 
     abstractstr = ''
     appended_s = ''
@@ -999,9 +1015,9 @@ def letter_tex(request, profile_id, **args):
         os.path.join(tex_template_path, 'horizon_no_slogan.jpg'),
         os.path.join(tex_output_path, 'horizon_no_slogan.jpg'))
 
-    filename = 'letter_%(last_name)s_%(first_name)s' % {'first_name': first_name, 'last_name': last_name}  
-    filename_tex = 'letter_%(last_name)s_%(first_name)s.tex' % {'first_name': first_name, 'last_name': last_name} 
-    filename_zip = 'letter_%(last_name)s_%(first_name)s.zip' % {'first_name': first_name, 'last_name': last_name} 
+    filename = create_filename(first_name, last_name)
+    filename_tex = create_filename(first_name, last_name) + '.tex'
+    filename_zip = create_filename(first_name, last_name) + '.zip'
 
     with open(os.path.join(tex_output_path, filename_tex), 'wb') as f:
         f.write(output.encode('utf-8'))
@@ -1017,8 +1033,7 @@ def letter_tex(request, profile_id, **args):
 
     response = HttpResponse(f.read(), mimetype='application/zip')
     response['Cache-Control'] = 'must-revalidate'
-    response['Content-Disposition'] = 'inline; filename=letter_%(last_name)s_%(first_name)s.zip' % {'first_name': first_name, 'last_name': last_name}
-
+    response['Content-Disposition'] = 'inline; filename=%(filename_zip)s' % {'filename_zip': filename_zip}
     return response
 
 @login_required
@@ -1032,18 +1047,24 @@ def letter_pdf(request, profile_id, **args):
     str_list.append(f.read())
     f.close()
     
-    person = UserProfile.objects.get(id = profile_id)
-    user_id = person.user_id
-    first_name = person.user.first_name
-    last_name = person.user.last_name
-    full_name = person.user.get_full_name()
-    affiliation = person.affiliation
-    city = person.city
-    country = person.country
-    address = person.address
-    postal_code = person.postal_code
+    try:
+        person = UserProfile.objects.get(id = profile_id)
+        user_id = person.user_id
+        first_name = person.user.first_name
+        last_name = person.user.last_name
+        full_name = person.user.get_full_name()
+        affiliation = person.affiliation
+        city = person.city
+        country = person.country
+        address = person.address
+        postal_code = person.postal_code
+    except UserProfile.DoesNotExist:
+        pass
 
-    userabstract_list = UserAbstract.objects.all()  
+    try:
+        userabstract_list = UserAbstract.objects.all()  
+    except UserAbstract.DoesNotExist:
+        pass
 
     abstractstr = ''
     appended_s = ''
@@ -1079,8 +1100,10 @@ def letter_pdf(request, profile_id, **args):
         os.path.join(tex_template_path, 'horizon_no_slogan.jpg'),
         os.path.join(tex_output_path, 'horizon_no_slogan.jpg'))
 
-    filename = 'letter_%(last_name)s_%(first_name)s.tex' % {'first_name': first_name, 'last_name': last_name}
-    filename_pdf = 'letter_%(last_name)s_%(first_name)s.pdf' % {'first_name': first_name, 'last_name': last_name}
+
+
+    filename = create_filename(first_name, last_name)
+    filename_pdf = create_filename(first_name, last_name) + '.pdf'
 
     with open(os.path.join(tex_output_path, filename), 'wb') as f:
         f.write(output.encode('utf-8'))
@@ -1097,7 +1120,7 @@ def letter_pdf(request, profile_id, **args):
 
     response = HttpResponse(f.read(), mimetype='application/pdf')
     response['Cache-Control'] = 'must-revalidate'
-    response['Content-Disposition'] = 'inline; filename=letter_%(last_name)s_%(first_name)s.pdf' % {'first_name': first_name, 'last_name': last_name}
+    response['Content-Disposition'] = 'inline; filename=%(filename_pdf)s' % {'filename_pdf': filename_pdf}
 
     return response
 
