@@ -985,8 +985,12 @@ def letter_tex(request, profile_id, **args):
     appended_s = ''
     counter = 0
 
+    str_list.append('\n\n Debug:\n user_id = %{user_id}\n profile_id = %{profile_id}\n\n' % {'user_id': user_id, 'profile_id': profile_id})
+
     for i in range(len(userabstract_list)):
         try:
+            str_list.append('\n\n Debug in loop:\n i = %{i}\n user_id_from_abstract = %{profile_id}\n' % {'i': i, 'profile_id': UserAbstract.objects.get(id = i + 1).user_id})
+
             if user_id == UserAbstract.objects.get(id = i + 1).user_id:
                 abstract_title = UserAbstract.objects.get(id = i + 1).to_cls().title
                 abstractstr += (abstract_title.encode('utf-8') + ' and ')
@@ -1002,7 +1006,7 @@ def letter_tex(request, profile_id, **args):
     #abstractstr = abstractstr[:-5]
 
     str_list.append('\\letter{%(full_name)s}{%(affiliation)s}{%(address)s}{%(city)s}{%(postal_code)s}{%(country)s}{' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'city': city, 'postal_code' : postal_code, 'country': country})
-    str_list.append('%(abstractstr)s}{%(appended_s)s}\n' % {'abstractstr': abstractstr, 'appended_s':counter} )
+    str_list.append('%(abstractstr)s}{%(appended_s)s}\n' % {'abstractstr': abstractstr, 'appended_s':appended_s} )
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
 
