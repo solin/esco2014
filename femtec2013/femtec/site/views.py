@@ -23,7 +23,8 @@ from femtec.settings import MIN_PASSWORD_LEN
 
 from femtec.settings import MEDIA_ROOT, ABSTRACTS_PATH
 
-from collections import *
+# works with Python 2.7 or higer
+#from collections import OrderedDict
 
 import subprocess
 import os
@@ -1103,15 +1104,22 @@ def letter_pdf(request, profile_id, **args):
 def get_submit_form_data(post, user):
     title = post['title']
     abstract = post['abstract']
-
+##---
+#    full_names = ['']*len(first_names)
+#    affiliations = post.getlist('affiliation')
     first_names = post.getlist('first_name')
     last_names = post.getlist('last_name')
-    full_names = ['']*len(first_names)
-    affiliations = post.getlist('affiliation')
+    addresses = post.getlist('address')
+##***
     emails = post.getlist('email')
     presentings = ['no']*len(first_names)
 
-    #bibitems_bibid = post.getlist('bibitem_bibid')
+    ##---this code was used for bibid---
+    ##bibitems_bibid = post.getlist('bibitem_bibid')
+    ##bibitems = zip(bibitems_bibid, bibitems_authors, bibitems_title, bibitems_other)
+    ##fields = ('bibid', 'authors', 'title', 'other')
+    ##---this code was used for bibid---
+
     bibitems_authors = post.getlist('bibitem_authors')
     bibitems_title = post.getlist('bibitem_title')
     bibitems_other = post.getlist('bibitem_other')
@@ -1120,53 +1128,64 @@ def get_submit_form_data(post, user):
         if (first_name == user.first_name and last_name == user.last_name):
             presentings[i] = 'yes'
             break
+##---
+#    for i, (first_name, last_name) in enumerate(zip(first_names, last_names)):
+#        full_names[i] = first_names[i] + ' ' + last_names[i]
+#    
+#    authors = zip(first_names, last_names, full_names, affiliations, emails, presentings)
+#    fields = ('first_name', 'last_name', 'full_name', 'affiliation', 'email', 'presenting')
 
-    for i, (first_name, last_name) in enumerate(zip(first_names, last_names)):
-        full_names[i] = first_names[i] + ' ' + last_names[i]
-
-    authors = zip(first_names, last_names, full_names, affiliations, emails, presentings)
-    fields = ('first_name', 'last_name', 'full_name', 'affiliation', 'email', 'presenting')
+    authors = zip(first_names, last_names, addresses, emails, presentings)
+    fields = ('first_name', 'last_name', 'address', 'email', 'presenting')
+##***
 
     for i, author in enumerate(authors):
         author = dict(zip(fields, author))
         authors[i] = author
 
-    fields = ('bibauthor_first_name', 'bibauthor_last_name')
+##---
+#    fields = ('bibauthor_first_name', 'bibauthor_last_name')
+    fields = ('first_name', 'last_name')
+##***
     bibitems_authors = [[ dict(zip(fields, re.split("\s+", author, 1)))
         for author in re.split("\s*,\s*", bibitem_authors) ] for bibitem_authors in bibitems_authors ]
 
-    #bibitems = zip(bibitems_bibid, bibitems_authors, bibitems_title, bibitems_other)
-    #fields = ('bibid', 'authors', 'title', 'other')
-    
     bibitems = zip(bibitems_authors, bibitems_title, bibitems_other)
-    fields = ('bibitem_authors', 'bibitem_title', 'bibitem_other')
+##---
+#    fields = ('bibitem_authors', 'bibitem_title', 'bibitem_other')
+    fields = ('authors', 'title', 'other')
+##***
 
     for i, bibitem in enumerate(bibitems):
         bibitem = dict(zip(fields, bibitem))
         bibitems[i] = bibitem
 
-    authgroup_authors = zip(full_names, emails, presentings)
-    fields = ('auth_full_name', 'auth_email', 'auth_presenting')
-
-    for i, authgroups_author in enumerate(authgroup_authors):
-        authgroups_author = dict(zip(fields, authgroups_author))
-        authgroup_authors[i] = authgroups_author
-  
-    res = OrderedDict()
-    for v, k in zip(authgroup_authors, affiliations):
-        if k in res:
-            res[k].append(v)
-        else:
-            res[k] = [v]
-
-    authgroups = [{'authgroup_authors':v, 'authgroup_affiliation':k,} for k,v in res.items()]
+##--- code for groups of authors of same institution on abstract
+#    authgroup_authors = zip(full_names, emails, presentings)
+#    fields = ('auth_full_name', 'auth_email', 'auth_presenting')
+#    
+#    for i, authgroups_author in enumerate(authgroup_authors):
+#        authgroups_author = dict(zip(fields, authgroups_author))
+#        authgroup_authors[i] = authgroups_author
+#    
+#    res = OrderedDict()
+#    for v, k in zip(authgroup_authors, affiliations):
+#        if k in res:
+#            res[k].append(v)
+#        else:
+#            res[k] = [v]
+#    
+#    authgroups = [{'authgroup_authors':v, 'authgroup_affiliation':k,} for k,v in res.items()]
+##***
 
     data = {
         'title': title,
         'abstract': abstract,
         'authors': authors,
         'bibitems': bibitems,
-        'authgroups' : authgroups,
+##---
+#        'authgroups' : authgroups,
+##***
     }
 
     return json.dumps(data)
@@ -1289,4 +1308,3 @@ def abstracts_log_view(request, abstract_id, **args):
     response['Content-Disposition'] = 'inline; filename=abstract.log'
 
     return response
-

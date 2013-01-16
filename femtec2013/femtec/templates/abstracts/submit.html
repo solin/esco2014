@@ -16,7 +16,10 @@ function addAuthorField(event, after, initial) {
 
         el.find("[name='first_name']").val(initial.first_name);
         el.find("[name='last_name']").val(initial.last_name);
-        el.find("[name='affiliation']").val(initial.affiliation);
+////---
+//        el.find("[name='affiliation']").val(initial.affiliation);
+        el.find("[name='address']").val(initial.address);
+////***
         el.find("[name='email']").val(initial.email);
     }
 }
@@ -41,25 +44,47 @@ function addBibitemField(event, after, initial) {
     if (initial) {
         el = el.next();
 
-        function bibitemAuthorToString(bibauthor) {
-            return bibauthor.bibauthor_first_name + " " + bibauthor.bibauthor_last_name;
+////---
+//        function bibitemAuthorToString(bibauthor) {
+//            return bibauthor.bibauthor_first_name + " " + bibauthor.bibauthor_last_name;
+//        }
+//
+//        function bibitemAuthorsToString(bibauthors) {
+//            var arr = [];
+//            $.each(bibauthors, function(i, bibauthor) {
+//                arr.push(bibitemAuthorToString(bibauthor));
+//            });
+//
+//            return arr.join(", ");
+//        }
+
+        function bibitemAuthorToString(author) {
+            return author.first_name + " " + author.last_name;
         }
 
-        function bibitemAuthorsToString(bibauthors) {
+        function bibitemAuthorsToString(authors) {
             var arr = [];
 
-            $.each(bibauthors, function(i, bibauthor) {
-                arr.push(bibitemAuthorToString(bibauthor));
+            $.each(authors, function(i, author) {
+                arr.push(bibitemAuthorToString(author));
             });
 
             return arr.join(", ");
         }
+////***
 
-        //el.find("[name='bibitem_bibid']").val(initial.bibid);
-        //el.find("[name='bibitem_bibid']");
-        el.find("[name='bibitem_authors']").val(bibitemAuthorsToString(initial.bibitem_authors));
-        el.find("[name='bibitem_title']").val(initial.bibitem_title);
-        el.find("[name='bibitem_other']").val(initial.bibitem_other);
+        ////---this code was used for bibid---
+        ////el.find("[name='bibitem_bibid']").val(initial.bibid);
+        ////---this code was used for bibid---
+
+////---
+//        el.find("[name='bibitem_authors']").val(bibitemAuthorsToString(initial.bibitem_authors));
+//        el.find("[name='bibitem_title']").val(initial.bibitem_title);
+//        el.find("[name='bibitem_other']").val(initial.bibitem_other);
+        el.find("[name='bibitem_authors']").val(bibitemAuthorsToString(initial.authors));
+        el.find("[name='bibitem_title']").val(initial.title);
+        el.find("[name='bibitem_other']").val(initial.other);
+////***
     }
 }
 
@@ -76,9 +101,14 @@ function validateForm() {
     var content = $("form [name='abstract']");
     var first_names = $("form [name='first_name']");
     var last_names = $("form [name='last_name']");
-    var affiliations = $("form [name='affiliation']");
+////---
+//    var affiliations = $("form [name='affiliation']");
+    var addresses = $("form [name='address']");
+////***
     var emails = $("form [name='email']");
-    //var bibitems_bibid = $("form [name='bibitem_bibid']");
+    ////---this code was used for bibid---
+    ////var bibitems_bibid = $("form [name='bibitem_bibid']");
+    ////---this code was used for bibid---
     var bibitems_authors = $("form [name='bibitem_authors']");
     var bibitems_title = $("form [name='bibitem_title']");
     var bibitems_other = $("form [name='bibitem_other']");
@@ -130,10 +160,15 @@ function validateForm() {
     try {
         validateEls(first_names, "Missing or invalid author's first name.");
         validateEls(last_names, "Missing or invalid author's last name.");
-        validateEls(affiliations, "Missing or invalid author's affiliation.");
+////---
+//        validateEls(affiliations, "Missing or invalid author's affiliation.");
+        validateEls(addresses, "Missing or invalid author's address.");
+////***
         validateEls(emails, "Missing or invalid author's E-mail.");
-        //validateEls(bibitems_bibid, "Missing or invalid bibliography item's id.");
-        validateEls(bibitems_authors, "Missing or invalid bibliography item's authors.");
+        ////---this code was used for bibid---
+        ////validateEls(bibitems_bibid, "Missing or invalid bibliography item's id.");
+        ////---this code was used for bibid--- 
+        validateEls(bibitems_authors, "Missing or invalid bibliography item's authors.", [spaceValidator]);
         validateEls(bibitems_title, "Missing or invalid bibliography item's title.");
         validateEls(bibitems_other, "Missing or invalid bibliography item's other data.");
     } catch (exc) {
@@ -278,8 +313,12 @@ $(document).ready(function() {
                 <span>Last name</span>
             </span>
             <br />
-            <span class="block affiliation">
+            <!-- <span class="block affiliation">
                 <input type="text" name="affiliation"></input>
+                <span>Affiliation</span>
+            </span> -->
+            <span class="block address">
+                <input type="text" name="address"></input>
                 <span>Affiliation</span>
             </span>
             <br />
