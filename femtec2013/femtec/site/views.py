@@ -985,17 +985,20 @@ def letter_tex(request, profile_id, **args):
     appended_s = ''
     counter = 0
 
-    str_list.append('\n\n Debug:\n user_id = %{user_id}\n profile_id = %{profile_id}\n\n' % {'user_id': user_id, 'profile_id': profile_id})
+    str_list.append('Debug:\n user_id = %(user_id)s\n profile_id = %(profile_id)s\n\n' % {'user_id': user_id, 'profile_id': profile_id})
 
     for i in range(len(userabstract_list)):
+        str_list.append('Debug in loop:\n i = %(i)s\n id = %(i)s\n user_id_from_abstract = %(profile_id)s\n\n' % {'i': (i+1), 'profile_id': UserAbstract.objects.get(id = i + 1).user_id})
         try:
-            str_list.append('\n\n Debug in loop:\n i = %{i}\n user_id_from_abstract = %{profile_id}\n' % {'i': i, 'profile_id': UserAbstract.objects.get(id = i + 1).user_id})
+            str_list.append('Debug in try:\n i = %(i)s\n id = %(i)s\n user_id_from_abstract = %(profile_id)s\n\n' % {'i': (i+1), 'profile_id': UserAbstract.objects.get(id = i + 1).user_id})
 
             if user_id == UserAbstract.objects.get(id = i + 1).user_id:
+                str_list.append('inside if condition i = %(i)s\n\n' % {'i': i})
                 abstract_title = UserAbstract.objects.get(id = i + 1).to_cls().title
                 abstractstr += (abstract_title.encode('utf-8') + ' and ')
                 counter += 1
         except UserAbstract.DoesNotExist:
+            str_list.append('except: i = %(i)s\n\n' % {'i': i})
             continue
 
     #if counter == 0:
@@ -1003,7 +1006,7 @@ def letter_tex(request, profile_id, **args):
 
     #if (counter > 1):
     #    appended_s = 's'
-    #abstractstr = abstractstr[:-5]
+    abstractstr = abstractstr[:-5]
 
     str_list.append('\\letter{%(full_name)s}{%(affiliation)s}{%(address)s}{%(city)s}{%(postal_code)s}{%(country)s}{' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'city': city, 'postal_code' : postal_code, 'country': country})
     str_list.append('%(abstractstr)s}{%(appended_s)s}\n' % {'abstractstr': abstractstr, 'appended_s':appended_s} )
