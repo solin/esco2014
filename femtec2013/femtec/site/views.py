@@ -18,6 +18,8 @@ from femtec.site.models import UserProfile, UserAbstract2 as UserAbstract
 from femtec.site.forms import LoginForm, ReminderForm, RegistrationForm, ChangePasswordForm
 from femtec.site.forms import UserProfileForm
 
+from django.db.models import Max
+
 from django.conf import settings
 from femtec.settings import MIN_PASSWORD_LEN
 
@@ -976,36 +978,28 @@ def letter_tex(request, profile_id, **args):
     except UserProfile.DoesNotExist:
         pass
 
-    try:
-        userabstract_list = UserAbstract.objects.all()  
-    except UserAbstract.DoesNotExist:
-        pass
+
+    max_abstract_id_dict = UserAbstract.objects.all().aggregate(Max('id'))
+    max_abstract_id = max_abstract_id_dict['id__max']
 
     abstractstr = ''
     appended_s = ''
     counter = 0
 
-    str_list.append('Debug:\n user_id = %(user_id)s\n profile_id = %(profile_id)s\n\n' % {'user_id': user_id, 'profile_id': profile_id})
-
-    for i in range(len(userabstract_list)):
-        str_list.append('Debug in loop:\n i = %(i)s\n id = %(i)s\n\n' % {'i': (i+1)})
+    for i in range(max_abstract_id):
         try:
-            str_list.append('Debug in try:\n i = %(i)s\n id = %(i)s\n user_id_from_abstract = %(profile_id)s\n\n' % {'i': (i+1), 'profile_id': UserAbstract.objects.get(id = i + 1).user_id})
-
             if user_id == UserAbstract.objects.get(id = i + 1).user_id:
-                str_list.append('inside if condition i = %(i)s\n\n' % {'i': i})
                 abstract_title = UserAbstract.objects.get(id = i + 1).to_cls().title
                 abstractstr += (abstract_title.encode('utf-8') + ' and ')
                 counter += 1
         except UserAbstract.DoesNotExist:
-            str_list.append('except: i = %(i)s\n\n' % {'i': i})
             continue
 
-    #if counter == 0:
-    #    return HttpResponse('TeX file incomplete - the user has not submited the Abstract!')
+    if counter == 0:
+        return HttpResponse('TeX file incomplete - probably the user with user_id = %(user_id)s and profile_id = %(profile_id)s has not submited the Abstract!' % {'user_id': user_id, 'profile_id': profile_id})
 
-    #if (counter > 1):
-    #    appended_s = 's'
+    if (counter > 1):
+        appended_s = 's'
     abstractstr = abstractstr[:-5]
 
     str_list.append('\\letter{%(full_name)s}{%(affiliation)s}{%(address)s}{%(city)s}{%(postal_code)s}{%(country)s}{' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'city': city, 'postal_code' : postal_code, 'country': country})
@@ -1076,11 +1070,14 @@ def letter_pdf(request, profile_id, **args):
     except UserAbstract.DoesNotExist:
         pass
 
+    max_abstract_id_dict = UserAbstract.objects.all().aggregate(Max('id'))
+    max_abstract_id = max_abstract_id_dict['id__max']
+
     abstractstr = ''
     appended_s = ''
     counter = 0
 
-    for i in range(len(userabstract_list)):
+    for i in range(max_abstract_id):
         try:
             if user_id == UserAbstract.objects.get(id = i + 1).user_id:
                 abstract_title = UserAbstract.objects.get(id = i + 1).to_cls().title
@@ -1090,7 +1087,7 @@ def letter_pdf(request, profile_id, **args):
             continue
 
     if counter == 0:
-        return HttpResponse('Impossible to generate PDF file - the user has not submited the Abstract!')
+        return HttpResponse('Impossible to generate PDF file - probably the user with user_id = %(user_id)s and profile_id = %(profile_id)s has not submited the Abstract!' % {'user_id': user_id, 'profile_id': profile_id})
 
     if (counter > 1):
         appended_s = 's'
