@@ -946,7 +946,8 @@ def create_filename(user_first_name, user_last_name):
     prefix = 'letter_'
     first = user_first_name
     last = user_last_name
-    
+
+    # TODO  something like name = first_name.replace(u'\xe1','a')
     first = first.encode('ascii','ignore')
     last = last.encode('ascii','ignore')
     filename = prefix + last + '_' + first
@@ -990,7 +991,7 @@ def letter_tex(request, profile_id, **args):
         try:
             if user_id == UserAbstract.objects.get(id = i + 1).user_id:
                 abstract_title = UserAbstract.objects.get(id = i + 1).to_cls().title
-                abstractstr += (abstract_title.encode('utf-8') + ' and ')
+                abstractstr += (abstract_title + ' and ')
                 counter += 1
         except UserAbstract.DoesNotExist:
             continue
@@ -1081,7 +1082,7 @@ def letter_pdf(request, profile_id, **args):
         try:
             if user_id == UserAbstract.objects.get(id = i + 1).user_id:
                 abstract_title = UserAbstract.objects.get(id = i + 1).to_cls().title
-                abstractstr += (abstract_title.encode('utf-8') + ' and ')
+                abstractstr += (abstract_title + ' and ')
                 counter += 1
         except UserAbstract.DoesNotExist:
             continue
