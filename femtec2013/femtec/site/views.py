@@ -947,12 +947,35 @@ def create_filename(user_first_name, user_last_name):
     first = user_first_name
     last = user_last_name
 
-    # TODO  something like name = first_name.replace(u'\xe1','a')
+    first = first.replace(u'\xe1','a')
+    first = first.replace(u'\u0161','s')
+    first = first.replace(u'\u011b','e')
+    first = first.replace(u'\u010d','c')
+    first = first.replace(u'\u0159','r')
+    first = first.replace(u'\u017e','z')
+    first = first.replace(u'\xfd','y')
+    first = first.replace(u'\xed','i')
+    first = first.replace(u'\xe9','e')
+    first = first.replace(u'\xfa','u')
+    first = first.replace(u'\u016f','u')
+
+    last = last.replace(u'\xe1','a')
+    last = last.replace(u'\u0161','s')
+    last = last.replace(u'\u011b','e')
+    last = last.replace(u'\u010d','c')
+    last = last.replace(u'\u0159','r')
+    last = last.replace(u'\u017e','z')
+    last = last.replace(u'\xfd','y')
+    last = last.replace(u'\xed','i')
+    last = last.replace(u'\xe9','e')
+    last = last.replace(u'\xfa','u')
+    last = last.replace(u'\u016f','u')
+
     first = first.encode('ascii','ignore')
     last = last.encode('ascii','ignore')
     filename = prefix + last + '_' + first
         
-    return filename
+    return filename.replace(' ','_')
 
 @login_required
 def letter_tex(request, profile_id, **args):
