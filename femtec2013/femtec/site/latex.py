@@ -44,6 +44,14 @@ def convert_html_entities(s):
     s = s.replace("&amp;", "&")
     return s
 
+def latex_replacement(string_to_modify):
+
+    string_to_latex = re.sub(r'\\?\&', r'\\&', string_to_modify)
+    string_to_latex = re.sub(r'\\?\#', r'\\#', string_to_latex)
+    string_to_latex = re.sub(r'\\?\%', r'\\%', string_to_latex)
+    string_to_latex = re.sub(r'\\?\_', r'\\_', string_to_latex)
+
+    return string_to_latex
 
 class TocAuthors(Latexible):
 
@@ -244,7 +252,6 @@ class Author(Latexible):
         self.last_name = last_name
         self.address = address
         self.email = email
-        self.email = email.replace('_', '\_')
         self.presenting = presenting
 ##***
 
@@ -275,17 +282,16 @@ class Author(Latexible):
     @classmethod
     def from_json(cls, data):
 ##---
-#        full_name = data.get('full_name', "")
-#        affiliation = data.get('affiliation', "")
-#        email = data.get('email', "")
+#        full_name = latex_replacement(data.get('full_name', ""))
+#        affiliation = latex_replacement(data.get('affiliation', ""))
+#        email = latex_replacement(data.get('email', ""))
 #        presenting = data['presenting']
 #        return cls(full_name, affiliation, email, presenting)
 
-        #first_name = data.get('first_name', "")
-        first_name = data['first_name']
-        last_name = data.get('last_name', "")
-        address = data.get('address', "")
-        email = data.get('email', "")
+        first_name = latex_replacement(data.get('first_name', ""))
+        last_name = latex_replacement(data.get('last_name', ""))
+        address = latex_replacement(data.get('address', ""))
+        email = latex_replacement(data.get('email', ""))
         presenting = data['presenting']
         return cls(first_name, last_name, address, email, presenting)
 ##***
@@ -437,9 +443,9 @@ class BibAuthor(Latexible):
 #
 #    @classmethod
 #    def from_json(cls, data):
-#        bibauthor_first_name = data['bibauthor_first_name']
+#        bibauthor_first_name = latex_replacement(data['bibauthor_first_name'])
 #        try:
-#            bibauthor_last_name = data['bibauthor_last_name']
+#            bibauthor_last_name = latex_replacement(data['bibauthor_last_name'])
 #        except KeyError:
 #            bibauthor_last_name = ""
 #        return cls(bibauthor_first_name, bibauthor_last_name)
@@ -457,9 +463,9 @@ class BibAuthor(Latexible):
 
     @classmethod
     def from_json(cls, data):
-        first_name = data['first_name']
+        first_name = latex_replacement(data['first_name'])
         try:
-            last_name = data['last_name']
+            last_name = latex_replacement(data['last_name'])
         except KeyError:
             last_name = ""
         return cls(first_name, last_name)
@@ -506,9 +512,9 @@ class BibItem(Latexible):
 #	 self.bibother = bibother
     def __init__(self, bibid, authors, title, other):
         self.bibid = bibid
-        self.bibid = "".join([x for x in self.bibid if ord(x) < 128])
+        self.bibid = "".join([x for x in self.bibid if (((ord(x) >= 48) and (ord(x) <= 57)) or ((ord(x) >= 65) and (ord(x) <= 90)) or ((ord(x) >= 97) and (ord(x) <= 122)) or (ord(x) == 32))])
         self.authors = authors
-        self.title = title.replace('&quot;', '')
+        self.title = title
 	self.other = other
 ##***
 
@@ -527,15 +533,15 @@ class BibItem(Latexible):
     @classmethod
     def from_json(cls, data):
 ##---
-#        bibid = data['bibitem_title']
+#        bibid = latex_replacement(data['bibitem_title'])
 #        bibauthors = BibAuthors.from_json(data['bibitem_authors'])
-#        bibtitle = data['bibitem_title']
-#        bibother = data['bibitem_other']
+#        bibtitle = latex_replacement(data['bibitem_title'])
+#        bibother = latex_replacement(data['bibitem_other'])
 #        return cls(bibid, bibauthors, bibtitle, bibother)
-        bibid = data['title']
+        bibid = latex_replacement(data['title'])
         authors = BibAuthors.from_json(data['authors'])
-        title = data['title']
-        other = data['other']
+        title = latex_replacement(data['title'])
+        other = latex_replacement(data['other'])
         return cls(bibid, authors, title, other)
 ##***
 
@@ -625,17 +631,11 @@ class Abstract(Latexible):
 #    def __init__(self, title, abstract, authors, authorgroups, bibitems):
     def __init__(self, title, abstract, authors, bibitems):
 ##***
-        self.title = title.replace('\n', '').replace('\r', '').replace('&quot;', '')
+        self.title = title
         self.title = self.title.replace('"', '')
-        self.title = self.title.replace('%', '\%')
-        self.title = self.title.replace('&', '\&')
-        self.title = self.title.replace('#', '\#')
         self.title = self.title.replace('$hp$', 'hp')
         self.title = self.title.strip()
-        self.abstract = abstract.replace('\n', '').replace('\r', '')
-        self.abstract = self.abstract.replace('%', '\%')
-        self.abstract = self.abstract.replace('&', '\&')
-        self.abstract = self.abstract.replace('#', '\#')
+        self.abstract = abstract
         self.authors = authors
 ##---
 #        self.authorgroups = authorgroups
@@ -689,8 +689,8 @@ class Abstract(Latexible):
 
     @classmethod
     def from_json(cls, data):
-        title = titlecase(data['title'])
-        abstract = data['abstract']
+        title = titlecase(latex_replacement(data['title']))
+        abstract = latex_replacement(data['abstract'])
         authors = Authors.from_json(data['authors'])
 ##---
 #        authorgroups = AuthGroups.from_json(data['authgroups'])
