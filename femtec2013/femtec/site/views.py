@@ -367,11 +367,11 @@ def abstracts_view(request, **args):
 
     return _render_to_response('abstracts/abstracts.html', request, {'abstracts': abstracts, 'has_profile': has_profile})
 
-@login_required
-def badges_tex(request, **args):
+def badges():
     tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
     tex_output_path = os.path.join(ABSTRACTS_PATH, 'badges')
 
+    str_list_to_modify = []
     str_list = []
     f = open(os.path.join(tex_template_path, 'badges_template.tex'), 'r')
     str_list.append(f.read())
@@ -385,11 +385,12 @@ def badges_tex(request, **args):
             affiliation = user_list[i].get_profile().affiliation
             city = user_list[i].get_profile().city
             country = user_list[i].get_profile().country
-            str_list.append('\\card{%(full_name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'affiliation': affiliation, 'city': city, 'country': country })
-            str_list.append('\\card{%(full_name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'affiliation': affiliation, 'city': city, 'country': country })        
+            str_list_to_modify.append('\\card{%(full_name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'affiliation': affiliation, 'city': city, 'country': country })
+            str_list_to_modify.append('\\card{%(full_name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'affiliation': affiliation, 'city': city, 'country': country })        
         except UserProfile.DoesNotExist:
             continue
 
+    str_list.append(latex_replacement(''.join(str_list_to_modify)))
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
 
@@ -402,46 +403,23 @@ def badges_tex(request, **args):
         f.write(output.encode('utf-8'))
     f.close()
 
-    response = HttpResponse(output, mimetype='text/plain')
+    return tex_output_path
+
+@login_required
+def badges_tex(request, **args):
+    tex_output_path = badges()
+    
+    f = open(os.path.join(tex_output_path, 'badges.tex'), 'r')    
+
+    response = HttpResponse(f.read(), mimetype='text/plain')
     response['Content-Type'] = 'application/octet-stream'
     response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=badges.tex'
-
     return response
 
 @login_required
 def badges_pdf(request, **args):
-    tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
-    tex_output_path = os.path.join(ABSTRACTS_PATH, 'badges')
-
-    str_list = []
-    f = open(os.path.join(tex_template_path, 'badges_template.tex'), 'r')
-    str_list.append(f.read())
-    f.close()
-    
-    user_list = User.objects.all().order_by('last_name')
-
-    for i in range(len(User.objects.all())):
-        try:
-            full_name = user_list[i].get_full_name()
-            affiliation = user_list[i].get_profile().affiliation
-            city = user_list[i].get_profile().city
-            country = user_list[i].get_profile().country
-            str_list.append('\\card{%(full_name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'affiliation': affiliation, 'city': city, 'country': country })
-            str_list.append('\\card{%(full_name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'affiliation': affiliation, 'city': city, 'country': country })        
-        except UserProfile.DoesNotExist:
-            continue
-
-    str_list.append('\\end{document}' )
-    output = ''.join(str_list)
-
-    if os.path.exists(tex_output_path):
-        shutil.rmtree(tex_output_path, True)
-    os.mkdir(tex_output_path)
-
-    with open(os.path.join(tex_output_path, 'badges.tex'), 'wb') as f:
-        f.write(output.encode('utf-8'))
-    f.close()
+    tex_output_path = badges()
 
     cmd = ['pdflatex', '-halt-on-error', 'badges.tex']
     pipe = subprocess.PIPE
@@ -455,7 +433,6 @@ def badges_pdf(request, **args):
     response = HttpResponse(f.read(), mimetype='application/pdf')
     response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=badges.pdf'
-
     return response
 
 @login_required
