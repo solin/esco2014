@@ -28,6 +28,8 @@ from femtec.settings import MEDIA_ROOT, ABSTRACTS_PATH
 # works with Python 2.7 or higer
 #from collections import OrderedDict
 
+from latex_replacement import latex_replacement
+
 import subprocess
 import os
 import shutil
@@ -944,38 +946,29 @@ def registration_pdf(request, **args):
 
 def create_filename(user_first_name, user_last_name):
     prefix = 'letter_'
-    first = user_first_name
-    last = user_last_name
 
-    first = first.replace(u'\xe1','a')
-    first = first.replace(u'\u0161','s')
-    first = first.replace(u'\u011b','e')
-    first = first.replace(u'\u010d','c')
-    first = first.replace(u'\u0159','r')
-    first = first.replace(u'\u017e','z')
-    first = first.replace(u'\xfd','y')
-    first = first.replace(u'\xed','i')
-    first = first.replace(u'\xe9','e')
-    first = first.replace(u'\xfa','u')
-    first = first.replace(u'\u016f','u')
+    def filename_replacement(name):
+        name = name.replace(u'\xe1','a')
+        name = name.replace(u'\u0161','s')
+        name = name.replace(u'\u011b','e')
+        name = name.replace(u'\u010d','c')
+        name = name.replace(u'\u0159','r')
+        name = name.replace(u'\u017e','z')
+        name = name.replace(u'\xfd','y')
+        name = name.replace(u'\xed','i')
+        name = name.replace(u'\xe9','e')
+        name = name.replace(u'\xfa','u')
+        name = name.replace(u'\u016f','u')
+        return name.replace(' ','_')
 
-    last = last.replace(u'\xe1','a')
-    last = last.replace(u'\u0161','s')
-    last = last.replace(u'\u011b','e')
-    last = last.replace(u'\u010d','c')
-    last = last.replace(u'\u0159','r')
-    last = last.replace(u'\u017e','z')
-    last = last.replace(u'\xfd','y')
-    last = last.replace(u'\xed','i')
-    last = last.replace(u'\xe9','e')
-    last = last.replace(u'\xfa','u')
-    last = last.replace(u'\u016f','u')
+    first = filename_replacement(user_first_name).encode('ascii','ignore')
+    last = filename_replacement(user_last_name).encode('ascii','ignore')
 
-    first = first.encode('ascii','ignore')
-    last = last.encode('ascii','ignore')
     filename = prefix + last + '_' + first
-        
-    return filename.replace(' ','_')
+       
+    filename = "".join([x for x in filename if (((ord(x) >= 48) and (ord(x) <= 57)) or ((ord(x) >= 65) and (ord(x) <= 90)) or ((ord(x) >= 97) and (ord(x) <= 122)) or (ord(x) == 95))])
+    
+    return filename
 
 @login_required
 def letter_tex(request, profile_id, **args):
@@ -984,6 +977,7 @@ def letter_tex(request, profile_id, **args):
     tex_output_path = os.path.join(tex_letters_path, profile_id)
 
     str_list = []
+    str_list_to_modify = []
     f = open(os.path.join(tex_template_path, 'letter_template.tex'), 'r')
     str_list.append(f.read())
     f.close()
@@ -1026,8 +1020,9 @@ def letter_tex(request, profile_id, **args):
         appended_s = 's'
     abstractstr = abstractstr[:-5]
 
-    str_list.append('\\letter{%(full_name)s}{%(affiliation)s}{%(address)s}{%(city)s}{%(postal_code)s}{%(country)s}{' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'city': city, 'postal_code' : postal_code, 'country': country})
-    str_list.append('%(abstractstr)s}{%(appended_s)s}\n' % {'abstractstr': abstractstr, 'appended_s':appended_s} )
+    str_list_to_modify.append('\\letter{%(full_name)s}{%(affiliation)s}{%(address)s}{%(city)s}{%(postal_code)s}{%(country)s}{' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'city': city, 'postal_code' : postal_code, 'country': country})
+    str_list_to_modify.append('%(abstractstr)s}{%(appended_s)s}\n' % {'abstractstr': abstractstr, 'appended_s':appended_s} )
+    str_list.append(latex_replacement(''.join(str_list_to_modify)))
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
 
@@ -1071,6 +1066,7 @@ def letter_pdf(request, profile_id, **args):
     tex_output_path = os.path.join(tex_letters_path, profile_id)
 
     str_list = []
+    str_list_to_modify = []
     f = open(os.path.join(tex_template_path, 'letter_template.tex'), 'r')
     str_list.append(f.read())
     f.close()
@@ -1117,8 +1113,9 @@ def letter_pdf(request, profile_id, **args):
         appended_s = 's'
     abstractstr = abstractstr[:-5]
 
-    str_list.append('\\letter{%(full_name)s}{%(affiliation)s}{%(address)s}{%(city)s}{%(postal_code)s}{%(country)s}{' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'city': city, 'postal_code' : postal_code, 'country': country})
-    str_list.append('%(abstractstr)s}{%(appended_s)s}\n' % {'abstractstr': abstractstr, 'appended_s': appended_s} )
+    str_list_to_modify.append('\\letter{%(full_name)s}{%(affiliation)s}{%(address)s}{%(city)s}{%(postal_code)s}{%(country)s}{' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'city': city, 'postal_code' : postal_code, 'country': country})
+    str_list_to_modify.append('%(abstractstr)s}{%(appended_s)s}\n' % {'abstractstr': abstractstr, 'appended_s':appended_s} )
+    str_list.append(latex_replacement(''.join(str_list_to_modify)))
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
 

@@ -9,6 +9,8 @@ import subprocess
 from femtec.settings import MEDIA_ROOT
 from titlecase import titlecase
 
+from latex_replacement import latex_replacement
+
 class Latexible(object):
     def __unicode__(self):
         return self.to_latex()
@@ -44,14 +46,7 @@ def convert_html_entities(s):
     s = s.replace("&amp;", "&")
     return s
 
-def latex_replacement(string_to_modify):
 
-    string_to_latex = re.sub(r'\\?\&', r'\\&', string_to_modify)
-    string_to_latex = re.sub(r'\\?\#', r'\\#', string_to_latex)
-    string_to_latex = re.sub(r'\\?\%', r'\\%', string_to_latex)
-    string_to_latex = re.sub(r'\\?\_', r'\\_', string_to_latex)
-
-    return string_to_latex
 
 class TocAuthors(Latexible):
 
