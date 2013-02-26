@@ -658,18 +658,18 @@ def certificates_pdf(request, **args):
     response['Content-Disposition'] = 'inline; filename=certificates.pdf'
     return response
 
-@login_required
-def receipts_tex(request, **args):
+def receipts():
     tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
     tex_output_path = os.path.join(ABSTRACTS_PATH, 'receipts')
 
+    str_list_to_modify = []
     str_list = []
     counter = 0
 
     f = open(os.path.join(tex_template_path, 'receipts_template.tex'), 'r')
     str_list.append(f.read())
     f.close()
-    
+
     user_list = User.objects.all().order_by('last_name')
 
     for i in range(len(User.objects.all())):
@@ -682,14 +682,12 @@ def receipts_tex(request, **args):
                 city = user_list[i].get_profile().city
                 country = user_list[i].get_profile().country
                 payment = user_list[i].get_profile().payment
-                str_list.append('\\receipt{%(full_name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
+                str_list_to_modify.append('\\receipt{%(full_name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
                 counter += 1
         except UserProfile.DoesNotExist:
             continue
 
-    if counter == 0:
-        return HttpResponse('TeX file incomplete - no entry in column payments!')
-
+    str_list.append(latex_replacement(''.join(str_list_to_modify)))
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
 
@@ -708,6 +706,15 @@ def receipts_tex(request, **args):
     with open(os.path.join(tex_output_path, 'receipts.tex'), 'wb') as f:
         f.write(output.encode('utf-8'))
     f.close()
+
+    return tex_output_path, counter
+
+@login_required
+def receipts_tex(request, **args):
+    tex_output_path, counter = receipts()
+
+    if counter == 0:
+        return HttpResponse('Error: TeX file is incomplete - No entry in column payments!')
 
     cmd = ['zip', 'receipts', 'receipts.tex', 'femhub_logo.png', 'femhub_footer.png']
     pipe = subprocess.PIPE
@@ -720,59 +727,14 @@ def receipts_tex(request, **args):
     response = HttpResponse(f.read(), mimetype='application/zip')
     response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=receipts.zip'
-
     return response
 
 @login_required
 def receipts_pdf(request, **args):
-    tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
-    tex_output_path = os.path.join(ABSTRACTS_PATH, 'receipts')
-
-    str_list = []
-    counter = 0
-
-    f = open(os.path.join(tex_template_path, 'receipts_template.tex'), 'r')
-    str_list.append(f.read())
-    f.close()
-  
-    user_list = User.objects.all().order_by('last_name')
-
-    for i in range(len(User.objects.all())):
-        try:
-            if not (user_list[i].get_profile().payment == ''):
-                full_name = user_list[i].get_full_name()
-                affiliation = user_list[i].get_profile().affiliation
-                address = user_list[i].get_profile().address
-                postal_code = user_list[i].get_profile().postal_code
-                city = user_list[i].get_profile().city
-                country = user_list[i].get_profile().country
-                payment = user_list[i].get_profile().payment
-                str_list.append('\\receipt{%(full_name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
-                counter += 1
-        except UserProfile.DoesNotExist:
-            continue
+    tex_output_path, counter = receipts()
 
     if counter == 0:
-        return HttpResponse('Impossible to generate PDF file - no entry in column payments!')
-
-    str_list.append('\\end{document}' )
-    output = ''.join(str_list)
-
-    if os.path.exists(tex_output_path):
-        shutil.rmtree(tex_output_path, True)
-
-    os.mkdir(tex_output_path)
-
-    shutil.copy(
-        os.path.join(tex_template_path, 'femhub_logo.png'),
-        os.path.join(tex_output_path, 'femhub_logo.png'))
-    shutil.copy(
-        os.path.join(tex_template_path, 'femhub_footer.png'),
-        os.path.join(tex_output_path, 'femhub_footer.png'))
-
-    with open(os.path.join(tex_output_path, 'receipts.tex'), 'wb') as f:
-        f.write(output.encode('utf-8'))
-    f.close()
+        return HttpResponse('Error: Impossible to generate PDF file - No entry in column payments!')
 
     cmd = ['pdflatex', '-halt-on-error', 'receipts.tex']
     pipe = subprocess.PIPE
