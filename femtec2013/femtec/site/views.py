@@ -411,8 +411,7 @@ def badges_tex(request, **args):
     
     f = open(os.path.join(tex_output_path, 'badges.tex'), 'r')    
 
-    response = HttpResponse(f.read(), mimetype='text/plain')
-    response['Content-Type'] = 'application/octet-stream'
+    response = HttpResponse(f.read(), mimetype='application/octet-stream')
     response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=badges.tex'
     return response
@@ -500,7 +499,6 @@ def abstracts_book_tex(request, **args):
     response = HttpResponse(f.read(), mimetype='application/zip')
     response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=boa.zip'
-
     return response
 
 @login_required
@@ -575,7 +573,6 @@ def abstracts_book_pdf(request, **args):
     response = HttpResponse(f.read(), mimetype='application/pdf')
     response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=boa.pdf'
-
     return response
 
 def certificates():
@@ -748,14 +745,13 @@ def receipts_pdf(request, **args):
     response = HttpResponse(f.read(), mimetype='application/pdf')
     response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=receipts.pdf'
-
     return response
 
-@login_required
-def registration_tex(request, **args):
+def registration():
     tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
     tex_output_path = os.path.join(ABSTRACTS_PATH, 'registration')
 
+    str_list_to_modify = []
     str_list = []
     f = open(os.path.join(tex_template_path, 'registration_template.tex'), 'r')
     str_list.append(f.read())
@@ -770,10 +766,11 @@ def registration_tex(request, **args):
             affiliation = user_list[i].get_profile().affiliation
             tshirt = user_list[i].get_profile().tshirt
             departure = user_list[i].get_profile().departure
-            str_list.append('\\registration{%(last_name)s}{%(first_name)s}{%(affiliation)s}{%(tshirt)s}{%(departure)s}\n' % {'last_name': last_name, 'first_name': first_name, 'affiliation': affiliation,'tshirt': tshirt, 'departure': departure})
+            str_list_to_modify.append('\\registration{%(last_name)s}{%(first_name)s}{%(affiliation)s}{%(tshirt)s}{%(departure)s}\n' % {'last_name': last_name, 'first_name': first_name, 'affiliation': affiliation,'tshirt': tshirt, 'departure': departure})
         except UserProfile.DoesNotExist:
             continue
 
+    str_list.append(latex_replacement(''.join(str_list_to_modify)))
     str_list.append('\\end{longtable}' )
     str_list.append('\\end{landscape}' )
     str_list.append('\\end{document}' )
@@ -787,51 +784,23 @@ def registration_tex(request, **args):
     with open(os.path.join(tex_output_path, 'registration.tex'), 'wb') as f:
         f.write(output.encode('utf-8'))
     f.close()
+
+    return tex_output_path
+
+@login_required
+def registration_tex(request, **args):
+    tex_output_path = registration()
 
     f = open(os.path.join(tex_output_path, 'registration.tex'), 'r')
 
     response = HttpResponse(f.read(), mimetype='application/octet-stream')
     response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=registration.tex'
-
     return response
 
 @login_required
 def registration_pdf(request, **args):
-    tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
-    tex_output_path = os.path.join(ABSTRACTS_PATH, 'registration')
-
-    str_list = []
-    f = open(os.path.join(tex_template_path, 'registration_template.tex'), 'r')
-    str_list.append(f.read())
-    f.close()
-    
-    user_list = User.objects.all().order_by('last_name')
-
-    for i in range(len(User.objects.all())):
-        try:
-            last_name = user_list[i].last_name
-            first_name = user_list[i].first_name
-            affiliation = user_list[i].get_profile().affiliation
-            tshirt = user_list[i].get_profile().tshirt
-            departure = user_list[i].get_profile().departure
-            str_list.append('\\registration{%(last_name)s}{%(first_name)s}{%(affiliation)s}{%(tshirt)s}{%(departure)s}\n' % {'last_name': last_name, 'first_name': first_name, 'affiliation': affiliation,'tshirt': tshirt, 'departure': departure})
-        except UserProfile.DoesNotExist:
-            continue
-
-    str_list.append('\\end{longtable}' )
-    str_list.append('\\end{landscape}' )
-    str_list.append('\\end{document}' )
-    output = ''.join(str_list)
-
-    if os.path.exists(tex_output_path):
-        shutil.rmtree(tex_output_path, True)
-
-    os.mkdir(tex_output_path)
-
-    with open(os.path.join(tex_output_path, 'registration.tex'), 'wb') as f:
-        f.write(output.encode('utf-8'))
-    f.close()
+    tex_output_path = registration()
 
     cmd = ['pdflatex', '-halt-on-error', 'registration.tex']
     pipe = subprocess.PIPE
@@ -845,7 +814,6 @@ def registration_pdf(request, **args):
     response = HttpResponse(f.read(), mimetype='application/pdf')
     response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=registration.pdf'
-
     return response
 
 def create_filename(user_first_name, user_last_name):
@@ -867,15 +835,11 @@ def create_filename(user_first_name, user_last_name):
 
     first = filename_replacement(user_first_name).encode('ascii','ignore')
     last = filename_replacement(user_last_name).encode('ascii','ignore')
-
-    filename = prefix + last + '_' + first
-       
-    filename = "".join([x for x in filename if (((ord(x) >= 48) and (ord(x) <= 57)) or ((ord(x) >= 65) and (ord(x) <= 90)) or ((ord(x) >= 97) and (ord(x) <= 122)) or (ord(x) == 95))])
-    
+    filename = prefix + last + '_' + first      
+    filename = "".join([x for x in filename if (((ord(x) >= 48) and (ord(x) <= 57)) or ((ord(x) >= 65) and (ord(x) <= 90)) or ((ord(x) >= 97) and (ord(x) <= 122)) or (ord(x) == 95))])   
     return filename
 
-@login_required
-def letter_tex(request, profile_id, **args):
+def letter(profile_id):
     tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
     tex_letters_path = os.path.join(ABSTRACTS_PATH, 'letters')
     tex_output_path = os.path.join(tex_letters_path, profile_id)
@@ -885,7 +849,7 @@ def letter_tex(request, profile_id, **args):
     f = open(os.path.join(tex_template_path, 'letter_template.tex'), 'r')
     str_list.append(f.read())
     f.close()
-    
+
     try:
         person = UserProfile.objects.get(id = profile_id)
         user_id = person.user_id
@@ -900,13 +864,13 @@ def letter_tex(request, profile_id, **args):
     except UserProfile.DoesNotExist:
         pass
 
-
     max_abstract_id_dict = UserAbstract.objects.all().aggregate(Max('id'))
     max_abstract_id = max_abstract_id_dict['id__max']
 
     abstractstr = ''
     appended_s = ''
     counter = 0
+    message = ''
 
     for i in range(max_abstract_id):
         try:
@@ -918,7 +882,7 @@ def letter_tex(request, profile_id, **args):
             continue
 
     if counter == 0:
-        return HttpResponse('TeX file incomplete - probably the user with user_id = %(user_id)s and profile_id = %(profile_id)s has not submited the Abstract!' % {'user_id': user_id, 'profile_id': profile_id})
+        message = (' - probably the user with user_id = %(user_id)s and profile_id = %(profile_id)s has not submited the Abstract!' % {'user_id': user_id, 'profile_id': profile_id})
 
     if (counter > 1):
         appended_s = 's'
@@ -943,12 +907,22 @@ def letter_tex(request, profile_id, **args):
         os.path.join(tex_output_path, 'horizon_no_slogan.jpg'))
 
     filename = create_filename(first_name, last_name)
-    filename_tex = create_filename(first_name, last_name) + '.tex'
-    filename_zip = create_filename(first_name, last_name) + '.zip'
 
-    with open(os.path.join(tex_output_path, filename_tex), 'wb') as f:
+    with open(os.path.join(tex_output_path, filename + '.tex'), 'wb') as f:
         f.write(output.encode('utf-8'))
     f.close()
+
+    return tex_output_path, counter, message, filename
+
+@login_required
+def letter_tex(request, profile_id, **args):
+    tex_output_path, counter, message, filename = letter(profile_id)
+ 
+    if counter == 0:
+        return HttpResponse('TeX file incomplete' + message)
+
+    filename_tex = filename + '.tex'
+    filename_zip = filename + '.zip'
 
     cmd = ['zip', filename, filename_tex, 'horizon_no_slogan.jpg']
     pipe = subprocess.PIPE
@@ -965,82 +939,12 @@ def letter_tex(request, profile_id, **args):
 
 @login_required
 def letter_pdf(request, profile_id, **args):
-    tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
-    tex_letters_path = os.path.join(ABSTRACTS_PATH, 'letters')
-    tex_output_path = os.path.join(tex_letters_path, profile_id)
-
-    str_list = []
-    str_list_to_modify = []
-    f = open(os.path.join(tex_template_path, 'letter_template.tex'), 'r')
-    str_list.append(f.read())
-    f.close()
-    
-    try:
-        person = UserProfile.objects.get(id = profile_id)
-        user_id = person.user_id
-        first_name = person.user.first_name
-        last_name = person.user.last_name
-        full_name = person.user.get_full_name()
-        affiliation = person.affiliation
-        city = person.city
-        country = person.country
-        address = person.address
-        postal_code = person.postal_code
-    except UserProfile.DoesNotExist:
-        pass
-
-    try:
-        userabstract_list = UserAbstract.objects.all()  
-    except UserAbstract.DoesNotExist:
-        pass
-
-    max_abstract_id_dict = UserAbstract.objects.all().aggregate(Max('id'))
-    max_abstract_id = max_abstract_id_dict['id__max']
-
-    abstractstr = ''
-    appended_s = ''
-    counter = 0
-
-    for i in range(max_abstract_id):
-        try:
-            if user_id == UserAbstract.objects.get(id = i + 1).user_id:
-                abstract_title = UserAbstract.objects.get(id = i + 1).to_cls().title
-                abstractstr += (abstract_title + ' and ')
-                counter += 1
-        except UserAbstract.DoesNotExist:
-            continue
+    tex_output_path, counter, message, filename = letter(profile_id)
 
     if counter == 0:
-        return HttpResponse('Impossible to generate PDF file - probably the user with user_id = %(user_id)s and profile_id = %(profile_id)s has not submited the Abstract!' % {'user_id': user_id, 'profile_id': profile_id})
+        return HttpResponse('Unable to create PDF file' + message)
 
-    if (counter > 1):
-        appended_s = 's'
-    abstractstr = abstractstr[:-5]
-
-    str_list_to_modify.append('\\letter{%(full_name)s}{%(affiliation)s}{%(address)s}{%(city)s}{%(postal_code)s}{%(country)s}{' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'city': city, 'postal_code' : postal_code, 'country': country})
-    str_list_to_modify.append('%(abstractstr)s}{%(appended_s)s}\n' % {'abstractstr': abstractstr, 'appended_s':appended_s} )
-    str_list.append(latex_replacement(''.join(str_list_to_modify)))
-    str_list.append('\\end{document}' )
-    output = ''.join(str_list)
-
-    if os.path.exists(tex_output_path):
-        shutil.rmtree(tex_output_path, True)
-
-    if not os.path.exists(tex_letters_path):
-        os.mkdir(tex_letters_path)
-    
-    os.mkdir(tex_output_path)
-
-    shutil.copy(
-        os.path.join(tex_template_path, 'horizon_no_slogan.jpg'),
-        os.path.join(tex_output_path, 'horizon_no_slogan.jpg'))
-
-    filename = create_filename(first_name, last_name)
-    filename_pdf = create_filename(first_name, last_name) + '.pdf'
-
-    with open(os.path.join(tex_output_path, filename), 'wb') as f:
-        f.write(output.encode('utf-8'))
-    f.close()
+    filename_pdf = filename + '.pdf'
 
     cmd = ['pdflatex', '-halt-on-error', filename]
     pipe = subprocess.PIPE
