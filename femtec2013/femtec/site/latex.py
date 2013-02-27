@@ -685,7 +685,7 @@ class Abstract(Latexible):
     @classmethod
     def from_json(cls, data):
         title = titlecase(latex_replacement(data['title']))
-        abstract = latex_replacement(data['abstract'])
+        abstract = data['abstract']
         authors = Authors.from_json(data['authors'])
 ##---
 #        authorgroups = AuthGroups.from_json(data['authgroups'])
