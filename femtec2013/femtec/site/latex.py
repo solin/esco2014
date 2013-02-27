@@ -507,7 +507,7 @@ class BibItem(Latexible):
 #	 self.bibother = bibother
     def __init__(self, bibid, authors, title, other):
         self.bibid = bibid
-        self.bibid = "".join([x for x in self.bibid if (((ord(x) >= 45) and (ord(x) <= 57)) or ((ord(x) >= 65) and (ord(x) <= 90)) or ((ord(x) >= 97) and (ord(x) <= 122)) or ((ord(x) >= 32) and (ord(x) <= 34)) or ((ord(x) >= 39) and (ord(x) <= 43)) ])
+        self.bibid = "".join([x for x in self.bibid if (((ord(x) >= 45) and (ord(x) <= 57)) or ((ord(x) >= 65) and (ord(x) <= 90)) or ((ord(x) >= 97) and (ord(x) <= 122)) or ((ord(x) >= 32) and (ord(x) <= 34)) or ((ord(x) >= 39) and (ord(x) <= 43)) )])
         self.authors = authors
         self.title = title
 	self.other = other
