@@ -28,7 +28,7 @@ from femtec.settings import MEDIA_ROOT, ABSTRACTS_PATH
 # works with Python 2.7 or higer
 #from collections import OrderedDict
 
-from latex_replacement import latex_replacement
+from femtec.site.latex_replacement import latex_replacement
 
 import subprocess
 import os
@@ -434,8 +434,7 @@ def badges_pdf(request, **args):
     response['Content-Disposition'] = 'inline; filename=badges.pdf'
     return response
 
-@login_required
-def abstracts_book_tex(request, **args):
+def abstracts_book():
     tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
     tex_output_path = os.path.join(ABSTRACTS_PATH, 'abstracts_book')
 
@@ -444,27 +443,26 @@ def abstracts_book_tex(request, **args):
     str_list.append(f.read())
     f.close()
 
-    abstracts = UserAbstract.objects.order_by("id")
-
     compiled_abstracts = {}
     compiled_authors = {}
 
+    str_list.append('\\part{List of Participants}\n')
+
+    abstracts = UserAbstract.objects.order_by("user__last_name", "id")
+
     for abstract in abstracts:
         cls = abstract.to_cls()
-        compiled_abstracts[cls.title] = cls.build_raw()
-        compiled_authors[cls.title] = cls.build_presenting()
+        str_list.append(cls.build_raw())
 
-    abstract_keys = compiled_abstracts.keys()
-    abstract_keys.sort()
-
-    for a in abstract_keys:
-        str_list.append(compiled_abstracts[a])
     str_list.append('\\newpage\n')
-    str_list.append('\\part{List of Participants}\n')
-    for a in abstract_keys:
-        str_list.append(compiled_authors[a])
+
+    for abstract in abstracts:
+        cls = abstract.to_cls()
+        str_list.append(cls.build_presenting())
+
 
     str_list.append('\\end{document}')
+
     output = ''.join(str_list)
     output = output.replace('&amp;','&')
     output = output.replace('&lt;','<')
@@ -487,6 +485,11 @@ def abstracts_book_tex(request, **args):
         f.write(output.encode('utf-8'))
     f.close()
 
+    return tex_output_path
+
+@login_required
+def abstracts_book_tex(request, **args):
+    tex_output_path = abstracts_book()
 
     cmd = ['zip', 'boa', 'boa.tex', 'llncs.cls']
     pipe = subprocess.PIPE
@@ -503,63 +506,15 @@ def abstracts_book_tex(request, **args):
 
 @login_required
 def abstracts_book_pdf(request, **args):
-    tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
-    tex_output_path = os.path.join(ABSTRACTS_PATH, 'abstracts_book')
-
-    str_list = []
-    f = open(os.path.join(tex_template_path, 'boa_template.tex'), 'r')
-    str_list.append(f.read())
-    f.close()
-
-    abstracts = UserAbstract.objects.order_by("id")
 
     for i in range(len(UserAbstract.objects.all())):
         try:
-            if (abstracts[i].compiled == False):
+            if (UserAbstract.objects.order_by("id")[i].compiled == False):
                 return HttpResponse('Impossible to generate PDF file of Book of Abstracts - some Abstract is not correctly compiled!')
         except UserAbstract.DoesNotExist:
             continue
 
-    compiled_abstracts = {}
-    compiled_authors = {}
-
-    for abstract in abstracts:
-        cls = abstract.to_cls()
-        compiled_abstracts[cls.title] = cls.build_raw()
-        compiled_authors[cls.title] = cls.build_presenting()
-
-    abstract_keys = compiled_abstracts.keys()
-    abstract_keys.sort()
-
-    for a in abstract_keys:
-        str_list.append(compiled_abstracts[a])
-    str_list.append('\\newpage\n')
-    str_list.append('\\part{List of Participants}\n')
-    for a in abstract_keys:
-        str_list.append(compiled_authors[a])
-
-    str_list.append('\\end{document}')
-    output = ''.join(str_list)
-    output = output.replace('&amp;','&')
-    output = output.replace('&lt;','<')
-    output = output.replace('&gt;','>')
-    output = output.replace('&quot;','"')
-    output = output.replace('&#39;',"'")
-    output = output.replace('&#','&\#')
-    output = output.replace('displaystyleK','displaystyle')
-
-    if os.path.exists(tex_output_path):
-        shutil.rmtree(tex_output_path, True)
-
-    os.mkdir(tex_output_path)
-
-    shutil.copy(
-        os.path.join(tex_template_path, 'llncs.cls'),
-        os.path.join(tex_output_path, 'llncs.cls'))
-
-    with open(os.path.join(tex_output_path, 'boa.tex'), 'wb') as f:
-        f.write(output.encode('utf-8'))
-    f.close()
+    tex_output_path = abstracts_book()
 
     cmd = ['pdflatex', '-halt-on-error', 'boa.tex']
     pipe = subprocess.PIPE
