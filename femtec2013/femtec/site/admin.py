@@ -139,6 +139,10 @@ class UserAbstractAdmin(admin.ModelAdmin):
     save_on_top = True
 
     def save_model(self, request, obj, form, change):
+        conf_name_upper = settings.CONF_NAME_UPPER
+        conf_year = settings.CONF_YEAR
+        conf_web = settings.CONF_WEB
+        
         if request.method == 'POST' and change == True:
             date = datetime.datetime.today()            
             obj.modify_date = date
@@ -149,10 +153,6 @@ class UserAbstractAdmin(admin.ModelAdmin):
 
             obj.compiled = True
             obj.save()
-
-            conf_name_upper = settings.CONF_NAME_UPPER
-            conf_year = settings.CONF_YEAR
-            conf_web = settings.CONF_WEB
 
         if ('accepted' in form.changed_data) and ('verified' in form.changed_data):
             accepted = form.cleaned_data['accepted']
