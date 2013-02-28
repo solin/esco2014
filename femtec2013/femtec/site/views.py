@@ -963,7 +963,7 @@ def program():
 #                    continue
 
             if counter > 0:
-                str_list_to_modify.append('{%(first_name)s%(last_name)s}:{%(title)s}\n' % {'first_name': ''.join(first_name_initials), 'last_name': last_name, 'title': abstractstr[:-25]})
+                str_list_to_modify.append('{%(first_name)s%(last_name)s}: {%(title)s}\n' % {'first_name': ''.join(first_name_initials), 'last_name': last_name, 'title': abstractstr[:-25]})
         except User.DoesNotExist:
             continue
 
