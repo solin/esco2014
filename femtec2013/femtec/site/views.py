@@ -1,38 +1,28 @@
 from __future__ import with_statement
 
 from django.conf.urls.defaults import patterns
-
 from django.http import HttpResponse, HttpResponsePermanentRedirect, Http404
 from django.template import RequestContext, Context, loader
-
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-
 from django.core.mail import mail_admins
+from django.db.models import Max
+from django.conf import settings
 
 from femtec.site.models import UserProfile, UserAbstract2 as UserAbstract
-
 from femtec.site.forms import LoginForm, ReminderForm, RegistrationForm, ChangePasswordForm
 from femtec.site.forms import UserProfileForm
 
-from django.db.models import Max
-
-from django.conf import settings
 from femtec.settings import MIN_PASSWORD_LEN
-
 from femtec.settings import MEDIA_ROOT, ABSTRACTS_PATH
 
 # works with Python 2.7 or higer
 #from collections import OrderedDict
 
 from femtec.site.latex_replacement import latex_replacement
-
-import subprocess
-import os
-import shutil
 
 try:
     import json
@@ -43,7 +33,7 @@ import os
 import re
 import shutil
 import datetime
-
+import subprocess
 from functools import wraps
 
 urlpatterns = patterns('femtec.site.views',
@@ -82,6 +72,8 @@ urlpatterns = patterns('femtec.site.views',
         {'message': 'New auto-generated password was sent to you.'}),
 
     (r'^account/profile/$', 'account_profile_view'),
+
+    (r'^account/program_tex/$', 'program_tex'),
 
     (r'^account/badges/tex/$', 'badges_tex'),
     (r'^account/badges/pdf/$', 'badges_pdf'),
@@ -914,6 +906,74 @@ def letter_pdf(request, profile_id, **args):
     response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=%(filename_pdf)s' % {'filename_pdf': filename_pdf}
 
+    return response
+
+def program():
+    tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
+    tex_output_path = os.path.join(ABSTRACTS_PATH, 'program')
+
+    str_list_to_modify = []
+    str_list = []
+    f = open(os.path.join(tex_template_path, 'program_template.tex'), 'r')
+    str_list.append(f.read())
+    f.close()
+    
+    user_list = User.objects.all().order_by('last_name')
+    
+    max_abstract_id_dict = UserAbstract.objects.all().aggregate(Max('id'))
+    max_abstract_id = max_abstract_id_dict['id__max']     
+
+    for i in range(len(User.objects.all())):
+        try:
+            first_name = user_list[i].first_name
+            last_name = user_list[i].last_name                    
+            user_id = user_list[i].id
+
+            first_name_initials = []
+            first_name_upper = re.findall("[A-Z]",first_name)
+            for i in range(len(first_name_upper)):
+                first_name_initials.append(first_name_upper[i] + ". ")
+
+            abstractstr = ''
+            counter = 0
+            for i in range(max_abstract_id):
+                try:
+                    if user_id == UserAbstract.objects.get(id = i + 1).user_id:
+                        abstract_title = UserAbstract.objects.get(id = i + 1).to_cls().title
+                        abstractstr += (abstract_title + '      !!!Next abstract: ')
+                        counter += 1
+                except UserAbstract.DoesNotExist:
+                    continue
+
+            if counter > 0:
+                str_list_to_modify.append('{%(first_name)s%(last_name)s}:{%(title)s}\n' % {'first_name': ''.join(first_name_initials), 'last_name': last_name, 'title': abstractstr[:-25]})
+        except UserProfile.DoesNotExist:
+            continue
+
+    str_list.append(latex_replacement(''.join(str_list_to_modify)))
+    str_list.append('\\end{document}' )
+    output = ''.join(str_list)
+
+    if os.path.exists(tex_output_path):
+        shutil.rmtree(tex_output_path, True)
+
+    os.mkdir(tex_output_path)
+
+    with open(os.path.join(tex_output_path, 'program.tex'), 'wb') as f:
+        f.write(output.encode('utf-8'))
+    f.close()
+
+    return tex_output_path
+
+@login_required
+def program_tex(request, **args):
+    tex_output_path = program()
+
+    f = open(os.path.join(tex_output_path, 'program.tex'), 'r')
+
+    response = HttpResponse(f.read(), mimetype='application/octet-stream')
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=program.tex'
     return response
 
 def get_submit_form_data(post, user):
