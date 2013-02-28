@@ -920,34 +920,51 @@ def program():
     
     user_list = User.objects.all().order_by('last_name')
     
-    max_abstract_id_dict = UserAbstract.objects.all().aggregate(Max('id'))
-    max_abstract_id = max_abstract_id_dict['id__max']     
+ #   max_abstract_id_dict = UserAbstract.objects.all().aggregate(Max('id'))
+ #   max_abstract_id = max_abstract_id_dict['id__max']     
 
     for i in range(len(User.objects.all())):
         try:
             first_name = user_list[i].first_name
             last_name = user_list[i].last_name                    
             user_id = user_list[i].id
-
+            
+            abstr = []
             first_name_initials = []
             first_name_upper = re.findall("[A-Z]",first_name)
-            for i in range(len(first_name_upper)):
-                first_name_initials.append(first_name_upper[i] + ". ")
+            for j in range(len(first_name_upper)):
+                first_name_initials.append(first_name_upper[j] + ". ")
+
+            try:
+                abstr = user_list[i].userabstract2_set.all()
+            except UserAbstract.DoesNotExist:
+                continue
 
             abstractstr = ''
             counter = 0
-            for i in range(max_abstract_id):
+            for k in range(len(abstr)):
                 try:
-                    if user_id == UserAbstract.objects.get(id = i + 1).user_id:
-                        abstract_title = UserAbstract.objects.get(id = i + 1).to_cls().title
-                        abstractstr += (abstract_title + '      !!!Next abstract: ')
-                        counter += 1
+                    abstract_title = abstr[k].to_cls().title
+                    abstractstr += (abstract_title + '      !!!Next abstract: ')
+                    counter += 1
                 except UserAbstract.DoesNotExist:
                     continue
 
+
+#            abstractstr = ''
+#            counter = 0
+#            for i in range(max_abstract_id):
+#                try:
+#                    if user_id == UserAbstract.objects.get(id = i + 1).user_id:
+#                        abstract_title = UserAbstract.objects.get(id = i + 1).to_cls().title
+#                        abstractstr += (abstract_title + '      !!!Next abstract: ')
+#                        counter += 1
+#                except UserAbstract.DoesNotExist:
+#                    continue
+
             if counter > 0:
                 str_list_to_modify.append('{%(first_name)s%(last_name)s}:{%(title)s}\n' % {'first_name': ''.join(first_name_initials), 'last_name': last_name, 'title': abstractstr[:-25]})
-        except UserProfile.DoesNotExist:
+        except User.DoesNotExist:
             continue
 
     str_list.append(latex_replacement(''.join(str_list_to_modify)))
