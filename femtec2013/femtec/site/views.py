@@ -606,7 +606,7 @@ def receipts():
     tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
     tex_output_path = os.path.join(ABSTRACTS_PATH, 'receipts')
 
-    str_list_to_modify = []
+#    str_list_to_modify = []
     str_list = []
     counter = 0
 
@@ -618,20 +618,24 @@ def receipts():
 
     for i in range(len(User.objects.all())):
         try:
-            if not (user_list[i].get_profile().payment == ''):
-                full_name = user_list[i].get_full_name()
-                affiliation = user_list[i].get_profile().affiliation
-                address = user_list[i].get_profile().address
-                postal_code = user_list[i].get_profile().postal_code
-                city = user_list[i].get_profile().city
-                country = user_list[i].get_profile().country
-                payment = user_list[i].get_profile().payment
-                str_list_to_modify.append('\\receipt{%(full_name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
-                counter += 1
+#            if not (user_list[i].get_profile().payment == ''):
+            full_name = user_list[i].get_full_name()
+            affiliation = user_list[i].get_profile().affiliation
+            address = user_list[i].get_profile().address
+            postal_code = user_list[i].get_profile().postal_code
+            city = user_list[i].get_profile().city
+            country = user_list[i].get_profile().country
+#            payment = user_list[i].get_profile().payment
+            payment = "WRITE AMOUNT AND CURRENCY HERE" #
+            str_list.append('%') #
+            str_list_to_modify = [] #
+            str_list_to_modify.append('\\receipt{%(full_name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
+            str_list.append(latex_replacement(''.join(str_list_to_modify))) #
+            counter += 1
         except UserProfile.DoesNotExist:
             continue
-
-    str_list.append(latex_replacement(''.join(str_list_to_modify)))
+    
+#    str_list.append(latex_replacement(''.join(str_list_to_modify)))
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
 
