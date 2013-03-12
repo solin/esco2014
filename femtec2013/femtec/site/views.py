@@ -629,7 +629,7 @@ def receipts():
             payment = "WRITE AMOUNT AND CURRENCY HERE" #
             str_list.append('%') #
             str_list_to_modify = [] #
-            str_list_to_modify.append('\\receipt{%(full_name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}{%(payment)s}\n' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country, 'payment': payment})
+            str_list_to_modify.append('\\receipt{%(full_name)s}{%(payment)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'payment': payment, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country})
             str_list.append(latex_replacement(''.join(str_list_to_modify))) #
             counter += 1
         except UserProfile.DoesNotExist:
