@@ -944,7 +944,7 @@ def program():
             for k in range(len(abstr)):
                 try:
                     abstract_title = abstr[k].to_cls().title
-                    abstractstr += (abstract_title + '      !!!Next abstract: ')
+                    abstractstr += (abstract_title + '       !!!Next abstract: ')
                     counter += 1
                 except UserAbstract.DoesNotExist:
                     continue
