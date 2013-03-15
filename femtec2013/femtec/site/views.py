@@ -943,18 +943,13 @@ def program():
             except UserAbstract.DoesNotExist:
                 continue
 
-            abstractstr = ''
-            counter = 0
             for k in range(len(abstr)):
                 try:
                     abstract_title = abstr[k].to_cls().title
-                    abstractstr += (abstract_title + '       !!!Next abstract: ')
-                    counter += 1
+                    str_list_to_modify.append('{%(first_name)s%(last_name)s}: {%(title)s}\n' % {'first_name': ''.join(first_name_initials), 'last_name': last_name, 'title': abstract_title})                   
                 except UserAbstract.DoesNotExist:
                     continue
 
-            if counter > 0:
-                str_list_to_modify.append('{%(first_name)s%(last_name)s}: {%(title)s}\n' % {'first_name': ''.join(first_name_initials), 'last_name': last_name, 'title': abstractstr[:-25]})
         except User.DoesNotExist:
             continue
 
