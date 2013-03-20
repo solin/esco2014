@@ -195,7 +195,7 @@ def account_create_view(request, **args):
                 template = loader.get_template('e-mails/admin/create.txt')
                 body = template.render(Context({'user': user}))
 
-                mail_admins("[%(conf_name_upper)s %(conf_year)s][ADMIN] New Account" % {'conf_name_upper': conf_name_upper, 'conf_year': conf_year }, body)
+                mail_admins("[ADMIN] New Account", body)
 
             return HttpResponsePermanentRedirect('/account/create/success/')
     else:
@@ -1099,13 +1099,12 @@ def abstracts_submit_view(request, **args):
             
             template = loader.get_template('e-mails/user/abstract.txt')
             body = template.render(Context({'user': request.user, 'abstract': abstract, 'conf_name_upper': conf_name_upper, 'conf_year': conf_year}))
-
             request.user.email_user("[%(conf_name_upper)s %(conf_year)s] Abstract Submission Notification" % {'conf_name_upper': conf_name_upper, 'conf_year': conf_year }, body)
 
             template = loader.get_template('e-mails/admin/abstract.txt')
             body = template.render(Context({'user': request.user, 'abstract': abstract}))
 
-            mail_admins("[%(conf_name_upper)s %(conf_year)s][ADMIN] New Abstract" % {'conf_name_upper': conf_name_upper, 'conf_year': conf_year }, body)
+            mail_admins("[ADMIN] New Abstract", body)
 
         return HttpResponsePermanentRedirect('/account/abstracts/')
     else:
