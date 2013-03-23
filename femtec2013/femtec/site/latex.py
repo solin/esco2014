@@ -587,7 +587,7 @@ class Abstract(Latexible):
 \\usepackage{mathrsfs}
 \\usepackage{wrapfig}
 \\usepackage{color}
-\\usepackage{amsmath,mathrsfs,bm}
+\\usepackage{amsmath,bm}
 \\usepackage{cases}
 \\usepackage{subfig}
 
