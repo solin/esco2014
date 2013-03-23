@@ -581,15 +581,13 @@ class Abstract(Latexible):
 \\usepackage[utf8]{inputenc}
 \\usepackage{amsmath}
 \\usepackage{amssymb}
-\\usepackage{epsf,times}
 \\usepackage{amsfonts}
 \\usepackage{graphicx}
-\\usepackage{mathrsfs}
-\\usepackage{wrapfig}
-\\usepackage{color}
-\\usepackage{amsmath,bm}
+\\usepackage{times}
+\\usepackage{epsf}
+\\usepackage{amsmath}
+\\usepackage{bm}
 \\usepackage{cases}
-\\usepackage{subfig}
 
 \\leftmargin=0.2cm
 \\oddsidemargin=1.2cm
