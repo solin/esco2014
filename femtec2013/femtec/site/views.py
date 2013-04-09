@@ -57,6 +57,8 @@ urlpatterns = patterns('femtec.site.views',
     (r'^account/login/$', 'account_login_view'),
     (r'^account/logout/$', 'account_logout_view'),
 
+    (r'^admin/logout/$', 'admin_logout_view'),
+
     (r'^account/create/$', 'account_create_view'),
     (r'^account/create/success/$', 'account_login_view',
         {'message': 'New account was created. You can login now.'}),
@@ -155,6 +157,12 @@ def account_logout_view(request, **args):
     logout(request)
 
     return HttpResponsePermanentRedirect('/')
+
+@login_required
+def admin_logout_view(request, **args):
+    logout(request)
+
+    return HttpResponsePermanentRedirect('/admin')
 
 @login_required
 def account_delete_view(request, **args):
