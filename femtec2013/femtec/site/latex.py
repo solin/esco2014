@@ -582,6 +582,7 @@ class Abstract(Latexible):
 \\usepackage{amsmath}
 \\usepackage{amssymb}
 \\usepackage{amsfonts}
+\\usepackage{mathrsfs}
 \\usepackage{graphicx}
 \\usepackage{times}
 \\usepackage{epsf}
