@@ -50,6 +50,12 @@ class UserProfileAdmin(admin.ModelAdmin):
     def letter_pdf(obj):
         return '<a href="/account/letter/pdf/%(obj_id)s">PDF</a>' % {'obj_id': obj.id }
 
+    def certificate_tex(obj):
+        return '<a href="/account/certificate/tex/%(obj_id)s">TeX</a>' % {'obj_id': obj.id }
+
+    def certificate_pdf(obj):
+        return '<a href="/account/certificate/pdf/%(obj_id)s">PDF</a>' % {'obj_id': obj.id }
+
     first_name.admin_order_field = 'user__first_name'
     first_name.short_description = 'First Name'
 
@@ -67,7 +73,13 @@ class UserProfileAdmin(admin.ModelAdmin):
     letter_pdf.short_description = 'Letter'
     letter_pdf.allow_tags = True
 
-    list_display = ('last_name', 'first_name', 'email', 'affiliation', 'address', 'city', 'postal_code', 'country', 'speaker', 'student', 'postconf', 'vegeterian', 'arrival', 'departure', 'accompanying', 'tshirt', 'payment', 'remark', letter_tex, letter_pdf)
+    certificate_tex.short_description = 'Certif'
+    certificate_tex.allow_tags = True
+
+    certificate_pdf.short_description = 'Certif'
+    certificate_pdf.allow_tags = True
+
+    list_display = ('last_name', 'first_name', 'email', 'affiliation', 'address', 'city', 'postal_code', 'country', 'speaker', 'student', 'postconf', 'vegeterian', 'arrival', 'departure', 'accompanying', 'tshirt', 'payment', 'remark', letter_tex, letter_pdf, certificate_tex, certificate_pdf)
 
     list_editable = ['remark']
 

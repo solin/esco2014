@@ -81,6 +81,8 @@ urlpatterns = patterns('femtec.site.views',
     (r'^account/badges/pdf/$', 'badges_pdf'),
     (r'^account/certificates/tex/$', 'certificates_tex'),
     (r'^account/certificates/pdf/$', 'certificates_pdf'),
+    (r'^account/certificate/tex/(\d+)/$', 'certificate_tex'),
+    (r'^account/certificate/pdf/(\d+)/$', 'certificate_pdf'),
     (r'^account/receipts/tex/$', 'receipts_tex'),
     (r'^account/receipts/pdf/$', 'receipts_pdf'),
     (r'^account/registration/tex/$', 'registration_tex'),
@@ -528,6 +530,99 @@ def abstracts_book_pdf(request, **args):
     response = HttpResponse(f.read(), mimetype='application/pdf')
     response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=boa.pdf'
+    return response
+
+def certificate(profile_id):
+    tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
+    tex_certificate_path = os.path.join(ABSTRACTS_PATH, 'certificates')  
+
+    str_list_to_modify = []
+    str_list = []
+    f = open(os.path.join(tex_template_path, 'certificates_template.tex'), 'r')
+    str_list.append(f.read())
+    f.close()
+    
+    try:
+        person = UserProfile.objects.get(id = profile_id)
+        first_name = person.user.first_name
+        last_name = person.user.last_name
+        full_name = person.user.get_full_name()
+        affiliation = person.affiliation
+        address = person.address
+        postal_code = person.postal_code
+        city = person.city
+        country = person.country
+    except UserProfile.DoesNotExist:
+        pass
+    
+    filename = create_filename(first_name, last_name, 'certificate_')
+    tex_output_path = os.path.join(tex_certificate_path, filename[12:])
+
+    str_list_to_modify.append('\\certificate{%(full_name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'postal_code' : postal_code , 'city': city, 'country': country })
+    str_list.append(latex_replacement(''.join(str_list_to_modify)))
+    str_list.append('\\end{document}' )
+    output = ''.join(str_list)
+
+    if os.path.exists(tex_output_path):
+        shutil.rmtree(tex_output_path, True)
+
+    if not os.path.exists(tex_certificate_path):
+        os.mkdir(tex_certificate_path)
+
+    os.mkdir(tex_output_path)
+
+    shutil.copy(
+        os.path.join(tex_template_path, 'femhub_logo.png'),
+        os.path.join(tex_output_path, 'femhub_logo.png'))
+    shutil.copy(
+        os.path.join(tex_template_path, 'femhub_footer.png'),
+        os.path.join(tex_output_path, 'femhub_footer.png'))
+  
+    with open(os.path.join(tex_output_path, filename + '.tex'), 'wb') as f:
+        f.write(output.encode('utf-8'))
+    f.close()
+
+    return tex_output_path, filename
+
+@login_required
+def certificate_tex(request, profile_id, **args):
+    tex_output_path, filename = certificate(profile_id)
+
+    filename_tex = filename + '.tex'
+    filename_zip = filename + '.zip'
+
+    cmd = ['zip', filename, filename_tex, 'femhub_logo.png', 'femhub_footer.png']
+    pipe = subprocess.PIPE
+
+    proc = subprocess.Popen(cmd, cwd=tex_output_path, stdout=pipe, stderr=pipe)
+    outputs, errors = proc.communicate()  
+
+    f = open(os.path.join(tex_output_path, filename_zip), 'r')
+
+    response = HttpResponse(f.read(), mimetype='application/zip')
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=%(filename_zip)s' % {'filename_zip': filename_zip}
+    return response
+
+@login_required
+def certificate_pdf(request, profile_id, **args):
+    tex_output_path, filename = certificate(profile_id)
+
+    filename_tex = filename + '.tex'
+    filename_pdf = filename + '.pdf'
+
+    cmd = ['pdflatex', '-halt-on-error', filename_tex]
+    pipe = subprocess.PIPE
+
+    for i in xrange(3):
+        proc = subprocess.Popen(cmd, cwd=tex_output_path, stdout=pipe, stderr=pipe)
+        outputs, errors = proc.communicate()  
+
+    f = open(os.path.join(tex_output_path, filename_pdf), 'r')
+
+    response = HttpResponse(f.read(), mimetype='application/pdf')
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=%(filename_pdf)s' % {'filename_pdf': filename_pdf}
     return response
 
 def certificates():
