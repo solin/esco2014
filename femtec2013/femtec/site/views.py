@@ -775,8 +775,7 @@ def registration_pdf(request, **args):
     response['Content-Disposition'] = 'inline; filename=registration.pdf'
     return response
 
-def create_filename(user_first_name, user_last_name):
-    prefix = 'letter_'
+def create_filename(user_first_name, user_last_name, prefix):
 
     def filename_replacement(name):
         name = name.replace(u'\xe1','a')
@@ -867,7 +866,7 @@ def letter(profile_id):
         os.path.join(tex_template_path, 'horizon_no_slogan.jpg'),
         os.path.join(tex_output_path, 'horizon_no_slogan.jpg'))
 
-    filename = create_filename(first_name, last_name)
+    filename = create_filename(first_name, last_name, 'letter_')
 
     with open(os.path.join(tex_output_path, filename + '.tex'), 'wb') as f:
         f.write(output.encode('utf-8'))
