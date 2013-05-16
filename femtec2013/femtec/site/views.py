@@ -81,6 +81,7 @@ urlpatterns = patterns('femtec.site.views',
     (r'^account/badges/pdf/$', 'badges_pdf'),
     (r'^account/certificates/tex/$', 'certificates_tex'),
     (r'^account/certificates/pdf/$', 'certificates_pdf'),
+    (r'^account/all_certificates/$', 'all_certificates'),
     (r'^account/certificate/tex/(\d+)/$', 'certificate_tex'),
     (r'^account/certificate/pdf/(\d+)/$', 'certificate_pdf'),
     (r'^account/receipts/tex/$', 'receipts_tex'),
@@ -532,6 +533,75 @@ def abstracts_book_pdf(request, **args):
     response['Content-Disposition'] = 'inline; filename=boa.pdf'
     return response
 
+def all_certificates(request, **args):
+
+    max_profile_id_dict = UserProfile.objects.all().aggregate(Max('id'))
+    max_profile_id = max_profile_id_dict['id__max']
+
+    for i in range(1, max_profile_id + 1):
+        tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
+        tex_certificate_path = os.path.join(ABSTRACTS_PATH, 'certificates')  
+
+        str_list_to_modify = []
+        str_list = []
+        f = open(os.path.join(tex_template_path, 'certificates_template.tex'), 'r')
+        str_list.append(f.read())
+        f.close()
+    
+        try:
+            person = UserProfile.objects.get(id = i)
+            first_name = person.user.first_name
+            last_name = person.user.last_name
+            full_name = person.user.get_full_name()
+            affiliation = person.affiliation
+            address = person.address
+            postal_code = person.postal_code
+            city = person.city
+            country = person.country
+        except UserProfile.DoesNotExist:
+            pass
+    
+        filename = create_filename(first_name, last_name)
+        tex_output_path = os.path.join(tex_certificate_path, filename)
+
+        str_list_to_modify.append('\\certificate{%(full_name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'postal_code' : postal_code , 'city': city, 'country': country })
+        str_list.append(latex_replacement(''.join(str_list_to_modify)))
+        str_list.append('\\end{document}' )
+        output = ''.join(str_list)
+
+        if os.path.exists(tex_output_path):
+            shutil.rmtree(tex_output_path, True)
+
+        if not os.path.exists(tex_certificate_path):
+            os.mkdir(tex_certificate_path)
+
+        os.mkdir(tex_output_path)
+
+        shutil.copy(
+            os.path.join(tex_template_path, 'femhub_logo.png'),
+            os.path.join(tex_output_path, 'femhub_logo.png'))
+        shutil.copy(
+            os.path.join(tex_template_path, 'femhub_footer.png'),
+            os.path.join(tex_output_path, 'femhub_footer.png'))
+
+        filename_tex = filename + '.tex'
+  
+        with open(os.path.join(tex_output_path, filename_tex), 'wb') as f:
+            f.write(output.encode('utf-8'))
+        f.close()
+
+        cmd = ['pdflatex', '-halt-on-error', filename_tex]
+        pipe = subprocess.PIPE
+    
+        for i in xrange(3):
+            proc = subprocess.Popen(cmd, cwd=tex_output_path, stdout=pipe, stderr=pipe)
+            outputs, errors = proc.communicate()
+
+        os.remove(os.path.join(tex_output_path, filename + '.log'))
+        os.remove(os.path.join(tex_output_path, filename + '.aux'))
+
+    return HttpResponsePermanentRedirect('/admin/site/userprofile/')
+
 def certificate(profile_id):
     tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
     tex_certificate_path = os.path.join(ABSTRACTS_PATH, 'certificates')  
@@ -555,8 +625,8 @@ def certificate(profile_id):
     except UserProfile.DoesNotExist:
         pass
     
-    filename = create_filename(first_name, last_name, 'certificate_')
-    tex_output_path = os.path.join(tex_certificate_path, filename[12:])
+    filename = create_filename(first_name, last_name)
+    tex_output_path = os.path.join(tex_certificate_path, filename)
 
     str_list_to_modify.append('\\certificate{%(full_name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'postal_code' : postal_code , 'city': city, 'country': country })
     str_list.append(latex_replacement(''.join(str_list_to_modify)))
@@ -653,10 +723,8 @@ def certificates():
     str_list.append('\\end{document}' )
     output = ''.join(str_list)
 
-    if os.path.exists(tex_output_path):
-        shutil.rmtree(tex_output_path, True)
-
-    os.mkdir(tex_output_path)
+    if not os.path.exists(tex_output_path):
+        os.mkdir(tex_output_path)
 
     shutil.copy(
         os.path.join(tex_template_path, 'femhub_logo.png'),
@@ -870,7 +938,7 @@ def registration_pdf(request, **args):
     response['Content-Disposition'] = 'inline; filename=registration.pdf'
     return response
 
-def create_filename(user_first_name, user_last_name, prefix):
+def create_filename(user_first_name, user_last_name, prefix=''):
 
     def filename_replacement(name):
         name = name.replace(u'\xe1','a')
