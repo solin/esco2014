@@ -690,6 +690,9 @@ def certificate_pdf(request, profile_id, **args):
 
     f = open(os.path.join(tex_output_path, filename_pdf), 'r')
 
+    os.remove(os.path.join(tex_output_path, filename + '.log'))
+    os.remove(os.path.join(tex_output_path, filename + '.aux'))
+
     response = HttpResponse(f.read(), mimetype='application/pdf')
     response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=%(filename_pdf)s' % {'filename_pdf': filename_pdf}
@@ -767,6 +770,9 @@ def certificates_pdf(request, **args):
         outputs, errors = proc.communicate()  
 
     f = open(os.path.join(tex_output_path, 'certificates.pdf'), 'r')
+
+    os.remove(os.path.join(tex_output_path, 'certificates.log'))
+    os.remove(os.path.join(tex_output_path, 'certificates.aux'))
 
     response = HttpResponse(f.read(), mimetype='application/pdf')
     response['Cache-Control'] = 'must-revalidate'
