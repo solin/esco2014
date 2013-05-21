@@ -22,6 +22,8 @@ from femtec.settings import MEDIA_ROOT, ABSTRACTS_PATH
 # works with Python 2.7 or higer
 #from collections import OrderedDict
 
+import zipfile
+
 from femtec.site.latex_replacement import latex_replacement
 
 try:
@@ -86,6 +88,7 @@ urlpatterns = patterns('femtec.site.views',
     (r'^account/certificate/pdf/(\d+)/$', 'certificate_pdf'),
     (r'^account/receipts/tex/$', 'receipts_tex'),
     (r'^account/receipts/pdf/$', 'receipts_pdf'),
+    (r'^account/all_receipts/$', 'all_receipts'),
     (r'^account/registration/tex/$', 'registration_tex'),
     (r'^account/registration/pdf/$', 'registration_pdf'),
     (r'^account/letter/tex/(\d+)/$', 'letter_tex'),
@@ -356,6 +359,11 @@ def get_object_if_can(request, model, query):
 
     return obj
 
+def zipdir(path, zip):
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            zip.write(os.path.join(root, file))
+
 @login_required
 @conditional('ENABLE_ABSTRACT_SUBMISSION')
 def abstracts_view(request, **args):
@@ -538,10 +546,11 @@ def all_certificates(request, **args):
     max_profile_id_dict = UserProfile.objects.all().aggregate(Max('id'))
     max_profile_id = max_profile_id_dict['id__max']
 
-    for i in range(1, max_profile_id + 1):
-        tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
-        tex_certificate_path = os.path.join(ABSTRACTS_PATH, 'certificates')  
+    tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
+    tex_certificate_path = os.path.join(ABSTRACTS_PATH, 'certificates')  
+    tex_individual_certificate_path = os.path.join(tex_certificate_path, 'individual_certificates')  
 
+    for i in range(1, max_profile_id + 1):
         str_list_to_modify = []
         str_list = []
         f = open(os.path.join(tex_template_path, 'certificates_template.tex'), 'r')
@@ -562,7 +571,7 @@ def all_certificates(request, **args):
             pass
     
         filename = create_filename(first_name, last_name)
-        tex_output_path = os.path.join(tex_certificate_path, filename)
+        tex_output_path = os.path.join(tex_individual_certificate_path, filename)
 
         str_list_to_modify.append('\\certificate{%(full_name)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'affiliation': affiliation,'address': address, 'postal_code' : postal_code , 'city': city, 'country': country })
         str_list.append(latex_replacement(''.join(str_list_to_modify)))
@@ -574,6 +583,9 @@ def all_certificates(request, **args):
 
         if not os.path.exists(tex_certificate_path):
             os.mkdir(tex_certificate_path)
+
+        if not os.path.exists(tex_individual_certificate_path):
+            os.mkdir(tex_individual_certificate_path)
 
         os.mkdir(tex_output_path)
 
@@ -600,7 +612,18 @@ def all_certificates(request, **args):
         os.remove(os.path.join(tex_output_path, filename + '.log'))
         os.remove(os.path.join(tex_output_path, filename + '.aux'))
 
-    return HttpResponsePermanentRedirect('/admin/site/userprofile/')
+    filename_zip = 'individual_certificates.zip'
+
+    zip = zipfile.ZipFile(os.path.join(tex_certificate_path, filename_zip), 'w')
+    zipdir(tex_individual_certificate_path, zip)
+    zip.close()    
+
+    f = open(os.path.join(tex_certificate_path, filename_zip), 'r')
+
+    response = HttpResponse(f.read(), mimetype='application/zip')
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=%(filename_zip)s' % {'filename_zip': filename_zip}
+    return response
 
 def certificate(profile_id):
     tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
@@ -778,6 +801,82 @@ def certificates_pdf(request, **args):
     response['Cache-Control'] = 'must-revalidate'
     response['Content-Disposition'] = 'inline; filename=certificates.pdf'
     return response
+
+def all_receipts(request, **args):
+
+    max_profile_id_dict = UserProfile.objects.all().aggregate(Max('id'))
+    max_profile_id = max_profile_id_dict['id__max']
+
+    tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
+    tex_receipts_path = os.path.join(ABSTRACTS_PATH, 'receipts')  
+    tex_individual_receipts_path = os.path.join(tex_receipts_path, 'individual_receipts')  
+
+    for i in range(1, max_profile_id + 1):
+        str_list_to_modify = []
+        str_list = []
+        f = open(os.path.join(tex_template_path, 'receipts_template.tex'), 'r')
+        str_list.append(f.read())
+        f.close()
+    
+        try:
+            person = UserProfile.objects.get(id = i)
+            first_name = person.user.first_name
+            last_name = person.user.last_name
+            full_name = person.user.get_full_name()
+            affiliation = person.affiliation
+            address = person.address
+            postal_code = person.postal_code
+            city = person.city
+            country = person.country
+            payment = "WRITE AMOUNT AND CURRENCY HERE" #
+        except UserProfile.DoesNotExist:
+            pass
+    
+        filename = create_filename(first_name, last_name)
+        tex_output_path = os.path.join(tex_individual_receipts_path, filename)
+
+        str_list_to_modify.append('\\receipt{%(full_name)s}{%(payment)s}{%(affiliation)s}{%(address)s}{%(postal_code)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'payment': payment, 'affiliation': affiliation,'address': address, 'postal_code': postal_code, 'city': city, 'country': country})
+        str_list.append(latex_replacement(''.join(str_list_to_modify)))
+        str_list.append('\\end{document}' )
+        output = ''.join(str_list)
+
+        if os.path.exists(tex_output_path):
+            shutil.rmtree(tex_output_path, True)
+
+        if not os.path.exists(tex_receipts_path):
+            os.mkdir(tex_receipts_path)
+
+        if not os.path.exists(tex_individual_receipts_path):
+            os.mkdir(tex_individual_receipts_path)
+
+        os.mkdir(tex_output_path)
+
+        shutil.copy(
+            os.path.join(tex_template_path, 'femhub_logo.png'),
+            os.path.join(tex_output_path, 'femhub_logo.png'))
+        shutil.copy(
+            os.path.join(tex_template_path, 'femhub_footer.png'),
+            os.path.join(tex_output_path, 'femhub_footer.png'))
+
+        filename_tex = filename + '.tex'
+  
+        with open(os.path.join(tex_output_path, filename_tex), 'wb') as f:
+            f.write(output.encode('utf-8'))
+        f.close()
+
+    filename_zip = 'individual_receipts.zip'
+
+    zip = zipfile.ZipFile(os.path.join(tex_receipts_path, filename_zip), 'w')
+    zipdir(tex_individual_receipts_path, zip)
+    zip.close()    
+
+    f = open(os.path.join(tex_receipts_path, filename_zip), 'r')
+
+    response = HttpResponse(f.read(), mimetype='application/zip')
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=%(filename_zip)s' % {'filename_zip': filename_zip}
+    return response
+
 
 def receipts():
     tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
