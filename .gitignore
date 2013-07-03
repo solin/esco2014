@@ -3,8 +3,8 @@
 *~
 texput.log
 
-femtec*/femtec/media/admin/media
-femtec*/femtec/media/admin/__init__.pyc
-femtec*/femtec/media/admin/__init__.py
-femtec*/femtec/media/captchas
+conference/media/admin/media
+conference/media/admin/__init__.pyc
+conference/media/admin/__init__.py
+conference/media/captchas
 
