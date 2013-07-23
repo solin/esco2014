@@ -1,5 +1,5 @@
 
-FEMTEC conference web site
+Conference web site
 ========================
 
 Updating Dreamhost
