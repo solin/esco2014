@@ -79,18 +79,22 @@
                         </ul>
                     </div>
                     {% endif %}
+                </div>
+                <div class="column right">
                     <div class="box">
-                        {% if not user.is_authenticated %}
                         <img src="{{ MEDIA_URL }}img/current/img-1.png" />
-                        {% endif %}
                         <img src="{{ MEDIA_URL }}img/current/img-2.png" />
                         <img src="{{ MEDIA_URL }}img/current/img-3.png" />
                         <img src="{{ MEDIA_URL }}img/current/img-4.png" />
                         <img src="{{ MEDIA_URL }}img/current/img-5.png" />
                         <img src="{{ MEDIA_URL }}img/current/img-6.png" />
+                        <img src="{{ MEDIA_URL }}img/current/img-7.png" />
+                        {% if not user.is_authenticated %}
+                        <img src="{{ MEDIA_URL }}img/current/img-8.png" />
+                        {% endif %}
                     </div>
                 </div>
-                <div class="column right">
+                <div class="column left">
                     <div class="box">
                         <div class="title">Important Dates</div>
                         <ul class="list">
@@ -114,20 +118,22 @@
 			    <li><a href="http://hpfem.org/events/esco-2008/">{{ conf_name_upper }} 2008</a></li>
                         </ul>
                     </div>
+                </div>
+                <!--<div class="column right">
                     {% if user.is_authenticated %}
                         <div style="height: 70px"></div>
                     {% else %}
                         <div style="height: 61px"></div>
                     {% endif %}
                     <div class="box">
-                        <img src="{{ MEDIA_URL }}img/current/img-7.png" vspace="4"  />   
-                        <img src="{{ MEDIA_URL }}img/current/img-8.png" vspace="8" />
-                        <img src="{{ MEDIA_URL }}img/current/img-9.png" vspace="8" />
-                        <img src="{{ MEDIA_URL }}img/current/img-10.png" vspace="8" />
-                        <img src="{{ MEDIA_URL }}img/current/img-11.png" vspace="8" />
-                        <img src="{{ MEDIA_URL }}img/current/img-12.png" vspace="8" />
+                        <img src="{{ MEDIA_URL }}img/current/img-7.png" />   
+                        <img src="{{ MEDIA_URL }}img/current/img-8.png" />
+                        <img src="{{ MEDIA_URL }}img/current/img-9.png" />
+                        <img src="{{ MEDIA_URL }}img/current/img-10.png" />
+                        <img src="{{ MEDIA_URL }}img/current/img-11.png" />
+                        <img src="{{ MEDIA_URL }}img/current/img-12.png" />
                     </div>
-                </div>
+                </div>-->
                 <div id="content">
                     {% block content %}
                         {% block message %}
