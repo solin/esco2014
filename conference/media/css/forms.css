@@ -112,8 +112,10 @@ form {
 }
 
 .form button, .button {
-    background-color: #254b6f !important;
-    border: 1px solid #254b6f !important;
+    background-color: #256f49 !important;
+    border: 1px solid #256f49 !important;
+    /*background-color: #254b6f !important;
+    border: 1px solid #254b6f !important;*/
     color: #ffffff !important;
     padding: 3px 1em;
     font-weight: bold;
@@ -121,8 +123,10 @@ form {
 }
 
 .form button:hover, .button:hover {
-    background-color: #a0bbd4 !important;
-    color: #254b6f !important;
+    background-color: #a0d4b9 !important;
+    color: #256f49 !important;
+    /*background-color: #a0bbd4 !important;
+    color: #254b6f !important;*/
 }
 
 .button[disabled] {
@@ -130,5 +134,6 @@ form {
 }
 
 .button[disabled]:hover {
-    background-color: #254b6f !important;
+    background-color: #256f49 !important;
+    /*background-color: #254b6f !important;*/
 }

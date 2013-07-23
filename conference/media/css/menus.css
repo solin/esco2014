@@ -5,15 +5,18 @@ ul.menu {
 }
 
 ul.menu > li {
-    border-top: 1px solid #d3e7f4;
+    border-top: 1px solid #d3f4e0;
+    /*border-top: 1px solid #d3e7f4;*/
     background-color: #fafdff;
     position: relative;
     cursor: pointer;
-    color: #254b6f;
+    color: #266E49;
+    /*color: #254b6f;*/
 }
 
 ul.menu > li:hover {
-    color: #ae5600;
+    color: #ae0058;
+    /*color: #ae5600;*/
 }
 
 ul.menu > li > a {

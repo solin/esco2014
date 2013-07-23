@@ -1,15 +1,20 @@
 .box {
     cursor: auto;
     margin-bottom: 5px;
-    border: 1px solid #d3e7f4;
-    background-color: #fafdff;
+    border: 1px solid #d3f4e0;
+    /*border: 1px solid #d3e7f4;*/
+    background-color: #fafdfc;
+    /*background-color: #fafdff;*/
+
 }
 
 .box div.title {
-    color: #254b6f;
+    color: #266E49;
+    /*color: #254b6f;*/
     font-weight: bold;
     padding: 4px 8px 4px 8px;
-    background-color: #a0bbd4;
+    background-color: #a0d4b9;
+    /*background-color: #a0bbd4;*/
 }
 
 .box ul.list {
@@ -24,7 +29,8 @@
 .box ul.list > li.head {
     font-weight: bold;
     font-size: 9pt;
-    color: #254b6f;
+    color: #266E49;
+    /*color: #254b6f;*/
 }
 
 .box ul.list > li.tail {

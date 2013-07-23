@@ -21,19 +21,22 @@ h1, h2 {
 
 h1, h2, h3  {
     text-align: center;
-    color: #254b6f;
+    color: #266E49;
+    /*color: #254b6f;*/
 }
 
 h4 {
     text-align: left;
-    color: #254b6f;
+    color: #266E49;
+    /*color: #254b6f;*/
 }
 
 /* LINKS */
 
 a:link, a:active, a:visited {
     text-decoration: none;
-    color: #254b6f;
+    color: #266E49;
+    /*color: #254b6f;*/
     outline: none;
 }
 
@@ -44,7 +47,8 @@ a:hover {
 /* GLOBALS */
 
 .color {
-    color: #254b6f;
+    color: #266E49;
+    /*color: #254b6f;*/
 }
 
 .bold {
@@ -87,7 +91,9 @@ a:hover {
 }
 
 #header a {
-    color: #254b6f;
+    color: #256f49;
+    /*color: #254b6f;*/
+
 }
 
 #banner {
@@ -132,11 +138,13 @@ a:hover {
 }
 
 #footer {
-    background-color: #a0bbd4;
+    background-color: #a0d4b9;
+    /*background-color: #a0bbd4;*/
     text-align: center;
     position: absolute;
     padding: 4px 8px;
-    color: #254b6f;
+    color: #266E49;
+    /*color: #254b6f;*/
     right: 20px;
     left: 20px;
     bottom: 0;
@@ -150,7 +158,8 @@ a:hover {
 
 #content > table {
     border-collapse: collapse;
-    border: 1px solid #d3e7f4;
+    border: 1px solid #d3f4e0;
+    /*border: 1px solid #d3e7f4;*/
     font-size: 10pt;
     margin: 0 auto;
 }
@@ -160,13 +169,16 @@ a:hover {
 }
 
 #content > table thead {
-    background-color: #a0bbd4;
+    background-color: #a0d4b9;
+    /*background-color: #a0bbd4;*/
     font-weight: bold;
-    color: #254b6f;
+    color: #266E49;
+    /*color: #254b6f;*/
 }
 
 #content > table tbody {
-    background-color: #fafdff;
+    background-color: #fafffc;
+    /*background-color: #fafdff;*/
 }
 
 /* ACCOMMODATION */
@@ -180,8 +192,10 @@ a:hover {
 
 #abstracts > table {
     border-collapse: collapse;
-    border: 1px solid #d3e7f4;
-    background-color: #fafdff;
+    border: 1px solid #d3f4e0;
+    /*border: 1px solid #d3e7f4;*/
+    background-color: #fafffc;
+    /*background-color: #fafdff;*/
     margin: 0 auto 5px auto;
     table-layout: fixed;
     font-size: 10pt;
@@ -191,7 +205,8 @@ a:hover {
 #abstracts > table th {
     padding: 5px 10px;
     text-align: left;
-    color: #254b6f;
+    color: #256f49;
+    /*color: #254b6f;*/
     width: 9em;
     margin: 0;
 }
@@ -220,7 +235,8 @@ a:hover {
 }
 
 #abstracts-box {
-    border: 1px solid #d3e7f4;
+    border: 1px solid #d3f4e0;
+    /*border: 1px solid #d3e7f4;*/
     background-color: #fafdff;
     margin-bottom: 5px;
     padding: 4px 8px;
