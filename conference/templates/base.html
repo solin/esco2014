@@ -2,7 +2,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
-        <title>FEMTEC 2013 - 4th International Congress on Computational Engineering and Sciences</title>
+        <title>ESCO 2014 - 4th European Seminar on Computing</title>
         <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
 
         <link type="text/css" href="{{ MEDIA_URL }}css/style.css" rel="stylesheet" />
@@ -58,7 +58,7 @@
                             <li><a href="/">Home Page</a></li>
                             <li><a href="/venue/">Conference Venue</a></li>
                             <li><a href="/committees/">Speakers & Committees</a></li>
-                            <li><a href="/participants/">List of Participants</a></li>
+                            <!--<li><a href="/participants/">List of Participants</a></li>-->
                             <li><a href="/sponsors/">Conference Sponsors</a></li>
                             <li><a href="/payment/">Registration Fees</a></li>
                             <li><a href="/sponsorship/">Sponsorship</a></li>
@@ -94,22 +94,24 @@
                     <div class="box">
                         <div class="title">Important Dates</div>
                         <ul class="list">
-                            <li class="head">February 15, {{ conf_year }}</li>
+                            <li class="head">December 15, {{ conf_year }}</li>
                             <li class="tail">Abstract submission deadline.</li>
-                            <li class="head">February 15, {{ conf_year }}</li>
+                            <li class="head">December 15, {{ conf_year }}</li>
                             <li class="tail">Minisymposia proposals.</li>
-                            <li class="head">March 1, {{ conf_year }}</li>
+                            <li class="head">January 15, {{ conf_year }}</li>
                             <li class="tail">Notification of acceptance.</li>
-                            <li class="head">March 30, {{ conf_year }}</li>
+                            <li class="head">March 15, {{ conf_year }}</li>
                             <li class="tail">Early registration fee payment.</li>
                             <li class="head">September 30, {{ conf_year }}</li>
                             <li class="tail">Paper submission.</li>
                         </ul>
                     </div>
                     <div class="box">
-                        <div class="title">Previous Conference</div>
+                        <div class="title">Previous Conferences</div>
                         <ul class="menu">
-                            <li><a href="http://femtec2011.femhub.com">{{ conf_name_upper }} 2011</a></li>
+                            <li><a href="http://esco2012.femhub.com">{{ conf_name_upper }} 2012</a></li>
+			    <li><a href="http://hpfem.org/events/esco-2010/">{{ conf_name_upper }} 2010</a></li>
+			    <li><a href="http://hpfem.org/events/esco-2008/">{{ conf_name_upper }} 2008</a></li>
                         </ul>
                     </div>
                     {% if user.is_authenticated %}
@@ -118,7 +120,7 @@
                         <div style="height: 61px"></div>
                     {% endif %}
                     <div class="box">
-                        <!-- <img src="{{ MEDIA_URL }}img/current/img-7.png" vspace="4"  />   -->
+                        <img src="{{ MEDIA_URL }}img/current/img-7.png" vspace="4"  />   
                         <img src="{{ MEDIA_URL }}img/current/img-8.png" vspace="8" />
                         <img src="{{ MEDIA_URL }}img/current/img-9.png" vspace="8" />
                         <img src="{{ MEDIA_URL }}img/current/img-10.png" vspace="8" />
@@ -139,26 +141,23 @@
                             {{ conf_name_upper }} {{ conf_year }}
                         </h1>
                         <h3>
-                            4th International Congress 
-                            <br>on Computational Engineering and Sciences
+                            4th European Seminar on Computing  
+                            <br>
                         </h3>
                         <h3>
-                            Las Vegas, May 19 - 24, {{ conf_year }}  
+                            Pilsen, Czech Republic, June 15 - 20, {{ conf_year }}  
                         </h3>
                         <hr>
-                        Preliminary program has been posted (<a href="http://femhub.com/docs/program-femtec2013.pdf">PDF</a>).<br>
+ <!--                       Preliminary program has been posted (<a href="http://femhub.com/docs/program-femtec2013.pdf">PDF</a>).<br>
                         Book of Abstracts can be downloaded from <a href="http://femhub.com/docs/boa-femtec2013.pdf">here</a>.
-                        <hr>
+                        <hr>-->
                         <p>
-                            {{ conf_name_upper }} {{ conf_year }} is the 4th event in a successful series of interdisciplineary 
-                            international conferences. It promotes modern technologies and practices 
-                            in scientific computing and visualization, and strengthens the interaction 
-                            between researchers and practitioners in various areas of computational engineering 
-                            and sciences.
+                            {{ conf_name_upper }} {{ conf_year }} is the 4th event in a successful series of interdisciplineary international conferences. It promotes modern technologies and practices 
+in scientific computing and visualization, and strengthens the interaction between researchers and practitioners in various areas of computational engineering and sciences.
 
                         <h3>{{ conf_year }} themes</h3>
                         <p>
-                        Main thematic areas for 2013 include:
+                        Main thematic areas for {{ conf_year }} include:
                         Interdisciplinary computational projects,
                         Multiphysics coupled problems,
                         Higher-order computational methods,
@@ -189,31 +188,29 @@
                         <h3>Awards</h3>
                         <p>
                         Best Best Poster will be awarded with a diploma and a prize
-                        during a ceremony to take place on Thursday, May 22. All student presentations 
-                        and all posters are automatically nominated. The selection will be done by 
+                        during a ceremony to take place on Thursday, June 19. All student presentations and all posters are automatically nominated. The selection will be done by 
                         a vote of all participants. 
                         </p>
 
                         <h3>Software afternoon</h3>
                         <p>
-                        Important part of each {{ conf_name_upper }} conference is a software afternoon featuring
-                        computational software projects of participants. Presented can be any computational
-                        software that has reached certain level of maturity, i.e., it is used outside
+                        Important part of each {{ conf_name_upper }} conference is a software afternoon featuring computational software projects of participants. Presented can be any computational software that has reached certain level of maturity, i.e., it is used outside
                         of the author's institution, and it has a web page and a user documentation.
                         If you would like to present your software project, let us know soon.
                         </p>
 
                         <h3>Proceedings</h3>
                         <p>
-                        Proceedings of {{ conf_name_upper }} {{ conf_year }} will appear in 
+For each {{ conf_name_upper }} we strive to reserve a special issue of an international journal with impact factor. Proceedings of ESCO 2008 appeared in Math. Comput. Simul., proceedings of ESCO 2010 in CiCP and Appl. Math. Comput. and proceedings of ESCO 2012 appeared in Computing.
+<!--                         Proceedings of {{ conf_name_upper }} {{ conf_year }} will appear in 
                         <a href="http://www.journals.elsevier.com/journal-of-computational-and-applied-mathematics/">Journal
                         of Applied and Computational Mathematics (JCAM)</a>,
                         an international journal with impact factor.
-                        </p>
+                        </p>-->
+
                         <h3>Registration and Abstract Submission</h3>
                         <p>
-                            In order to register and submit an abstract for {{ conf_name_upper }} {{ conf_year }}, click the "login" link
-                            in the top-right corner of the page and follow the instructions.
+                        In order to register and submit an abstract for {{ conf_name_upper }} {{ conf_year }}, click the "login" link in the top-right corner of the page and follow the instructions.
                         </p>
 <!--                        <h3>Organizers</h3>
                         <p>
@@ -228,7 +225,7 @@
             </div>
             <div id="clearer"></div>
             <div id="footer">
-                Copyright &copy; 2012-{{ conf_year }} <a href="http://femhub.com">FEMhub Inc.</a> All Rights Reserved.
+                Copyright &copy; 2013-{{ conf_year }} <a href="http://femhub.com">FEMhub Inc.</a> All Rights Reserved.
             </div>
         </div>
     </body>
