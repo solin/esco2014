@@ -1,6 +1,24 @@
 !!! This install is not valid !!!
 
 
+ln -s /home/femhub/repo/esco-2014/conference /home/femhub/esco2014.femhub.com/conference
+ln -s /home/femhub/repo/esco-2014/passenger/passenger_wsgi.py /home/femhub/esco2014.femhub.com/passenger_wsgi.py
+
+ln -s /home/femhub/repo/esco-2014/conference/media /home/femhub/esco2014.femhub.com/public/media
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 HOWTO INSTALL FEMTEC 2013
 
 NOTES:
