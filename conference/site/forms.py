@@ -428,25 +428,25 @@ class UserProfileForm(forms.Form):
     arrival = forms.DateField(
         required  = True,
         label     = "Arrival Date",
-        help_text = "MM/DD/YYYY, e.g., 05/19/2013",
+        help_text = "DD/MM/YYYY, e.g., 15/06/2014",
         input_formats = [
-            '%m/%d/%Y',      # '05/19/2013'
+            '%d/%m/%Y',   
         ],
         error_messages = {
-            'required': 'Enter arrival date, e.g., 05/19/2013',
-            'invalid': 'Enter a valid arrival date, e.g., 05/19/2013',
+            'required': 'Enter arrival date, e.g., 15/06/2014',
+            'invalid': 'Enter a valid arrival date, e.g., 15/06/2014',
         },
     )
     departure = forms.DateField(
         required  = True,
         label     = "Departure Date",
-        help_text = "MM/DD/YYYY, e.g., 05/24/2013",
+        help_text = "DD/MM/YYYY, e.g., 20/06/2013",
         input_formats = [
-            '%m/%d/%Y',      # '05/24/2013'
+            '%d/%m/%Y',
         ],
         error_messages = {
-            'required': 'Enter departure date, e.g., 05/24/2013',
-            'invalid': 'Enter a valid departure date, e.g., 05/24/2013',
+            'required': 'Enter departure date, e.g., 20/06/2014',
+            'invalid': 'Enter a valid departure date, e.g., 20/06/2014',
         },
     )
 
