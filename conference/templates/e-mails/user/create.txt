@@ -1,10 +1,9 @@
 {% extends "e-mails/user/base.txt" %}
 
 {% block content %}
-thank you for creating an account at {{ conf_name_upper }} {{ conf_year }} conference. You can now
-proceed to {{ conf_web }}/account/login/ and log in.
 
-After logging in you will get detailed information about further steps,
-including abstract submission procedure, if this applies in your case.
+thank you for your interest in the {{ conf_name_upper }} {{ conf_year }} conference. You can now proceed to {{ conf_web }}/account/login/ and log in.
+After login you will be able to complete your profile and submit an abstract.
+
 {% endblock %}
 
