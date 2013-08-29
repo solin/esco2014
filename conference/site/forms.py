@@ -13,7 +13,7 @@ class LoginForm(forms.Form):
 
     username = forms.CharField(
         required  = True,
-        label     = "Login",
+        label     = "E-mail",
     )
 
     password = forms.CharField(
@@ -46,7 +46,7 @@ class ReminderForm(forms.Form):
 
     username = forms.CharField(
         required = True,
-        label    = "Login",
+        label    = "E-mail",
     )
     captcha = CaptchaField(
         required = True,
@@ -155,7 +155,7 @@ class RegistrationForm(forms.Form):
         except ObjectDoesNotExist:
             return username
 
-        raise forms.ValidationError('Login name already in use.')
+        raise forms.ValidationError('E-mail already in use.')
 
     def clean_username_again(self):
         """Make sure that user verified `login` that he entered. """
@@ -168,7 +168,7 @@ class RegistrationForm(forms.Form):
         else:
             return None
 
-        raise forms.ValidationError('Login names do not match.')
+        raise forms.ValidationError('E-mails do not match.')
 
     def clean_password(self):
         """Make sure `password` isn't too easy to break. """
