@@ -1,8 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Welcome {{ user.get_full_name }}</h2>
 
+<form action="" method="POST">
+  <script
+    src="https://checkout.stripe.com/v2/checkout.js" class="stripe-button"
+    data-key="pk_test_pPWyU0mxDbvYttQOGcfiKfTX"
+    data-amount="2000"
+    data-name="Demo Site"
+    data-description="2 widgets ($20.00)"
+    data-image="/128x128.png">
+  </script>
+</form>
+
+<h2>Welcome {{ user.get_full_name }}</h2>
 
 <p>
 Please use the menu on the left to edit your profile, submit or modify your abstract, 
@@ -23,7 +34,12 @@ please contact its organizer or the organizing committee directly.
 </p>
 
 <h3>Payment Instructions</h3>
-The conference fee has to be paid via wire transfer or PayPal. 
+The conference fee can be paid via a credit card, wire transfer, or PayPal. 
+
+<h3>Credit Card Payments</h3>
+
+In preparation.
+
 
 <h3>Wire Transfer</h3>
 Please <b>make sure that 
