@@ -19,7 +19,7 @@ from conference.site.forms import UserProfileForm
 from conference.settings import MIN_PASSWORD_LEN
 from conference.settings import MEDIA_ROOT, ABSTRACTS_PATH
 
-# works with Python 2.7 or higer
+# works with Python 2.7 or higher
 #from collections import OrderedDict
 
 import zipfile

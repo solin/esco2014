@@ -15,6 +15,7 @@ from conference.settings import ABSTRACTS_PATH
 from conference.site.latex import Abstract
 
 class UserProfile(models.Model):
+    usertitle = models.CharField(max_length=4)
     user = models.ForeignKey(User, unique=True)
 
     affiliation = models.CharField(max_length=100)
