@@ -2,17 +2,6 @@
 
 {% block content %}
 
-<form action="" method="POST">
-  <script
-    src="https://checkout.stripe.com/v2/checkout.js" class="stripe-button"
-    data-key="pk_test_pPWyU0mxDbvYttQOGcfiKfTX"
-    data-amount="2000"
-    data-name="Demo Site"
-    data-description="2 widgets ($20.00)"
-    data-image="/128x128.png">
-  </script>
-</form>
-
 <h2>Welcome {{ user.get_full_name }}</h2>
 
 <p>
@@ -38,8 +27,18 @@ The conference fee can be paid via a credit card, wire transfer, or PayPal.
 
 <h3>Credit Card Payments</h3>
 
-In preparation.
+This functionality is in preparation.
 
+<form action="" method="POST">
+  <script
+    src="https://checkout.stripe.com/v2/checkout.js" class="stripe-button"
+    data-key="pk_test_pPWyU0mxDbvYttQOGcfiKfTX"
+    data-amount="2000"
+    data-name="ESCO 2014 Registration Fee Payment"
+    data-description="Early regular fee (EUR 350)"
+    data-image="/128x128.png">
+  </script>
+</form>
 
 <h3>Wire Transfer</h3>
 Please <b>make sure that 
