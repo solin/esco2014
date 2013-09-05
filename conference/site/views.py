@@ -20,7 +20,7 @@ from conference.settings import MIN_PASSWORD_LEN
 from conference.settings import MEDIA_ROOT, ABSTRACTS_PATH
 
 # works with Python 2.7 or higher
-#from collections import OrderedDict
+from collections import OrderedDict
 
 import zipfile
 
@@ -1269,11 +1269,11 @@ def get_submit_form_data(post, user):
     title = post['title']
     abstract = post['abstract']
 ##---
-#    full_names = ['']*len(first_names)
-#    affiliations = post.getlist('affiliation')
     first_names = post.getlist('first_name')
     last_names = post.getlist('last_name')
-    addresses = post.getlist('address')
+    full_names = ['']*len(first_names)
+    affiliations = post.getlist('affiliation')
+#    addresses = post.getlist('address')
 ##***
     emails = post.getlist('email')
     presentings = ['no']*len(first_names)
@@ -1293,14 +1293,14 @@ def get_submit_form_data(post, user):
             presentings[i] = 'yes'
             break
 ##---
-#    for i, (first_name, last_name) in enumerate(zip(first_names, last_names)):
-#        full_names[i] = first_names[i] + ' ' + last_names[i]
-#    
-#    authors = zip(first_names, last_names, full_names, affiliations, emails, presentings)
-#    fields = ('first_name', 'last_name', 'full_name', 'affiliation', 'email', 'presenting')
+    for i, (first_name, last_name) in enumerate(zip(first_names, last_names)):
+        full_names[i] = first_names[i] + ' ' + last_names[i]
+    
+    authors = zip(first_names, last_names, full_names, affiliations, emails, presentings)
+    fields = ('first_name', 'last_name', 'full_name', 'affiliation', 'email', 'presenting')
 
-    authors = zip(first_names, last_names, addresses, emails, presentings)
-    fields = ('first_name', 'last_name', 'address', 'email', 'presenting')
+#    authors = zip(first_names, last_names, addresses, emails, presentings)
+#    fields = ('first_name', 'last_name', 'address', 'email', 'presenting')
 ##***
 
     for i, author in enumerate(authors):
@@ -1308,16 +1308,16 @@ def get_submit_form_data(post, user):
         authors[i] = author
 
 ##---
-#    fields = ('bibauthor_first_name', 'bibauthor_last_name')
-    fields = ('first_name', 'last_name')
+    fields = ('bibauthor_first_name', 'bibauthor_last_name')
+#    fields = ('first_name', 'last_name')
 ##***
     bibitems_authors = [[ dict(zip(fields, re.split("\s+", author, 1)))
         for author in re.split("\s*,\s*", bibitem_authors) ] for bibitem_authors in bibitems_authors ]
 
     bibitems = zip(bibitems_authors, bibitems_title, bibitems_other)
 ##---
-#    fields = ('bibitem_authors', 'bibitem_title', 'bibitem_other')
-    fields = ('authors', 'title', 'other')
+    fields = ('bibitem_authors', 'bibitem_title', 'bibitem_other')
+#    fields = ('authors', 'title', 'other')
 ##***
 
     for i, bibitem in enumerate(bibitems):
@@ -1325,21 +1325,21 @@ def get_submit_form_data(post, user):
         bibitems[i] = bibitem
 
 ##--- code for groups of authors of same institution on abstract
-#    authgroup_authors = zip(full_names, emails, presentings)
-#    fields = ('auth_full_name', 'auth_email', 'auth_presenting')
-#    
-#    for i, authgroups_author in enumerate(authgroup_authors):
-#        authgroups_author = dict(zip(fields, authgroups_author))
-#        authgroup_authors[i] = authgroups_author
-#    
-#    res = OrderedDict()
-#    for v, k in zip(authgroup_authors, affiliations):
-#        if k in res:
-#            res[k].append(v)
-#        else:
-#            res[k] = [v]
-#    
-#    authgroups = [{'authgroup_authors':v, 'authgroup_affiliation':k,} for k,v in res.items()]
+    authgroup_authors = zip(full_names, emails, presentings)
+    fields = ('auth_full_name', 'auth_email', 'auth_presenting')
+    
+    for i, authgroups_author in enumerate(authgroup_authors):
+        authgroups_author = dict(zip(fields, authgroups_author))
+        authgroup_authors[i] = authgroups_author
+    
+    res = OrderedDict()
+    for v, k in zip(authgroup_authors, affiliations):
+        if k in res:
+            res[k].append(v)
+        else:
+            res[k] = [v]
+    
+    authgroups = [{'authgroup_authors':v, 'authgroup_affiliation':k,} for k,v in res.items()]
 ##***
 
     data = {
@@ -1348,7 +1348,7 @@ def get_submit_form_data(post, user):
         'authors': authors,
         'bibitems': bibitems,
 ##---
-#        'authgroups' : authgroups,
+        'authgroups' : authgroups,
 ##***
     }
 
