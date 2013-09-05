@@ -129,8 +129,8 @@ def index_view(request, **args):
 
 def participants(request, **args):
     userprofile_list = User.objects.all().order_by('last_name')
-    participants = {'userprofile_list': userprofile_list}
-    return _render_to_response('content/participants.html', request, participants)  
+    local_args = {'userprofile_list': userprofile_list, 'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_name_lower': settings.CONF_NAME_LOWER, 'conf_year': settings.CONF_YEAR, 'conf_email': settings.CONF_EMAIL,'conf_web': settings.CONF_WEB}
+    return _render_to_response('content/participants.html', request, local_args)  
 
 def account_login_view(request, **args):
     next = request.REQUEST.get('next', '/account/')
@@ -179,7 +179,8 @@ def account_delete_view(request, **args):
 
         return HttpResponsePermanentRedirect('/account/delete/success/')
     else:
-        return _render_to_response('account/delete.html', request, args)
+        local_args = {'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_name_lower': settings.CONF_NAME_LOWER, 'conf_year': settings.CONF_YEAR, 'conf_email': settings.CONF_EMAIL,'conf_web': settings.CONF_WEB}
+        return _render_to_response('account/delete.html', request, local_args)
 
 def account_create_view(request, **args):
     if request.method == 'POST':
@@ -215,7 +216,9 @@ def account_create_view(request, **args):
     else:
         form = RegistrationForm()
 
-    return _render_to_response('account/create.html', request, {'form': form})
+    local_args = {'form': form, 'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_name_lower': settings.CONF_NAME_LOWER, 'conf_year': settings.CONF_YEAR, 'conf_email': settings.CONF_EMAIL,'conf_web': settings.CONF_WEB}
+
+    return _render_to_response('account/create.html', request, local_args)
 
 @login_required
 def account_password_change_view(request, **args):
@@ -235,7 +238,9 @@ def account_password_change_view(request, **args):
     else:
         form = ChangePasswordForm()
 
-    return _render_to_response('password/change.html', request, {'form': form})
+    local_args = {'form': form, 'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_name_lower': settings.CONF_NAME_LOWER, 'conf_year': settings.CONF_YEAR, 'conf_email': settings.CONF_EMAIL,'conf_web': settings.CONF_WEB}
+
+    return _render_to_response('password/change.html', request, local_args)
 
 def account_password_remind_view(request, **args):
     if request.method == 'POST':
@@ -262,7 +267,9 @@ def account_password_remind_view(request, **args):
     else:
         form = ReminderForm()
 
-    return _render_to_response('password/remind.html', request, {'form': form})
+    local_args = {'form': form, 'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_name_lower': settings.CONF_NAME_LOWER, 'conf_year': settings.CONF_YEAR, 'conf_email': settings.CONF_EMAIL,'conf_web': settings.CONF_WEB}
+
+    return _render_to_response('password/remind.html', request, local_args)
 
 @login_required
 def account_profile_view(request, **args):
@@ -297,12 +304,9 @@ def account_profile_view(request, **args):
             profile.save()
 
             if settings.SEND_EMAIL:
-                conf_name_upper = settings.CONF_NAME_UPPER
-                conf_year = settings.CONF_YEAR
-                conf_web = settings.CONF_WEB
 
                 template = loader.get_template('e-mails/user/profile.txt')
-                body = template.render(Context({'user': request.user, 'profile': profile, 'conf_name_upper': conf_name_upper, 'conf_year': conf_year, 'conf_web': conf_web}))
+                body = template.render(Context({'user': request.user, 'profile': profile, 'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_year': settings.CONF_YEAR, 'conf_web': settings.CONF_WEB}))
 
                 request.user.email_user("[%(conf_name_upper)s %(conf_year)s] User Profile Confirmation" % {'conf_name_upper': conf_name_upper, 'conf_year': conf_year }, body)
 
@@ -311,7 +315,9 @@ def account_profile_view(request, **args):
             if profile.speaker:
                 message += '<br />Click <a href="/account/abstracts/">here</a> to submit your abstract.'
 
-            return _render_to_response('account/profile.html', request, {'form': form, 'message': message})
+            local_args = {'form': form, 'message': message, 'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_name_lower': settings.CONF_NAME_LOWER, 'conf_year': settings.CONF_YEAR, 'conf_email': settings.CONF_EMAIL,'conf_web': settings.CONF_WEB}
+
+            return _render_to_response('account/profile.html', request, local_args)
     else:
         data = {
             'first_name': request.user.first_name,
@@ -335,7 +341,9 @@ def account_profile_view(request, **args):
 
         form = UserProfileForm(initial=data)
 
-    return _render_to_response('account/profile.html', request, {'form': form})
+    local_args = {'form': form, 'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_name_lower': settings.CONF_NAME_LOWER, 'conf_year': settings.CONF_YEAR, 'conf_email': settings.CONF_EMAIL,'conf_web': settings.CONF_WEB}
+
+    return _render_to_response('account/profile.html', request, local_args)
 
 def conditional(name):
     doit = getattr(settings, name, False)
@@ -377,7 +385,9 @@ def abstracts_view(request, **args):
     else:
         has_profile = True
 
-    return _render_to_response('abstracts/abstracts.html', request, {'abstracts': abstracts, 'has_profile': has_profile})
+    local_args = {'abstracts': abstracts, 'has_profile': has_profile, 'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_name_lower': settings.CONF_NAME_LOWER, 'conf_year': settings.CONF_YEAR, 'conf_email': settings.CONF_EMAIL,'conf_web': settings.CONF_WEB}
+
+    return _render_to_response('abstracts/abstracts.html', request, local_args)
 
 def badges():
     tex_template_path = os.path.join(MEDIA_ROOT, 'tex')
