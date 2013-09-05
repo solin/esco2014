@@ -95,27 +95,6 @@ class RegistrationForm(forms.Form):
         widget     = forms.PasswordInput(),
     )
 
-    usertitle = forms.ChoiceField(
-        required  = True,
-        label     = "Title",
-        help_text = "",
-        choices   = [
-            ('none', '---Select your title---'),
-            ('Mr', 'Mr.'),
-            ('Ms', 'Ms.'),
-            ('Mrs', 'Mrs.'),
-        ],
-        initial   = 'none',
-    )
-
-    def clean_usertitle(self):
-        usertitle = self.cleaned_data['usertitle']
-        
-        if (usertitle == 'none'):
-            raise forms.ValidationError('Please select your title')
-
-        return usertitle
-
     first_name = forms.CharField(
         required   = True,
         label      = "First Name",

@@ -326,9 +326,10 @@ def account_profile_view(request, **args):
                     continue
 
                 if field in ['arrival', 'departure']:
-                    data[field] = getattr(profile, field).strftime('%m/%d/%Y')
+                    data[field] = getattr(profile, field).strftime('%d/%m/%Y')
                 else:
                     data[field] = getattr(profile, field)
+
         except UserProfile.DoesNotExist:
             pass
 
