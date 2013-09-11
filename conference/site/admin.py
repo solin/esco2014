@@ -174,7 +174,7 @@ class UserAbstractAdmin(admin.ModelAdmin):
                 body = template.render(Context({'user': obj.user}))
 
                 if settings.SEND_EMAIL:
-                    obj.user.email_user("[%(conf_name_upper)s %(conf_year)s] Abstract Status Update" % {'conf_name_upper': conf_name_upper, 'conf_year': conf_year }, body)
+                    obj.user.email_user("[%(conf_name_upper)s %(conf_year)s] Abstract Status Update" % {'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_year': settings.CONF_YEAR}, body)
 
         elif 'verified' in form.changed_data:
             verified = form.cleaned_data['verified']
@@ -184,16 +184,16 @@ class UserAbstractAdmin(admin.ModelAdmin):
                 body = template.render(Context({'user': obj.user}))
 
                 if settings.SEND_EMAIL:
-                    obj.user.email_user("[%(conf_name_upper)s %(conf_year)s] Abstract Status Update" % {'conf_name_upper': conf_name_upper, 'conf_year': conf_year }, body)
+                    obj.user.email_user("[%(conf_name_upper)s %(conf_year)s] Abstract Status Update" % {'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_year': settings.CONF_YEAR}, body)
 
             elif verified is False:
-                host = request.META.get("HTTP_ORIGIN", "%(conf_web)s" % {'conf_web' : conf_web })
+                host = request.META.get("HTTP_ORIGIN", "%(conf_web)s" % {'conf_web' : settings.CONF_WEB})
                 modify_url = "%s/account/abstracts/modify/%s/" % (host, obj.id)
                 template = loader.get_template('e-mails/user/not-verified.txt')
-                body = template.render(Context({'user': obj.user, 'modify_url': modify_url, 'conf_name_upper': conf_name_upper, 'conf_year': conf_year}))
+                body = template.render(Context({'user': obj.user, 'modify_url': modify_url, 'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_year': settings.CONF_YEAR}))
 
                 if settings.SEND_EMAIL:
-                    obj.user.email_user("[%(conf_name_upper)s %(conf_year)s] Abstract Status Update" % {'conf_name_upper': conf_name_upper, 'conf_year': conf_year }, body)
+                    obj.user.email_user("[%(conf_name_upper)s %(conf_year)s] Abstract Status Update" % {'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_year': settings.CONF_YEAR}, body)
 
         elif 'accepted' in form.changed_data:
             accepted = form.cleaned_data['accepted']
@@ -203,7 +203,7 @@ class UserAbstractAdmin(admin.ModelAdmin):
                 body = template.render(Context({'user': obj.user}))
 
                 if settings.SEND_EMAIL:
-                    obj.user.email_user("[%(conf_name_upper)s %(conf_year)s] Abstract Status Update" % {'conf_name_upper': conf_name_upper, 'conf_year': conf_year }, body)
+                    obj.user.email_user("[%(conf_name_upper)s %(conf_year)s] Abstract Status Update" % {'conf_name_upper': conf_name_upper, 'conf_year': settings.CONF_YEAR}, body)
 
         super(UserAbstractAdmin, self).save_model(request, obj, form, change)
 

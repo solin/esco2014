@@ -252,7 +252,7 @@ def account_password_remind_view(request, **args):
             if settings.SEND_EMAIL:
 
                 template = loader.get_template('e-mails/user/reminder.txt')
-                body = template.render(Context({'user': user, 'password': password, 'conf_web': conf_web}))
+                body = template.render(Context({'user': user, 'password': password, 'conf_web': settings.CONF_WEB}))
 
                 user.email_user("[%(conf_name_upper)s %(conf_year)s] Password Reminder Notification" % {'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_year': settings.CONF_YEAR}, body)
 
