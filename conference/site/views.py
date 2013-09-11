@@ -19,7 +19,7 @@ from conference.site.forms import UserProfileForm
 from conference.settings import MIN_PASSWORD_LEN
 from conference.settings import MEDIA_ROOT, ABSTRACTS_PATH
 
-from conference.site.myordereddict import OrderedDict
+from conference.site.myordereddict import MyOrderedDict
 
 import zipfile
 
@@ -1325,7 +1325,7 @@ def get_submit_form_data(post, user):
         authgroups_author = dict(zip(fields, authgroups_author))
         authgroup_authors[i] = authgroups_author
     
-    res = OrderedDict()
+    res = MyOrderedDict()
     for v, k in zip(authgroup_authors, affiliations):
         if k in res:
             res[k].append(v)
