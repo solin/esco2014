@@ -332,8 +332,8 @@ class AuthAuthor(Latexible):
 
     @classmethod
     def from_json(cls, data):
-        auth_full_name = data['auth_full_name']
-        auth_presenting = data['auth_presenting']
+        auth_full_name = latex_replacement(data['auth_full_name'])
+        auth_presenting = latex_replacement(data['auth_presenting'])
         return cls(auth_full_name, auth_presenting)
 
 class AuthAuthors(Latexible):
@@ -365,7 +365,7 @@ class AuthEmail(Latexible):
 
     @classmethod
     def from_json(cls, data):
-        auth_email = data['auth_email']
+        auth_email = latex_replacement(data['auth_email'])
         return cls(auth_email)
 
 class AuthEmails(Latexible):
@@ -403,7 +403,7 @@ class AuthGroup(Latexible):
     @classmethod
     def from_json(cls, data):
         authgroup_authors = AuthAuthors.from_json(data['authgroup_authors'])
-        authgroup_affiliation = data['authgroup_affiliation']
+        authgroup_affiliation = latex_replacement(data['authgroup_affiliation'])
         authgroup_emails = AuthEmails.from_json(data['authgroup_authors'])
         return cls(authgroup_authors, authgroup_affiliation, authgroup_emails)
 
