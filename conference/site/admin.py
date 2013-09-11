@@ -79,7 +79,7 @@ class UserProfileAdmin(admin.ModelAdmin):
     certificate_pdf.short_description = 'Certif'
     certificate_pdf.allow_tags = True
 
-    list_display = ('last_name', 'first_name', 'usertitle', 'email', 'affiliation', 'address', 'city', 'postal_code', 'country', 'speaker', 'student', 'postconf', 'vegeterian', 'arrival', 'departure', 'accompanying', 'tshirt', 'payment', 'remark', letter_tex, letter_pdf, certificate_tex, certificate_pdf)
+    list_display = ('last_name', 'first_name', 'email', 'affiliation', 'address', 'city', 'postal_code', 'country', 'speaker', 'student', 'postconf', 'vegeterian', 'arrival', 'departure', 'accompanying', 'tshirt', 'payment', 'remark', letter_tex, letter_pdf, certificate_tex, certificate_pdf)
 
     list_editable = ['remark']
 

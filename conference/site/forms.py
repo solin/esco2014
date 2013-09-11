@@ -249,7 +249,7 @@ class ChangePasswordForm(forms.Form):
 class UserProfileForm(forms.Form):
     """User profile form. """
 
-    usertitle = forms.ChoiceField(
+    """    usertitle = forms.ChoiceField(
         required  = True,
         label     = "Title",
         help_text = "",
@@ -268,7 +268,7 @@ class UserProfileForm(forms.Form):
         if (usertitle == 'none'):
             raise forms.ValidationError('Please select your title')
 
-        return usertitle
+        return usertitle"""
 
     first_name = forms.CharField(
         required  = True,
