@@ -197,14 +197,11 @@ def account_create_view(request, **args):
             user.save()
 
             if settings.SEND_EMAIL:
-                conf_name_upper = settings.CONF_NAME_UPPER
-                conf_year = settings.CONF_YEAR
-                conf_web = settings.CONF_WEB
 
                 template = loader.get_template('e-mails/user/create.txt')
-                body = template.render(Context({'user': user, 'conf_name_upper': conf_name_upper, 'conf_year': conf_year, 'conf_web': conf_web }))
+                body = template.render(Context({'user': user, 'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_year': settings.CONF_YEAR, 'conf_web': settings.CONF_WEB}))
 
-                user.email_user("[%(conf_name_upper)s %(conf_year)s] Account Creation Notification" % {'conf_name_upper': conf_name_upper, 'conf_year': conf_year }, body)
+                user.email_user("[%(conf_name_upper)s %(conf_year)s] Account Creation Notification" % {'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_year': settings.CONF_YEAR}, body)
 
                 template = loader.get_template('e-mails/admin/create.txt')
                 body = template.render(Context({'user': user}))
@@ -253,14 +250,11 @@ def account_password_remind_view(request, **args):
             user.save()
 
             if settings.SEND_EMAIL:
-                conf_name_upper = settings.CONF_NAME_UPPER
-                conf_year = settings.CONF_YEAR
-                conf_web = settings.CONF_WEB
 
                 template = loader.get_template('e-mails/user/reminder.txt')
                 body = template.render(Context({'user': user, 'password': password, 'conf_web': conf_web}))
 
-                user.email_user("[%(conf_name_upper)s %(conf_year)s] Password Reminder Notification" % {'conf_name_upper': conf_name_upper, 'conf_year': conf_year }, body)
+                user.email_user("[%(conf_name_upper)s %(conf_year)s] Password Reminder Notification" % {'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_year': settings.CONF_YEAR}, body)
 
             return HttpResponsePermanentRedirect('/account/password/remind/success/')
     else:
@@ -1379,12 +1373,10 @@ def abstracts_submit_view(request, **args):
         abstract.save()
 
         if settings.SEND_EMAIL:
-            conf_name_upper = settings.CONF_NAME_UPPER
-            conf_year = settings.CONF_YEAR
-            
+           
             template = loader.get_template('e-mails/user/abstract.txt')
-            body = template.render(Context({'user': request.user, 'abstract': abstract, 'conf_name_upper': conf_name_upper, 'conf_year': conf_year}))
-            request.user.email_user("[%(conf_name_upper)s %(conf_year)s] Abstract Submission Notification" % {'conf_name_upper': conf_name_upper, 'conf_year': conf_year }, body)
+            body = template.render(Context({'user': request.user, 'abstract': abstract, 'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_year': settings.CONF_YEAR}))
+            request.user.email_user("[%(conf_name_upper)s %(conf_year)s] Abstract Submission Notification" % {'conf_name_upper': settings.CONF_NAME_UPPER, 'conf_year': settings.CONF_YEAR}, body)
 
             template = loader.get_template('e-mails/admin/abstract.txt')
             body = template.render(Context({'user': request.user, 'abstract': abstract}))
