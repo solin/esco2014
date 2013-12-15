@@ -239,7 +239,6 @@ class Author(Latexible):
         self.full_name = full_name
         self.affiliation = affiliation
         self.email = email
-        self.email = email.replace('_', '\_')
         self.presenting = presenting
 
 #    def __init__(self, first_name, last_name, address, email, presenting):
@@ -357,7 +356,6 @@ class AuthEmail(Latexible):
 
     def __init__(self, auth_email):
         self.auth_email = auth_email
-        self.auth_email = auth_email.replace('_', '\_')
 
     def to_latex(self):
         return self._template % dict(
