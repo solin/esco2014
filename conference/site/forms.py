@@ -331,9 +331,6 @@ class UserProfileForm(forms.Form):
         if ( first_symbol & _lower):
             raise forms.ValidationError('First letter must be Uppercase.')
                  
-        elif ( all_symbols & _digit ):
-            raise forms.ValidationError('Digits are not allowed in last name.')
-
         return affiliation
 
     address = forms.CharField(
