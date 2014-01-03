@@ -77,6 +77,9 @@
 
     {% block footer %}
     <div id="footer">
+
+    {% if user.is_authenticated %}
+    {% if user.is_staff and user.is_superuser %}
     <table>
     <tr>
     <td style="border-bottom: 0px"><input type="button" value="{% trans 'BoA TeX' %}" ONCLICK="window.location.href='/account/abstracts/book/tex/'" /></td>
@@ -95,6 +98,9 @@
     <!--<td style="border-bottom: 0px"><input type="button" value="{% trans 'Receipts PDF' %}" ONCLICK="window.location.href='/account/receipts/pdf/'" /></td>-->
     </tr>
     </table>
+    {% endif %}
+    {% endif %}
+
     </div>
     {% endblock %}
 </div>
