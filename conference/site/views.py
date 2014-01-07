@@ -77,6 +77,7 @@ urlpatterns = patterns('conference.site.views',
     (r'^account/profile/$', 'account_profile_view'),
 
     (r'^account/program_tex/$', 'program_tex'),
+    (r'^account/csv_export/$', 'csv_export'),
 
     (r'^account/badges/tex/$', 'badges_tex'),
     (r'^account/badges/pdf/$', 'badges_pdf'),
@@ -1472,3 +1473,43 @@ def abstracts_log_view(request, abstract_id, **args):
     response['Content-Disposition'] = 'inline; filename=abstract.log'
 
     return response
+
+@login_required
+def csv_export(request, **args):
+    tex_output_path = os.path.join(ABSTRACTS_PATH, 'csv_export')
+
+    str_list_to_modify = []
+    str_list = []
+    
+    user_list = User.objects.all().order_by('last_name')
+
+    for i in range(len(User.objects.all())):
+        try:
+            first_name = user_list[i].first_name
+            last_name = user_list[i].last_name
+            email = user_list[i].email
+            str_list_to_modify.append(u'\"Dr.\",\"%(first_name)s\",\"%(last_name)s\",\"%(email)s\"\n' % {'first_name': first_name, 'last_name': last_name, 'email': email })
+        except UserProfile.DoesNotExist:
+            continue
+
+    str_list.append(latex_replacement(''.join(str_list_to_modify)))
+    output = ''.join(str_list)
+
+    if os.path.exists(tex_output_path):
+        shutil.rmtree(tex_output_path, True)
+
+    os.mkdir(tex_output_path)
+
+    filename = '%(conf_name_lower)s_%(conf_year)s_to_ELSTS.csv' % {'conf_name_lower': settings.CONF_NAME_LOWER, 'conf_year': settings.CONF_YEAR}
+
+    with open(os.path.join(tex_output_path, filename), 'wb') as f:
+        f.write(output.encode('utf-8'))
+    f.close()
+
+    f = open(os.path.join(tex_output_path, filename), 'r')    
+
+    response = HttpResponse(f.read(), mimetype='application/octet-stream')
+    response['Cache-Control'] = 'must-revalidate'
+    response['Content-Disposition'] = 'inline; filename=%(filename)s' % {'filename': filename}
+    return response  
+

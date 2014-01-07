@@ -58,6 +58,11 @@
     {% block object-tools %}
       {% if has_add_permission %}
         <ul class="object-tools">
+          {% if cl.opts.verbose_name == "user" %}
+          <li>
+            <a href="/account/csv_export/?_popup=1">Export users for ELSTS</a>
+          </li>
+          {% endif %}
           <li>
             <a href="add/{% if is_popup %}?_popup=1{% endif %}" class="addlink">
             {% blocktrans with cl.opts.verbose_name as name %}Add {{ name }}{% endblocktrans %}
