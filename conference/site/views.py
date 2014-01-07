@@ -1478,8 +1478,7 @@ def abstracts_log_view(request, abstract_id, **args):
 def csv_export(request, **args):
     tex_output_path = os.path.join(ABSTRACTS_PATH, 'csv_export')
 
-    str_list_to_modify = []
-    str_list = []
+    str_list = [u'title,first,last,email\n']
     
     user_list = User.objects.all().order_by('last_name')
 
@@ -1488,11 +1487,10 @@ def csv_export(request, **args):
             first_name = user_list[i].first_name
             last_name = user_list[i].last_name
             email = user_list[i].email
-            str_list_to_modify.append(u'\"Dr.\",\"%(first_name)s\",\"%(last_name)s\",\"%(email)s\"\n' % {'first_name': first_name, 'last_name': last_name, 'email': email })
+            str_list.append(u'\"Dr.\",\"%(first_name)s\",\"%(last_name)s\",\"%(email)s\"\n' % {'first_name': first_name, 'last_name': last_name, 'email': email })
         except UserProfile.DoesNotExist:
             continue
 
-    str_list.append(latex_replacement(''.join(str_list_to_modify)))
     output = ''.join(str_list)
 
     if os.path.exists(tex_output_path):
