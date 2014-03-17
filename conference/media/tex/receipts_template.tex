@@ -1,43 +1,39 @@
 \documentclass[12pt]{article}
-
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 
-\textwidth 160mm
-\textheight 290mm
-
-\oddsidemargin 0mm
-\evensidemargin 0mm
-\topmargin -10mm
-
-\itemindent 0mm
-\parindent 10mm
+\topmargin=1cm
+\leftmargin=0cm
+%\rightmargin=0cm
+%\oddsidemargin=2cm
+%\evensidemargin=2cm
+%\textwidth=15cm
+\textheight=21cm
 
 \newcommand{\receipt}[7]
 {
+	\vbox{}
+	\vspace{-2cm}
 	\begin{figure}[h!]
 		\includegraphics[width=\textwidth]{femhub_logo.png}
 	\end{figure}
-
-	\vspace{50pt}
 	
 	\noindent
+	To:
 	{#1}\\
 	{#3}\\
 	{#4}\\
-	{#5}\quad {#6}, {#7}\\
-	\vspace{50pt}
+	{#5},\ {#6}\\
+	{#7}\\
+	\vspace{40pt}
 	
-	\begin{flushright}
-		May 24, 2013\\
-		Las Vegas, USA
-	\end{flushright}
-	\vspace{30pt}
-	
+        \noindent
+	\hbox{} \hfill \today\\ 
+	\hbox{} \hfill Reno, NV, USA\\ 
 	\noindent Dear {#1},\\
 	
 	We acknowledge the receipt of your registration fee for the 4th European Seminar on Computing (ESCO 2014) in the amount of {#2}.
-	\vspace{100pt}
+	\vfill
 
 	\begin{figure}[!ht]
 	\hspace{-4mm}
@@ -46,7 +42,12 @@
 	\end{figure}
 
 	\noindent
-	Pavel Solin\\
+	Luk\'{a}\v{s} Koudela\\
+        Conference Coordinator\\
+
+        \noindent
+        On behalf of:\\
+        Dr. Pavel Solin\\
 	FEMhub Inc.\\
 	5490 Twin Creeks Dr.\\
 	Reno, NV 89523\\
