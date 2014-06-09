@@ -412,7 +412,6 @@ def badges():
             city = user_list[i].get_profile().city
             country = user_list[i].get_profile().country
             str_list_to_modify.append('\\card{%(full_name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'affiliation': affiliation, 'city': city, 'country': country })
-            str_list_to_modify.append('\\card{%(full_name)s}{%(affiliation)s}{%(city)s}{%(country)s}\n' % {'full_name': full_name, 'affiliation': affiliation, 'city': city, 'country': country })        
         except UserProfile.DoesNotExist:
             continue
 
