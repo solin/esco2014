@@ -557,20 +557,23 @@ class Abstract(Latexible):
 
     _template_abstracts = u"""\
 \\title{%(title)s}
-\\tocauthor{%(tocauthors)s} \\author{} \\institute{}
+\\author{} 
+\\tocauthor{%(tocauthors)s} 
+\\institute{}
 \\maketitle
+
 \\begin{center}
-%(authors)s
+%(authorgroups)s
 \end{center}
 
 \\section*{Abstract}
+
 %(abstract)s
 
 \\bibliographystyle{plain}
 \\begin{thebibliography}{10}
 %(bibitems)s
 \\end{thebibliography}
-
 """
 
     _template_presenting = u"%(authors)s"

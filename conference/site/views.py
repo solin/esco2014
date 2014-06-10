@@ -468,9 +468,6 @@ def abstracts_book():
     str_list.append(f.read())
     f.close()
 
-    compiled_abstracts = {}
-    compiled_authors = {}
-
     str_list.append('\\part{List of Participants}\n')
 
     abstracts = UserAbstract.objects.order_by("user__last_name", "id")
@@ -479,11 +476,11 @@ def abstracts_book():
         cls = abstract.to_cls()
         str_list.append(cls.build_raw())
 
-    str_list.append('\\newpage\n')
+    #str_list.append('\\newpage\n')
 
-    for abstract in abstracts:
-        cls = abstract.to_cls()
-        str_list.append(cls.build_presenting())
+    #for abstract in abstracts:
+    #    cls = abstract.to_cls()
+    #    str_list.append(cls.build_presenting())
 
 
     str_list.append('\\end{document}')
