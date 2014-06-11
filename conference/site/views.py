@@ -52,6 +52,7 @@ urlpatterns = patterns('conference.site.views',
     (r'^contact/$',       '_render_template', {'template': 'content/contact.html'}),
     (r'^sponsorship/$',       '_render_template', {'template': 'content/sponsorship.html'}),
     (r'^sponsors/$',       '_render_template', {'template': 'content/sponsors.html'}),
+    (r'^for_authors/$',       '_render_template', {'template': 'content/for_authors.html'}),
 
     (r'^account/$',       '_render_template', {'template': 'account/account.html'}),
 
