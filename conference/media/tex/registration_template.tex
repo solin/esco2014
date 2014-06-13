@@ -5,28 +5,28 @@
 \usepackage{longtable}
 \usepackage{pdflscape}
 
-\textwidth 170mm
-\topmargin 0mm
+\textwidth 200mm
+\topmargin 2mm
+\oddsidemargin -18mm
 
-
-\newcommand{\registration}[5]
+\newcommand{\registration}[4]
 {	 
-	{#1} & {#2} & {\small #3} &	{#4} & {\small #5} & & & & & & \\
+	{#1} & {#2} & {#3} & & {#4} & & & & & & \\
 	\hline
 }
 
 \begin{document}
 \begin{landscape}
 \pagestyle{empty}
-\begin{longtable}[l]{|l|l|p{150pt}|c|c|p{30pt}|p{30pt}|p{30pt}|p{30pt}|p{30pt}|p{50pt}|}
+\begin{longtable}[l]{|l|l|c|p{70pt}|c|p{70pt}|p{40pt}|p{40pt}|p{40pt}|p{40pt}|p{150pt}|}
 \multicolumn{11}{c}{\bf \large ESCO 2014}\\
 \hline
-Last name & First name & Affinilation & T-shirt & \multicolumn{2}{c|}{Departure} & {\scriptsize Welcome} & {\scriptsize Farewell} & {\scriptsize SW aft.} & {\scriptsize Postconf} & {\scriptsize Remark} \\
+Last name & First name & T-shirt & Arrival & \multicolumn{2}{c|}{Departure} & {\scriptsize Welcome} & {\scriptsize Farewell} & {\scriptsize SW aft.} & {\scriptsize Postconf} & {\scriptsize Remark} \\
 \hline
 \hline
 \endfirsthead
 \hline
-Last name & First name & Affinilation & T-shirt & \multicolumn{2}{c|}{Departure} & {\scriptsize Welcome} & {\scriptsize Farewell} & {\scriptsize SW aft.} & {\scriptsize Postconf} & {\scriptsize Remark} \\
+Last name & First name & T-shirt & Arrival & \multicolumn{2}{c|}{Departure} & {\scriptsize Welcome} & {\scriptsize Farewell} & {\scriptsize SW aft.} & {\scriptsize Postconf} & {\scriptsize Remark} \\
 \hline
 \hline
 \endhead

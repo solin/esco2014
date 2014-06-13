@@ -1002,10 +1002,9 @@ def registration():
         try:
             last_name = user_list[i].last_name
             first_name = user_list[i].first_name
-            affiliation = user_list[i].get_profile().affiliation
             tshirt = user_list[i].get_profile().tshirt
             departure = user_list[i].get_profile().departure
-            str_list_to_modify.append('\\registration{%(last_name)s}{%(first_name)s}{%(affiliation)s}{%(tshirt)s}{%(departure)s}\n' % {'last_name': last_name, 'first_name': first_name, 'affiliation': affiliation,'tshirt': tshirt, 'departure': departure})
+            str_list_to_modify.append('\\registration{%(last_name)s}{%(first_name)s}{%(tshirt)s}{%(departure)s}\n' % {'last_name': last_name, 'first_name': first_name, 'tshirt': tshirt, 'departure': departure})
         except UserProfile.DoesNotExist:
             continue
 
