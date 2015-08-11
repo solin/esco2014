@@ -585,8 +585,6 @@ class Abstract(Latexible):
 \\usepackage{amssymb}
 \\usepackage{amsfonts}
 \\usepackage{graphicx}
-\\usepackage{times}
-\\usepackage{epsf}
 \\usepackage{bm}
 \\usepackage{cases}
 
